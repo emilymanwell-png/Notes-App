@@ -1,1 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Georgia&family=Courier+Prime&family=Comic+Neue&family=Playfair+Display&family=Roboto+Mono&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            display: flex;
+            height: 100vh;
+            background: #fafafa;
+            color: #333;
+            overflow: hidden;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #e8e8e8;
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            letter-spacing: -0.3px;
+        }
+
+        .notebooks-section {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 4px;
+            font-size: 0.7rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .add-btn {
+            background: transparent;
+            color: #666;
+            border: 1px solid #e0e0e0;
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+        }
+
+        .add-btn:hover {
+            background: #333;
+            color: #fff;
+            border-color: #333;
+        }
+
+        .notebook {
+            margin-bottom: 2px;
+        }
+
+        .notebook-header {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .notebook-header:hover {
+            background: #f5f5f5;
+        }
+
+        .notebook-header.active {
+            background: #f0f0f0;
+        }
+
+        .notebook-icon {
+            margin-right: 10px;
+            font-size: 0.9rem;
+            opacity: 0.6;
+        }
+
+        .notebook-name {
+            flex: 1;
+            font-size: 0.875rem;
+            font-weight: 450;
+            color: #444;
+        }
+
+        .notebook-toggle {
+            color: #bbb;
+            transition: transform 0.2s ease;
+            font-size: 0.7rem;
+        }
+
+        .notebook-toggle.open {
+            transform: rotate(90deg);
+        }
+
+        .notes-list {
+            margin-left: 12px;
+            display: none;
+            border-left: 1px solid #eee;
+            margin-top: 2px;
+        }
+
+        .notes-list.open {
+            display: block;
+        }
+
+        .note-item {
+            padding: 8px 16px;
+            margin: 1px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: #666;
+            transition: all 0.15s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .note-item:hover {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .note-item.active {
+            background: #333;
+            color: white;
+        }
+
+        .delete-btn {
+            opacity: 0;
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: all 0.15s ease;
+        }
+
+        .delete-btn:hover {
+            color: #e53935;
+            background: rgba(229, 57, 53, 0.1);
+        }
+
+        .note-item:hover .delete-btn,
+        .notebook-header:hover .delete-btn {
+            opacity: 1;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fafafa;
+        }
+
+        /* Toolbar */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            padding: 12px 24px;
+            background: #fff;
+            border-bottom: 1px solid #e8e8e8;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .toolbar-divider {
+            width: 1px;
+            height: 24px;
+            background: #e8e8e8;
+            margin: 0 8px;
+        }
+
+        .tool-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: #666;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-size: 0.8rem;
+            font-weight: 450;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tool-btn:hover {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .tool-btn.active {
+            background: #333;
+            color: #fff;
+        }
+
+        .tool-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .color-picker {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            cursor: pointer;
+            background: none;
+            padding: 2px;
+        }
+
+        .thickness-slider {
+            width: 80px;
+            accent-color: #333;
+            height: 4px;
+        }
+
+        .font-select {
+            background: #fff;
+            color: #444;
+            border: 1px solid #e0e0e0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-family: inherit;
+        }
+
+        .font-select:focus {
+            outline: none;
+            border-color: #333;
+        }
+
+        .zoom-display {
+            background: #f5f5f5;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            min-width: 50px;
+            text-align: center;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .toolbar-label {
+            font-size: 0.7rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            font-weight: 500;
+        }
+
+        /* Canvas Area */
+        .canvas-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: #f0f0f0;
+        }
+
+        .canvas-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: 0 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+        }
+
+        .grid-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        .drawing-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #fff;
+        }
+
+        .text-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        .text-box {
+            position: absolute;
+            background: transparent;
+            border: 1.5px dashed #999;
+            padding: 8px;
+            min-width: 100px;
+            min-height: 30px;
+            outline: none;
+            pointer-events: auto;
+            resize: both;
+            overflow: auto;
+            border-radius: 4px;
+        }
+
+        .text-box:focus {
+            border-color: #333;
+        }
+
+        .text-box.placed {
+            border: none;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            padding: 10px 24px;
+            background: #fff;
+            font-size: 0.75rem;
+            color: #999;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #e8e8e8;
+        }
+
+        .save-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .save-indicator.saving {
+            color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .save-indicator.saving .save-dot {
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        .save-indicator.saved {
+            color: #10b981;
+        }
+
+        .save-indicator.unsaved {
+            color: #999;
+        }
+
+        .save-indicator.just-saved {
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-2px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .save-indicator.just-saved {
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 32px;
+            border-radius: 16px;
+            min-width: 340px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 24px;
+            color: #333;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            color: #333;
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: border-color 0.15s ease;
+        }
+
+        .modal-input:focus {
+            outline: none;
+            border-color: #333;
+            background: #fff;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            font-family: inherit;
+            transition: all 0.15s ease;
+        }
+
+        .modal-btn.primary {
+            background: #333;
+            color: white;
+        }
+
+        .modal-btn.primary:hover {
+            background: #555;
+        }
+
+        .modal-btn.secondary {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .modal-btn.secondary:hover {
+            background: #e8e8e8;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ddd;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ccc;
+        }
+
+        /* Empty State */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            opacity: 0.4;
+        }
+
+        .empty-state p {
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>Notes</h1>
+        </div>
+        <div class="notebooks-section">
+            <div class="section-title">
+                <span>Notebooks</span>
+                <button class="add-btn" onclick="showModal('notebook')">+</button>
+            </div>
+            <div id="notebooks-container"></div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="toolbar" id="toolbar" style="display: none;">
+            <div class="toolbar-group">
+                <button class="tool-btn active" id="draw-btn" onclick="setTool('draw')" title="Draw">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg>
+                    Draw
+                </button>
+                <button class="tool-btn" id="erase-btn" onclick="setTool('erase')" title="Eraser">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 20H7L3 16c-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0l6 6c.6.6.6 1.5 0 2.1L13 20"/><path d="M6 11l8 8"/></svg>
+                    Erase
+                </button>
+                <button class="tool-btn" id="text-btn" onclick="setTool('text')" title="Text">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+                    Text
+                </button>
+                <button class="tool-btn" id="pan-btn" onclick="setTool('pan')" title="Pan">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
+                    Pan
+                </button>
+            </div>
+            
+            <div class="toolbar-divider"></div>
+            
+            <div class="toolbar-group">
+                <span class="toolbar-label">Color</span>
+                <input type="color" class="color-picker" id="color-picker" value="#333333">
+            </div>
+            
+            <div class="toolbar-group">
+                <span class="toolbar-label">Size</span>
+                <input type="range" class="thickness-slider" id="thickness-slider" min="1" max="50" value="3">
+                <span id="thickness-value" style="font-size: 0.75rem; color: #666; min-width: 30px;">3px</span>
+            </div>
+            
+            <div class="toolbar-divider"></div>
+            
+            <div class="toolbar-group">
+                <span class="toolbar-label">Font</span>
+                <select class="font-select" id="font-select">
+                    <option value="'Inter', sans-serif">Inter</option>
+                    <option value="Georgia, serif">Georgia</option>
+                    <option value="'Courier Prime', monospace">Courier</option>
+                    <option value="'Comic Neue', cursive">Comic Sans</option>
+                    <option value="'Playfair Display', serif">Playfair</option>
+                    <option value="'Roboto Mono', monospace">Roboto Mono</option>
+                </select>
+                <select class="font-select" id="font-size-select">
+                    <option value="12">12</option>
+                    <option value="16" selected>16</option>
+                    <option value="20">20</option>
+                    <option value="24">24</option>
+                    <option value="32">32</option>
+                    <option value="48">48</option>
+                </select>
+            </div>
+            
+            <div class="toolbar-divider"></div>
+            
+            <div class="toolbar-group">
+                <button class="tool-btn" onclick="zoomOut()">−</button>
+                <span class="zoom-display" id="zoom-display">100%</span>
+                <button class="tool-btn" onclick="zoomIn()">+</button>
+            </div>
+            
+            <div class="toolbar-divider"></div>
+            
+            <div class="toolbar-group">
+                <button class="tool-btn" onclick="manualSave()" title="Save (Ctrl+S)">Save</button>
+                <button class="tool-btn" onclick="clearCanvas()">Clear</button>
+                <button class="tool-btn" onclick="exportNote()">Export</button>
+            </div>
+        </div>
+
+        <div class="canvas-container" id="canvas-container">
+            <div class="empty-state" id="empty-state">
+                <div class="empty-state-icon">○</div>
+                <p>Create a notebook to get started</p>
+            </div>
+            <div class="canvas-wrapper" id="canvas-wrapper" style="display: none;">
+                <canvas class="grid-canvas" id="grid-canvas"></canvas>
+                <canvas class="drawing-canvas" id="drawing-canvas"></canvas>
+                <div class="text-layer" id="text-layer"></div>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span id="note-info">No note selected</span>
+            <span class="save-indicator saved" id="save-indicator">
+                <span class="save-dot">●</span> <span class="save-text">Saved</span>
+            </span>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h2 id="modal-title">New Notebook</h2>
+            <input type="text" class="modal-input" id="modal-input" placeholder="Name">
+            <div class="modal-buttons">
+                <button class="modal-btn secondary" onclick="hideModal()">Cancel</button>
+                <button class="modal-btn primary" id="modal-confirm" onclick="confirmModal()">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // App State
+        let state = {
+            notebooks: [],
+            currentNotebook: null,
+            currentNote: null,
+            tool: 'draw',
+            color: '#333333',
+            thickness: 3,
+            font: "'Inter', sans-serif",
+            fontSize: 16,
+            zoom: 1,
+            panOffset: { x: 0, y: 0 }
+        };
+
+        // Canvas Setup
+        const canvasContainer = document.getElementById('canvas-container');
+        const canvasWrapper = document.getElementById('canvas-wrapper');
+        const gridCanvas = document.getElementById('grid-canvas');
+        const drawingCanvas = document.getElementById('drawing-canvas');
+        const textLayer = document.getElementById('text-layer');
+        const gridCtx = gridCanvas.getContext('2d');
+        const drawCtx = drawingCanvas.getContext('2d');
+
+        const CANVAS_WIDTH = 2000;
+        const CANVAS_HEIGHT = 2000;
+
+        // Initialize canvases
+        function initCanvases() {
+            gridCanvas.width = CANVAS_WIDTH;
+            gridCanvas.height = CANVAS_HEIGHT;
+            drawingCanvas.width = CANVAS_WIDTH;
+            drawingCanvas.height = CANVAS_HEIGHT;
+            textLayer.style.width = CANVAS_WIDTH + 'px';
+            textLayer.style.height = CANVAS_HEIGHT + 'px';
+            drawGrid();
+        }
+
+        // Draw dotted grid
+        function drawGrid() {
+            gridCtx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+            gridCtx.fillStyle = '#e0e0e0';
+            const spacing = 24;
+            
+            for (let x = 0; x < CANVAS_WIDTH; x += spacing) {
+                for (let y = 0; y < CANVAS_HEIGHT; y += spacing) {
+                    gridCtx.beginPath();
+                    gridCtx.arc(x, y, 0.8, 0, Math.PI * 2);
+                    gridCtx.fill();
+                }
+            }
+        }
+
+        // Drawing State
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        let isPanning = false;
+        let panStart = { x: 0, y: 0 };
+
+        // Get canvas coordinates
+        function getCanvasCoords(e) {
+            const rect = drawingCanvas.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / state.zoom;
+            const y = (e.clientY - rect.top) / state.zoom;
+            return { x, y };
+        }
+
+        // Drawing functions
+        function startDrawing(e) {
+            if (state.tool === 'pan') {
+                isPanning = true;
+                panStart = { x: e.clientX - state.panOffset.x, y: e.clientY - state.panOffset.y };
+                return;
+            }
+
+            if (state.tool === 'text') {
+                createTextBox(e);
+                return;
+            }
+
+            isDrawing = true;
+            const coords = getCanvasCoords(e);
+            lastX = coords.x;
+            lastY = coords.y;
+        }
+
+        function draw(e) {
+            if (isPanning) {
+                state.panOffset.x = e.clientX - panStart.x;
+                state.panOffset.y = e.clientY - panStart.y;
+                updateCanvasTransform();
+                return;
+            }
+
+            if (!isDrawing) return;
+
+            const coords = getCanvasCoords(e);
+            
+            drawCtx.beginPath();
+            drawCtx.moveTo(lastX, lastY);
+            drawCtx.lineTo(coords.x, coords.y);
+            drawCtx.strokeStyle = state.tool === 'erase' ? '#ffffff' : state.color;
+            drawCtx.lineWidth = state.tool === 'erase' ? state.thickness * 3 : state.thickness;
+            drawCtx.lineCap = 'round';
+            drawCtx.lineJoin = 'round';
+            drawCtx.stroke();
+
+            lastX = coords.x;
+            lastY = coords.y;
+        }
+
+        function stopDrawing() {
+            if (isDrawing) {
+                isDrawing = false;
+                markUnsaved();
+            }
+            if (isPanning) {
+                isPanning = false;
+            }
+        }
+
+        // Text box creation
+        function createTextBox(e) {
+            const coords = getCanvasCoords(e);
+            const textBox = document.createElement('div');
+            textBox.className = 'text-box';
+            textBox.contentEditable = true;
+            textBox.style.left = coords.x + 'px';
+            textBox.style.top = coords.y + 'px';
+            textBox.style.fontFamily = state.font;
+            textBox.style.fontSize = state.fontSize + 'px';
+            textBox.style.color = state.color;
+            
+            textLayer.appendChild(textBox);
+            textBox.focus();
+
+            textBox.addEventListener('blur', () => {
+                if (textBox.textContent.trim() === '') {
+                    textBox.remove();
+                } else {
+                    textBox.classList.add('placed');
+                }
+                markUnsaved();
+            });
+
+            textBox.addEventListener('input', debounce(() => markUnsaved(), 500));
+        }
+
+        // Event listeners
+        drawingCanvas.addEventListener('mousedown', startDrawing);
+        drawingCanvas.addEventListener('mousemove', draw);
+        drawingCanvas.addEventListener('mouseup', stopDrawing);
+        drawingCanvas.addEventListener('mouseout', stopDrawing);
+
+        // Touch support
+        drawingCanvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            startDrawing({ clientX: touch.clientX, clientY: touch.clientY });
+        });
+
+        drawingCanvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            draw({ clientX: touch.clientX, clientY: touch.clientY });
+        });
+
+        drawingCanvas.addEventListener('touchend', stopDrawing);
+
+        // Zoom with mouse wheel
+        canvasContainer.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -0.1 : 0.1;
+            state.zoom = Math.max(0.25, Math.min(3, state.zoom + delta));
+            updateCanvasTransform();
+            updateZoomDisplay();
+        });
+
+        // Tool functions
+        function setTool(tool) {
+            state.tool = tool;
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`${tool}-btn`).classList.add('active');
+            drawingCanvas.style.cursor = tool === 'pan' ? 'grab' : 
+                                         tool === 'text' ? 'text' : 'crosshair';
+        }
+
+        function zoomIn() {
+            state.zoom = Math.min(3, state.zoom + 0.25);
+            updateCanvasTransform();
+            updateZoomDisplay();
+        }
+
+        function zoomOut() {
+            state.zoom = Math.max(0.25, state.zoom - 0.25);
+            updateCanvasTransform();
+            updateZoomDisplay();
+        }
+
+        function resetZoom() {
+            state.zoom = 1;
+            state.panOffset = { x: 0, y: 0 };
+            updateCanvasTransform();
+            updateZoomDisplay();
+        }
+
+        function updateCanvasTransform() {
+            canvasWrapper.style.transform = `translate(${state.panOffset.x}px, ${state.panOffset.y}px) scale(${state.zoom})`;
+        }
+
+        function updateZoomDisplay() {
+            document.getElementById('zoom-display').textContent = Math.round(state.zoom * 100) + '%';
+        }
+
+        // Color picker
+        document.getElementById('color-picker').addEventListener('change', (e) => {
+            state.color = e.target.value;
+        });
+
+        // Thickness slider
+        document.getElementById('thickness-slider').addEventListener('input', (e) => {
+            state.thickness = parseInt(e.target.value);
+            document.getElementById('thickness-value').textContent = state.thickness + 'px';
+        });
+
+        // Font select
+        document.getElementById('font-select').addEventListener('change', (e) => {
+            state.font = e.target.value;
+        });
+
+        document.getElementById('font-size-select').addEventListener('change', (e) => {
+            state.fontSize = parseInt(e.target.value);
+        });
+
+        // Clear canvas
+        function clearCanvas() {
+            if (confirm('Are you sure you want to clear the canvas?')) {
+                drawCtx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                drawCtx.fillStyle = '#ffffff';
+                drawCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                textLayer.innerHTML = '';
+                saveCurrentNote();
+            }
+        }
+
+        // Export note
+        function exportNote() {
+            const link = document.createElement('a');
+            link.download = `${state.currentNote?.name || 'note'}.png`;
+            link.href = drawingCanvas.toDataURL();
+            link.click();
+        }
+
+        // Modal functions
+        let modalMode = 'notebook';
+
+        function showModal(mode) {
+            modalMode = mode;
+            const modal = document.getElementById('modal');
+            const title = document.getElementById('modal-title');
+            const input = document.getElementById('modal-input');
+            
+            title.textContent = mode === 'notebook' ? 'New Notebook' : 'New Note';
+            input.placeholder = 'Name';
+            input.value = '';
+            modal.classList.add('active');
+            input.focus();
+        }
+
+        function hideModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        function confirmModal() {
+            const input = document.getElementById('modal-input');
+            const name = input.value.trim();
+            
+            if (!name) return;
+
+            if (modalMode === 'notebook') {
+                createNotebook(name);
+            } else {
+                createNote(name);
+            }
+            
+            hideModal();
+        }
+
+        // Handle Enter key in modal
+        document.getElementById('modal-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') confirmModal();
+            if (e.key === 'Escape') hideModal();
+        });
+
+        // Notebook functions
+        function createNotebook(name) {
+            const notebook = {
+                id: Date.now().toString(),
+                name: name,
+                notes: [],
+                isOpen: true
+            };
+            state.notebooks.push(notebook);
+            state.currentNotebook = notebook;
+            renderNotebooks();
+            saveToStorage();
+        }
+
+        function createNote(name) {
+            if (!state.currentNotebook) return;
+
+            const note = {
+                id: Date.now().toString(),
+                name: name,
+                canvasData: null,
+                textBoxes: []
+            };
+            state.currentNotebook.notes.push(note);
+            selectNote(state.currentNotebook, note);
+            renderNotebooks();
+            saveToStorage();
+        }
+
+        function selectNote(notebook, note) {
+            // Save current note before switching
+            if (state.currentNote) {
+                saveNoteData();
+            }
+
+            state.currentNotebook = notebook;
+            state.currentNote = note;
+            
+            // Show canvas
+            document.getElementById('empty-state').style.display = 'none';
+            document.getElementById('canvas-wrapper').style.display = 'block';
+            document.getElementById('toolbar').style.display = 'flex';
+            
+            // Initialize canvas if needed
+            if (!note.canvasData) {
+                initCanvases();
+                drawCtx.fillStyle = '#ffffff';
+                drawCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+            } else {
+                loadNoteData(note);
+            }
+
+            // Update UI
+            document.getElementById('note-info').textContent = `${notebook.name} / ${note.name}`;
+            renderNotebooks();
+        }
+
+        function deleteNote(notebook, note, e) {
+            e.stopPropagation();
+            if (confirm(`Delete "${note.name}"?`)) {
+                const index = notebook.notes.indexOf(note);
+                notebook.notes.splice(index, 1);
+                
+                if (state.currentNote === note) {
+                    state.currentNote = null;
+                    document.getElementById('empty-state').style.display = 'flex';
+                    document.getElementById('canvas-wrapper').style.display = 'none';
+                    document.getElementById('toolbar').style.display = 'none';
+                    document.getElementById('note-info').textContent = 'No note selected';
+                }
+                
+                renderNotebooks();
+                saveToStorage();
+            }
+        }
+
+        function deleteNotebook(notebook, e) {
+            e.stopPropagation();
+            if (confirm(`Delete notebook "${notebook.name}" and all its notes?`)) {
+                const index = state.notebooks.indexOf(notebook);
+                state.notebooks.splice(index, 1);
+                
+                if (state.currentNotebook === notebook) {
+                    state.currentNotebook = null;
+                    state.currentNote = null;
+                    document.getElementById('empty-state').style.display = 'flex';
+                    document.getElementById('canvas-wrapper').style.display = 'none';
+                    document.getElementById('toolbar').style.display = 'none';
+                    document.getElementById('note-info').textContent = 'No note selected';
+                }
+                
+                renderNotebooks();
+                saveToStorage();
+            }
+        }
+
+        function toggleNotebook(notebook) {
+            notebook.isOpen = !notebook.isOpen;
+            renderNotebooks();
+        }
+
+        // Render notebooks
+        function renderNotebooks() {
+            const container = document.getElementById('notebooks-container');
+            container.innerHTML = '';
+
+            state.notebooks.forEach(notebook => {
+                const notebookEl = document.createElement('div');
+                notebookEl.className = 'notebook';
+                notebookEl.innerHTML = `
+                    <div class="notebook-header ${state.currentNotebook === notebook ? 'active' : ''}" onclick="toggleNotebook(state.notebooks[${state.notebooks.indexOf(notebook)}])">
+                        <span class="notebook-icon">◎</span>
+                        <span class="notebook-name">${notebook.name}</span>
+                        <button class="add-btn" onclick="event.stopPropagation(); state.currentNotebook = state.notebooks[${state.notebooks.indexOf(notebook)}]; showModal('note');" style="margin-right: 8px; width: 18px; height: 18px; font-size: 0.75rem;">+</button>
+                        <button class="delete-btn" onclick="deleteNotebook(state.notebooks[${state.notebooks.indexOf(notebook)}], event)">×</button>
+                        <span class="notebook-toggle ${notebook.isOpen ? 'open' : ''}">▸</span>
+                    </div>
+                    <div class="notes-list ${notebook.isOpen ? 'open' : ''}">
+                        ${notebook.notes.map((note, noteIndex) => `
+                            <div class="note-item ${state.currentNote === note ? 'active' : ''}" onclick="selectNote(state.notebooks[${state.notebooks.indexOf(notebook)}], state.notebooks[${state.notebooks.indexOf(notebook)}].notes[${noteIndex}])">
+                                <span>${note.name}</span>
+                                <button class="delete-btn" onclick="deleteNote(state.notebooks[${state.notebooks.indexOf(notebook)}], state.notebooks[${state.notebooks.indexOf(notebook)}].notes[${noteIndex}], event)">×</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(notebookEl);
+            });
+        }
+
+        // Save/Load functions
+        function saveNoteData() {
+            if (!state.currentNote) return;
+            
+            state.currentNote.canvasData = drawingCanvas.toDataURL();
+            state.currentNote.textBoxes = Array.from(textLayer.querySelectorAll('.text-box')).map(box => ({
+                content: box.innerHTML,
+                left: box.style.left,
+                top: box.style.top,
+                width: box.style.width,
+                height: box.style.height,
+                fontFamily: box.style.fontFamily,
+                fontSize: box.style.fontSize,
+                color: box.style.color
+            }));
+        }
+
+        function loadNoteData(note) {
+            initCanvases();
+            
+            if (note.canvasData) {
+                const img = new Image();
+                img.onload = () => {
+                    drawCtx.drawImage(img, 0, 0);
+                };
+                img.src = note.canvasData;
+            } else {
+                drawCtx.fillStyle = '#ffffff';
+                drawCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+            }
+
+            // Load text boxes
+            textLayer.innerHTML = '';
+            if (note.textBoxes) {
+                note.textBoxes.forEach(boxData => {
+                    const textBox = document.createElement('div');
+                    textBox.className = 'text-box placed';
+                    textBox.contentEditable = true;
+                    textBox.innerHTML = boxData.content;
+                    textBox.style.left = boxData.left;
+                    textBox.style.top = boxData.top;
+                    textBox.style.width = boxData.width;
+                    textBox.style.height = boxData.height;
+                    textBox.style.fontFamily = boxData.fontFamily;
+                    textBox.style.fontSize = boxData.fontSize;
+                    textBox.style.color = boxData.color;
+                    
+                    textBox.addEventListener('blur', () => {
+                        if (textBox.textContent.trim() === '') {
+                            textBox.remove();
+                        }
+                        markUnsaved();
+                    });
+
+                    textBox.addEventListener('input', debounce(() => markUnsaved(), 500));
+                    
+                    textLayer.appendChild(textBox);
+                });
+            }
+        }
+
+        // Auto-save
+        let saveTimeout = null;
+        let debounceSaveTimeout = null;
+        let hasUnsavedChanges = false;
+        const SAVE_DELAY = 2000; // Save 2 seconds after user stops making changes
+        
+        function markUnsaved() {
+            if (!hasUnsavedChanges) {
+                hasUnsavedChanges = true;
+                const indicator = document.getElementById('save-indicator');
+                indicator.className = 'save-indicator unsaved';
+                indicator.innerHTML = '<span class="save-dot">○</span> <span class="save-text">Unsaved changes</span>';
+            }
+            
+            // Debounce: save after user stops making changes
+            if (debounceSaveTimeout) clearTimeout(debounceSaveTimeout);
+            debounceSaveTimeout = setTimeout(() => {
+                if (hasUnsavedChanges && state.currentNote) {
+                    saveCurrentNote();
+                }
+            }, SAVE_DELAY);
+        }
+        
+        function saveCurrentNote() {
+            if (!state.currentNote) return;
+            
+            const indicator = document.getElementById('save-indicator');
+            
+            // Show saving state
+            indicator.className = 'save-indicator saving';
+            indicator.innerHTML = '<span class="save-dot">○</span> <span class="save-text">Saving...</span>';
+            
+            saveNoteData();
+            saveToStorage();
+            hasUnsavedChanges = false;
+
+            // Clear any existing timeout
+            if (saveTimeout) clearTimeout(saveTimeout);
+            
+            // Show "just saved" state briefly
+            setTimeout(() => {
+                indicator.className = 'save-indicator just-saved';
+                indicator.innerHTML = '<span class="save-dot">✓</span> <span class="save-text">Saved just now</span>';
+                
+                // Then fade to normal saved state
+                saveTimeout = setTimeout(() => {
+                    indicator.className = 'save-indicator saved';
+                    indicator.innerHTML = '<span class="save-dot">●</span> <span class="save-text">Saved</span>';
+                }, 2000);
+            }, 400);
+        }
+        
+        // Save before leaving page
+        window.addEventListener('beforeunload', (e) => {
+            if (hasUnsavedChanges && state.currentNote) {
+                saveNoteData();
+                saveToStorage();
+            }
+        });
+
+        function saveToStorage() {
+            localStorage.setItem('ultimateNotesApp', JSON.stringify(state.notebooks));
+        }
+
+        function loadFromStorage() {
+            const saved = localStorage.getItem('ultimateNotesApp');
+            if (saved) {
+                state.notebooks = JSON.parse(saved);
+                renderNotebooks();
+            }
+        }
+
+        // Debounce helper
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Initialize
+        loadFromStorage();
+        initCanvases();
+
+        // Manual save
+        function manualSave() {
+            if (state.currentNote) {
+                saveCurrentNote();
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.target.classList.contains('text-box') || e.target.classList.contains('modal-input')) {
+                // Allow Ctrl+S even in text boxes
+                if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                    e.preventDefault();
+                    manualSave();
+                }
+                return;
+            }
+            
+            // Ctrl+S to save
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                manualSave();
+                return;
+            }
+            
+            if (e.key === 'd') setTool('draw');
+            if (e.key === 'e') setTool('erase');
+            if (e.key === 't') setTool('text');
+            if (e.key === 'p') setTool('pan');
+            if (e.key === '+' || e.key === '=') zoomIn();
+            if (e.key === '-') zoomOut();
+            if (e.key === '0') resetZoom();
+        });
+    </script>
+</body>
+</html>
