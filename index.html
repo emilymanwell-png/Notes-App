@@ -300,22 +300,35 @@
             flex: 1;
             position: relative;
             overflow: hidden;
-            background: #f0f0f0;
+            background: #fff;
         }
 
         .canvas-wrapper {
             position: absolute;
-            top: 0;
-            left: 0;
-            transform-origin: 0 0;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            top: 50%;
+            left: 50%;
+            transform-origin: center center;
         }
 
-        .grid-canvas {
+        .grid-overlay {
             position: absolute;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
+            z-index: 2;
+            visibility: hidden;
+            background-image: radial-gradient(circle, #b0b0b0 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .grid-overlay.visible {
+            visibility: visible;
+        }
+
+        .grid-canvas {
+            display: none;
         }
 
         .drawing-canvas {
@@ -323,13 +336,142 @@
             top: 0;
             left: 0;
             background: #fff;
+            z-index: 1;
+        }
+
+        .eraser-cursor {
+            position: fixed;
+            border-radius: 50%;
+            border: 2px solid #999;
+            background: rgba(255, 255, 255, 0.8);
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+
+        .eraser-cursor.visible {
+            display: block;
+        }
+
+        /* Version History Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .modal-overlay.hidden {
+            display: none;
+        }
+
+        .version-modal {
+            background: #fff;
+            border-radius: 12px;
+            width: 400px;
+            max-height: 70vh;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .version-modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #e8e8e8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .version-modal-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .modal-close-btn:hover {
+            color: #333;
+        }
+
+        .version-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .version-item {
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .version-item:hover {
+            background: #f5f5f5;
+        }
+
+        .version-time {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .version-restore-btn {
+            background: #333;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.15s;
+        }
+
+        .version-item:hover .version-restore-btn {
+            opacity: 1;
+        }
+
+        .version-restore-btn:hover {
+            background: #555;
+        }
+
+        .no-versions {
+            padding: 40px 20px;
+            text-align: center;
+            color: #999;
+        }
+
+        .tool-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
         }
 
         .text-layer {
             position: absolute;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
+            z-index: 1;
         }
 
         .text-box {
@@ -344,6 +486,7 @@
             resize: both;
             overflow: auto;
             border-radius: 4px;
+            z-index: 2;
         }
 
         .text-box:focus {
@@ -536,6 +679,235 @@
             font-size: 0.9rem;
             font-weight: 400;
         }
+
+        /* Sidebar Navigation */
+        .sidebar-nav {
+            padding: 16px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            color: #666;
+            transition: all 0.15s ease;
+            gap: 10px;
+        }
+
+        .nav-item:hover {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .nav-item.active {
+            background: #333;
+            color: #fff;
+        }
+
+        .nav-item svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Home Page */
+        .home-page {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px;
+            background: #fafafa;
+        }
+
+        .home-page.hidden {
+            display: none;
+        }
+
+        .home-header {
+            margin-bottom: 32px;
+        }
+
+        .home-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .home-header p {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .home-section {
+            margin-bottom: 40px;
+        }
+
+        .home-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #999;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .pinned-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .pinned-card {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+        }
+
+        .pinned-card:hover {
+            border-color: #ddd;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .pinned-card-preview {
+            width: 100%;
+            height: 100px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .pinned-card-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .pinned-card-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .pinned-card-notebook {
+            font-size: 0.75rem;
+            color: #999;
+        }
+
+        .unpin-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.15s ease;
+            font-size: 0.8rem;
+        }
+
+        .pinned-card:hover .unpin-btn {
+            opacity: 1;
+        }
+
+        .unpin-btn:hover {
+            background: #fee2e2;
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+
+        .notebooks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+        }
+
+        .notebook-card {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .notebook-card:hover {
+            border-color: #ddd;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .notebook-card-icon {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        .notebook-card-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .notebook-card-count {
+            font-size: 0.75rem;
+            color: #999;
+        }
+
+        .empty-pinned {
+            background: #f5f5f5;
+            border: 2px dashed #e0e0e0;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            color: #999;
+        }
+
+        .empty-pinned p {
+            font-size: 0.85rem;
+        }
+
+        /* Pin button in note item */
+        .pin-btn {
+            opacity: 0;
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: all 0.15s ease;
+            margin-right: 4px;
+        }
+
+        .pin-btn:hover {
+            color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .pin-btn.pinned {
+            opacity: 1;
+            color: #f59e0b;
+        }
+
+        .note-item:hover .pin-btn {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -543,6 +915,12 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <h1>Notes</h1>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-item active" id="nav-home" onclick="showHomePage()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                Home
+            </div>
         </div>
         <div class="notebooks-section">
             <div class="section-title">
@@ -555,6 +933,23 @@
 
     <!-- Main Content -->
     <div class="main-content">
+        <!-- Home Page -->
+        <div class="home-page" id="home-page">
+            <div class="home-header">
+                <h2>Welcome back</h2>
+                <p>Your notebooks and pinned notes</p>
+            </div>
+            
+            <div class="home-section">
+                <div class="home-section-title">Pinned Notes</div>
+                <div id="pinned-container" class="pinned-grid"></div>
+            </div>
+            
+            <div class="home-section">
+                <div class="home-section-title">All Notebooks</div>
+                <div id="notebooks-home-container" class="notebooks-grid"></div>
+            </div>
+        </div>
         <div class="toolbar" id="toolbar" style="display: none;">
             <div class="toolbar-group">
                 <button class="tool-btn active" id="draw-btn" onclick="setTool('draw')" title="Draw">
@@ -621,20 +1016,58 @@
             <div class="toolbar-divider"></div>
             
             <div class="toolbar-group">
+                <button class="tool-btn" id="grid-btn" onclick="toggleGrid()" title="Toggle Grid">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+                        <circle cx="4" cy="4" r="1"/><circle cx="12" cy="4" r="1"/><circle cx="20" cy="4" r="1"/>
+                        <circle cx="4" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="20" cy="12" r="1"/>
+                        <circle cx="4" cy="20" r="1"/><circle cx="12" cy="20" r="1"/><circle cx="20" cy="20" r="1"/>
+                    </svg>
+                    Grid
+                </button>
+            </div>
+            
+            <div class="toolbar-divider"></div>
+            
+            <div class="toolbar-group">
+                <button class="tool-btn" id="undo-btn" onclick="undo()" title="Undo (Ctrl+Z)" disabled>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+                        <path d="M3 10h10c4.4 0 8 3.6 8 8v0"/>
+                        <polyline points="7 14 3 10 7 6"/>
+                    </svg>
+                </button>
+                <button class="tool-btn" id="redo-btn" onclick="redo()" title="Redo (Ctrl+Y)" disabled>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+                        <path d="M21 10H11c-4.4 0-8 3.6-8 8v0"/>
+                        <polyline points="17 14 21 10 17 6"/>
+                    </svg>
+                </button>
+                <button class="tool-btn" onclick="showVersionHistory()" title="Version History">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="toolbar-divider"></div>
+            
+            <div class="toolbar-group">
                 <button class="tool-btn" onclick="manualSave()" title="Save (Ctrl+S)">Save</button>
                 <button class="tool-btn" onclick="clearCanvas()">Clear</button>
                 <button class="tool-btn" onclick="exportNote()">Export</button>
             </div>
         </div>
 
-        <div class="canvas-container" id="canvas-container">
-            <div class="empty-state" id="empty-state">
+        <div class="canvas-container" id="canvas-container" style="display: none;">
+            <div class="eraser-cursor" id="eraser-cursor"></div>
+            <div class="empty-state" id="empty-state" style="display: none;">
                 <div class="empty-state-icon">○</div>
                 <p>Create a notebook to get started</p>
             </div>
             <div class="canvas-wrapper" id="canvas-wrapper" style="display: none;">
                 <canvas class="grid-canvas" id="grid-canvas"></canvas>
                 <canvas class="drawing-canvas" id="drawing-canvas"></canvas>
+                <div class="grid-overlay" id="grid-overlay"></div>
                 <div class="text-layer" id="text-layer"></div>
             </div>
         </div>
@@ -659,20 +1092,46 @@
         </div>
     </div>
 
+    <!-- Version History Modal -->
+    <div class="modal-overlay hidden" id="version-modal-overlay" onclick="hideVersionHistory(event)">
+        <div class="version-modal" onclick="event.stopPropagation()">
+            <div class="version-modal-header">
+                <h3>Version History</h3>
+                <button class="modal-close-btn" onclick="hideVersionHistory()">&times;</button>
+            </div>
+            <div class="version-list" id="version-list">
+                <div class="no-versions">No versions saved yet</div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // App State
         let state = {
             notebooks: [],
+            pinnedNotes: [], // Array of {notebookId, noteId}
             currentNotebook: null,
             currentNote: null,
+            currentView: 'home', // 'home' or 'editor'
             tool: 'draw',
             color: '#333333',
             thickness: 3,
             font: "'Inter', sans-serif",
             fontSize: 16,
             zoom: 1,
-            panOffset: { x: 0, y: 0 }
+            panOffset: { x: 0, y: 0 },
+            gridVisible: false
         };
+
+        // Undo/Redo History
+        let undoStack = [];
+        let redoStack = [];
+        const MAX_UNDO_STACK = 50;
+
+        // Version History
+        let versionHistory = [];
+        let versionHistoryInterval = null;
+        const VERSION_INTERVAL = 5 * 60 * 1000; // 5 minutes
 
         // Canvas Setup
         const canvasContainer = document.getElementById('canvas-container');
@@ -683,8 +1142,8 @@
         const gridCtx = gridCanvas.getContext('2d');
         const drawCtx = drawingCanvas.getContext('2d');
 
-        const CANVAS_WIDTH = 2000;
-        const CANVAS_HEIGHT = 2000;
+        const CANVAS_WIDTH = 4000;
+        const CANVAS_HEIGHT = 4000;
 
         // Initialize canvases
         function initCanvases() {
@@ -692,23 +1151,55 @@
             gridCanvas.height = CANVAS_HEIGHT;
             drawingCanvas.width = CANVAS_WIDTH;
             drawingCanvas.height = CANVAS_HEIGHT;
+            
+            // Set text layer, grid overlay, and wrapper dimensions
             textLayer.style.width = CANVAS_WIDTH + 'px';
             textLayer.style.height = CANVAS_HEIGHT + 'px';
-            drawGrid();
+            canvasWrapper.style.width = CANVAS_WIDTH + 'px';
+            canvasWrapper.style.height = CANVAS_HEIGHT + 'px';
+            
+            const gridOverlay = document.getElementById('grid-overlay');
+            if (gridOverlay) {
+                gridOverlay.style.width = CANVAS_WIDTH + 'px';
+                gridOverlay.style.height = CANVAS_HEIGHT + 'px';
+            }
+            
+            // Center the canvas wrapper
+            canvasWrapper.style.marginLeft = (-CANVAS_WIDTH / 2) + 'px';
+            canvasWrapper.style.marginTop = (-CANVAS_HEIGHT / 2) + 'px';
+            
+            updateGridVisibility();
         }
 
         // Draw dotted grid
         function drawGrid() {
             gridCtx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-            gridCtx.fillStyle = '#e0e0e0';
-            const spacing = 24;
+            gridCtx.fillStyle = '#c0c0c0';
+            const spacing = 30;
+            const dotSize = 2;
             
             for (let x = 0; x < CANVAS_WIDTH; x += spacing) {
                 for (let y = 0; y < CANVAS_HEIGHT; y += spacing) {
-                    gridCtx.beginPath();
-                    gridCtx.arc(x, y, 0.8, 0, Math.PI * 2);
-                    gridCtx.fill();
+                    gridCtx.fillRect(x, y, dotSize, dotSize);
                 }
+            }
+        }
+        
+        // Toggle grid visibility
+        function toggleGrid() {
+            state.gridVisible = !state.gridVisible;
+            updateGridVisibility();
+        }
+        
+        function updateGridVisibility() {
+            const gridBtn = document.getElementById('grid-btn');
+            const gridOverlay = document.getElementById('grid-overlay');
+            if (state.gridVisible) {
+                gridOverlay?.classList.add('visible');
+                gridBtn?.classList.add('active');
+            } else {
+                gridOverlay?.classList.remove('visible');
+                gridBtn?.classList.remove('active');
             }
         }
 
@@ -740,6 +1231,9 @@
                 return;
             }
 
+            // Save state before drawing starts (for undo)
+            saveToUndoStack();
+            
             isDrawing = true;
             const coords = getCanvasCoords(e);
             lastX = coords.x;
@@ -786,21 +1280,29 @@
             const coords = getCanvasCoords(e);
             const textBox = document.createElement('div');
             textBox.className = 'text-box';
-            textBox.contentEditable = true;
+            textBox.contentEditable = 'true';
+            textBox.style.position = 'absolute';
             textBox.style.left = coords.x + 'px';
             textBox.style.top = coords.y + 'px';
             textBox.style.fontFamily = state.font;
             textBox.style.fontSize = state.fontSize + 'px';
             textBox.style.color = state.color;
+            textBox.style.minWidth = '100px';
+            textBox.style.minHeight = '30px';
             
             textLayer.appendChild(textBox);
-            textBox.focus();
+            
+            // Small delay to ensure DOM is updated before focusing
+            setTimeout(() => {
+                textBox.focus();
+            }, 10);
 
             textBox.addEventListener('blur', () => {
                 if (textBox.textContent.trim() === '') {
                     textBox.remove();
                 } else {
                     textBox.classList.add('placed');
+                    saveToUndoStack();
                 }
                 markUnsaved();
             });
@@ -810,30 +1312,125 @@
 
         // Event listeners
         drawingCanvas.addEventListener('mousedown', startDrawing);
-        drawingCanvas.addEventListener('mousemove', draw);
+        drawingCanvas.addEventListener('mousemove', (e) => {
+            draw(e);
+            // Update eraser cursor position
+            if (state.tool === 'erase') {
+                const eraserCursor = document.getElementById('eraser-cursor');
+                eraserCursor.style.left = e.clientX + 'px';
+                eraserCursor.style.top = e.clientY + 'px';
+                eraserCursor.classList.add('visible');
+            }
+        });
         drawingCanvas.addEventListener('mouseup', stopDrawing);
-        drawingCanvas.addEventListener('mouseout', stopDrawing);
+        drawingCanvas.addEventListener('mouseout', (e) => {
+            stopDrawing();
+            // Hide eraser cursor when leaving canvas
+            const eraserCursor = document.getElementById('eraser-cursor');
+            eraserCursor.classList.remove('visible');
+        });
+        drawingCanvas.addEventListener('mouseenter', (e) => {
+            // Show eraser cursor when entering canvas
+            if (state.tool === 'erase') {
+                const eraserCursor = document.getElementById('eraser-cursor');
+                eraserCursor.style.left = e.clientX + 'px';
+                eraserCursor.style.top = e.clientY + 'px';
+                eraserCursor.classList.add('visible');
+            }
+        });
 
         // Touch support
-        drawingCanvas.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            const touch = e.touches[0];
-            startDrawing({ clientX: touch.clientX, clientY: touch.clientY });
+        let lastTouchDistance = 0;
+        let isTouchZooming = false;
+        let touchStartPoints = [];
+
+        function getTouchDistance(touches) {
+            const dx = touches[0].clientX - touches[1].clientX;
+            const dy = touches[0].clientY - touches[1].clientY;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        function getTouchCenter(touches) {
+            return {
+                x: (touches[0].clientX + touches[1].clientX) / 2,
+                y: (touches[0].clientY + touches[1].clientY) / 2
+            };
+        }
+
+        canvasContainer.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) {
+                // Two finger touch - start pinch zoom
+                e.preventDefault();
+                isTouchZooming = true;
+                lastTouchDistance = getTouchDistance(e.touches);
+                touchStartPoints = [
+                    { x: e.touches[0].clientX, y: e.touches[0].clientY },
+                    { x: e.touches[1].clientX, y: e.touches[1].clientY }
+                ];
+            } else if (e.touches.length === 1 && !isTouchZooming) {
+                // Single touch - drawing or panning
+                e.preventDefault();
+                const touch = e.touches[0];
+                startDrawing({ clientX: touch.clientX, clientY: touch.clientY });
+            }
+        }, { passive: false });
+
+        canvasContainer.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 2 && isTouchZooming) {
+                // Pinch zoom
+                e.preventDefault();
+                const currentDistance = getTouchDistance(e.touches);
+                const scale = currentDistance / lastTouchDistance;
+                
+                // Calculate new zoom
+                const newZoom = Math.max(0.25, Math.min(4, state.zoom * scale));
+                
+                // Get pinch center for zoom origin
+                const center = getTouchCenter(e.touches);
+                const rect = canvasContainer.getBoundingClientRect();
+                const centerX = center.x - rect.left;
+                const centerY = center.y - rect.top;
+                
+                // Adjust pan offset to zoom toward pinch center
+                if (newZoom !== state.zoom) {
+                    const zoomDelta = newZoom / state.zoom;
+                    state.panOffset.x = centerX - (centerX - state.panOffset.x) * zoomDelta;
+                    state.panOffset.y = centerY - (centerY - state.panOffset.y) * zoomDelta;
+                    state.zoom = newZoom;
+                    updateCanvasTransform();
+                    updateZoomDisplay();
+                }
+                
+                lastTouchDistance = currentDistance;
+            } else if (e.touches.length === 1 && !isTouchZooming) {
+                // Single touch drawing
+                e.preventDefault();
+                const touch = e.touches[0];
+                draw({ clientX: touch.clientX, clientY: touch.clientY });
+            }
+        }, { passive: false });
+
+        canvasContainer.addEventListener('touchend', (e) => {
+            if (e.touches.length < 2) {
+                isTouchZooming = false;
+                lastTouchDistance = 0;
+            }
+            if (e.touches.length === 0) {
+                stopDrawing();
+            }
         });
 
-        drawingCanvas.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            const touch = e.touches[0];
-            draw({ clientX: touch.clientX, clientY: touch.clientY });
+        canvasContainer.addEventListener('touchcancel', () => {
+            isTouchZooming = false;
+            lastTouchDistance = 0;
+            stopDrawing();
         });
-
-        drawingCanvas.addEventListener('touchend', stopDrawing);
 
         // Zoom with mouse wheel
         canvasContainer.addEventListener('wheel', (e) => {
             e.preventDefault();
             const delta = e.deltaY > 0 ? -0.1 : 0.1;
-            state.zoom = Math.max(0.25, Math.min(3, state.zoom + delta));
+            state.zoom = Math.max(0.25, Math.min(4, state.zoom + delta));
             updateCanvasTransform();
             updateZoomDisplay();
         });
@@ -843,20 +1440,269 @@
             state.tool = tool;
             document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`${tool}-btn`).classList.add('active');
-            drawingCanvas.style.cursor = tool === 'pan' ? 'grab' : 
-                                         tool === 'text' ? 'text' : 'crosshair';
+            
+            const eraserCursor = document.getElementById('eraser-cursor');
+            if (tool === 'erase') {
+                drawingCanvas.style.cursor = 'none';
+                updateEraserCursor();
+            } else {
+                eraserCursor.classList.remove('visible');
+                drawingCanvas.style.cursor = tool === 'pan' ? 'grab' : 
+                                             tool === 'text' ? 'text' : 'crosshair';
+            }
+        }
+        
+        function updateEraserCursor() {
+            const eraserCursor = document.getElementById('eraser-cursor');
+            const size = state.thickness * 3 * state.zoom;
+            eraserCursor.style.width = size + 'px';
+            eraserCursor.style.height = size + 'px';
+        }
+
+        // Undo/Redo Functions
+        function saveToUndoStack() {
+            const canvasState = drawingCanvas.toDataURL();
+            const textBoxes = Array.from(textLayer.querySelectorAll('.text-box')).map(box => ({
+                content: box.innerHTML,
+                left: box.style.left,
+                top: box.style.top,
+                width: box.style.width,
+                height: box.style.height,
+                fontFamily: box.style.fontFamily,
+                fontSize: box.style.fontSize,
+                color: box.style.color
+            }));
+            
+            undoStack.push({ canvasState, textBoxes });
+            
+            // Limit stack size
+            if (undoStack.length > MAX_UNDO_STACK) {
+                undoStack.shift();
+            }
+            
+            // Clear redo stack when new action is performed
+            redoStack = [];
+            
+            updateUndoRedoButtons();
+        }
+
+        function undo() {
+            if (undoStack.length === 0) return;
+            
+            // Save current state to redo stack
+            const currentState = {
+                canvasState: drawingCanvas.toDataURL(),
+                textBoxes: Array.from(textLayer.querySelectorAll('.text-box')).map(box => ({
+                    content: box.innerHTML,
+                    left: box.style.left,
+                    top: box.style.top,
+                    width: box.style.width,
+                    height: box.style.height,
+                    fontFamily: box.style.fontFamily,
+                    fontSize: box.style.fontSize,
+                    color: box.style.color
+                }))
+            };
+            redoStack.push(currentState);
+            
+            // Restore previous state
+            const previousState = undoStack.pop();
+            restoreState(previousState);
+            
+            updateUndoRedoButtons();
+            markUnsaved();
+        }
+
+        function redo() {
+            if (redoStack.length === 0) return;
+            
+            // Save current state to undo stack
+            const currentState = {
+                canvasState: drawingCanvas.toDataURL(),
+                textBoxes: Array.from(textLayer.querySelectorAll('.text-box')).map(box => ({
+                    content: box.innerHTML,
+                    left: box.style.left,
+                    top: box.style.top,
+                    width: box.style.width,
+                    height: box.style.height,
+                    fontFamily: box.style.fontFamily,
+                    fontSize: box.style.fontSize,
+                    color: box.style.color
+                }))
+            };
+            undoStack.push(currentState);
+            
+            // Restore redo state
+            const redoState = redoStack.pop();
+            restoreState(redoState);
+            
+            updateUndoRedoButtons();
+            markUnsaved();
+        }
+
+        function restoreState(stateData) {
+            // Restore canvas
+            const img = new Image();
+            img.onload = () => {
+                drawCtx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                drawCtx.drawImage(img, 0, 0);
+            };
+            img.src = stateData.canvasState;
+            
+            // Restore text boxes
+            textLayer.innerHTML = '';
+            stateData.textBoxes.forEach(boxData => {
+                const textBox = document.createElement('div');
+                textBox.className = 'text-box placed';
+                textBox.contentEditable = true;
+                textBox.innerHTML = boxData.content;
+                textBox.style.left = boxData.left;
+                textBox.style.top = boxData.top;
+                textBox.style.width = boxData.width;
+                textBox.style.height = boxData.height;
+                textBox.style.fontFamily = boxData.fontFamily;
+                textBox.style.fontSize = boxData.fontSize;
+                textBox.style.color = boxData.color;
+                
+                textBox.addEventListener('blur', () => {
+                    if (textBox.textContent.trim() === '') {
+                        textBox.remove();
+                    }
+                    saveToUndoStack();
+                    markUnsaved();
+                });
+                textBox.addEventListener('input', debounce(() => markUnsaved(), 500));
+                
+                textLayer.appendChild(textBox);
+            });
+        }
+
+        function updateUndoRedoButtons() {
+            document.getElementById('undo-btn').disabled = undoStack.length === 0;
+            document.getElementById('redo-btn').disabled = redoStack.length === 0;
+        }
+
+        function clearUndoHistory() {
+            undoStack = [];
+            redoStack = [];
+            updateUndoRedoButtons();
+        }
+
+        // Version History Functions
+        function saveVersionSnapshot() {
+            if (!state.currentNote) return;
+            
+            const snapshot = {
+                timestamp: Date.now(),
+                canvasState: drawingCanvas.toDataURL(),
+                textBoxes: Array.from(textLayer.querySelectorAll('.text-box')).map(box => ({
+                    content: box.innerHTML,
+                    left: box.style.left,
+                    top: box.style.top,
+                    width: box.style.width,
+                    height: box.style.height,
+                    fontFamily: box.style.fontFamily,
+                    fontSize: box.style.fontSize,
+                    color: box.style.color
+                }))
+            };
+            
+            versionHistory.push(snapshot);
+            
+            // Keep max 20 versions per session
+            if (versionHistory.length > 20) {
+                versionHistory.shift();
+            }
+            
+            // Save to note data
+            const note = findCurrentNote();
+            if (note) {
+                note.versionHistory = versionHistory;
+                saveToStorage();
+            }
+        }
+
+        function startVersionHistoryTimer() {
+            if (versionHistoryInterval) {
+                clearInterval(versionHistoryInterval);
+            }
+            // Save initial version
+            setTimeout(() => saveVersionSnapshot(), 1000);
+            // Save every 5 minutes
+            versionHistoryInterval = setInterval(saveVersionSnapshot, VERSION_INTERVAL);
+        }
+
+        function stopVersionHistoryTimer() {
+            if (versionHistoryInterval) {
+                clearInterval(versionHistoryInterval);
+                versionHistoryInterval = null;
+            }
+        }
+
+        function showVersionHistory() {
+            const modal = document.getElementById('version-modal-overlay');
+            const versionList = document.getElementById('version-list');
+            
+            if (versionHistory.length === 0) {
+                versionList.innerHTML = '<div class="no-versions">No versions saved yet</div>';
+            } else {
+                versionList.innerHTML = versionHistory.map((version, index) => {
+                    const date = new Date(version.timestamp);
+                    const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    const dateStr = date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+                    return `
+                        <div class="version-item" onclick="previewVersion(${index})">
+                            <span class="version-time">${dateStr} at ${timeStr}</span>
+                            <button class="version-restore-btn" onclick="event.stopPropagation(); restoreVersion(${index})">Restore</button>
+                        </div>
+                    `;
+                }).reverse().join('');
+            }
+            
+            modal.classList.remove('hidden');
+        }
+
+        function hideVersionHistory(e) {
+            if (e && e.target !== e.currentTarget) return;
+            document.getElementById('version-modal-overlay').classList.add('hidden');
+        }
+
+        function restoreVersion(index) {
+            const version = versionHistory[index];
+            if (!version) return;
+            
+            // Save current state to undo stack before restoring
+            saveToUndoStack();
+            
+            restoreState(version);
+            hideVersionHistory();
+            markUnsaved();
+        }
+
+        function previewVersion(index) {
+            // For now, just restore. Could add preview functionality later.
+            restoreVersion(index);
+        }
+
+        function findCurrentNote() {
+            if (!state.currentNotebook || !state.currentNote) return null;
+            const notebook = state.notebooks.find(n => n.id === state.currentNotebook);
+            if (!notebook) return null;
+            return notebook.notes.find(n => n.id === state.currentNote);
         }
 
         function zoomIn() {
-            state.zoom = Math.min(3, state.zoom + 0.25);
+            state.zoom = Math.min(4, state.zoom + 0.25);
             updateCanvasTransform();
             updateZoomDisplay();
+            updateEraserCursor();
         }
 
         function zoomOut() {
             state.zoom = Math.max(0.25, state.zoom - 0.25);
             updateCanvasTransform();
             updateZoomDisplay();
+            updateEraserCursor();
         }
 
         function resetZoom() {
@@ -864,6 +1710,7 @@
             state.panOffset = { x: 0, y: 0 };
             updateCanvasTransform();
             updateZoomDisplay();
+            updateEraserCursor();
         }
 
         function updateCanvasTransform() {
@@ -883,6 +1730,9 @@
         document.getElementById('thickness-slider').addEventListener('input', (e) => {
             state.thickness = parseInt(e.target.value);
             document.getElementById('thickness-value').textContent = state.thickness + 'px';
+            if (state.tool === 'erase') {
+                updateEraserCursor();
+            }
         });
 
         // Font select
@@ -992,6 +1842,9 @@
             state.currentNotebook = notebook;
             state.currentNote = note;
             
+            // Switch to editor view
+            showEditor();
+            
             // Show canvas
             document.getElementById('empty-state').style.display = 'none';
             document.getElementById('canvas-wrapper').style.display = 'block';
@@ -1017,15 +1870,20 @@
                 const index = notebook.notes.indexOf(note);
                 notebook.notes.splice(index, 1);
                 
+                // Remove from pinned if pinned
+                const pinnedIndex = state.pinnedNotes.findIndex(p => p.notebookId === notebook.id && p.noteId === note.id);
+                if (pinnedIndex > -1) {
+                    state.pinnedNotes.splice(pinnedIndex, 1);
+                    savePinnedToStorage();
+                }
+                
                 if (state.currentNote === note) {
                     state.currentNote = null;
-                    document.getElementById('empty-state').style.display = 'flex';
-                    document.getElementById('canvas-wrapper').style.display = 'none';
-                    document.getElementById('toolbar').style.display = 'none';
-                    document.getElementById('note-info').textContent = 'No note selected';
+                    showHomePage();
                 }
                 
                 renderNotebooks();
+                renderHomePage();
                 saveToStorage();
             }
         }
@@ -1036,16 +1894,18 @@
                 const index = state.notebooks.indexOf(notebook);
                 state.notebooks.splice(index, 1);
                 
+                // Remove all pinned notes from this notebook
+                state.pinnedNotes = state.pinnedNotes.filter(p => p.notebookId !== notebook.id);
+                savePinnedToStorage();
+                
                 if (state.currentNotebook === notebook) {
                     state.currentNotebook = null;
                     state.currentNote = null;
-                    document.getElementById('empty-state').style.display = 'flex';
-                    document.getElementById('canvas-wrapper').style.display = 'none';
-                    document.getElementById('toolbar').style.display = 'none';
-                    document.getElementById('note-info').textContent = 'No note selected';
+                    showHomePage();
                 }
                 
                 renderNotebooks();
+                renderHomePage();
                 saveToStorage();
             }
         }
@@ -1072,16 +1932,160 @@
                         <span class="notebook-toggle ${notebook.isOpen ? 'open' : ''}">▸</span>
                     </div>
                     <div class="notes-list ${notebook.isOpen ? 'open' : ''}">
-                        ${notebook.notes.map((note, noteIndex) => `
+                        ${notebook.notes.map((note, noteIndex) => {
+                            const isPinned = isNotePinned(notebook.id, note.id);
+                            return `
                             <div class="note-item ${state.currentNote === note ? 'active' : ''}" onclick="selectNote(state.notebooks[${state.notebooks.indexOf(notebook)}], state.notebooks[${state.notebooks.indexOf(notebook)}].notes[${noteIndex}])">
                                 <span>${note.name}</span>
-                                <button class="delete-btn" onclick="deleteNote(state.notebooks[${state.notebooks.indexOf(notebook)}], state.notebooks[${state.notebooks.indexOf(notebook)}].notes[${noteIndex}], event)">×</button>
+                                <div>
+                                    <button class="pin-btn ${isPinned ? 'pinned' : ''}" onclick="togglePin(event, '${notebook.id}', '${note.id}')" title="${isPinned ? 'Unpin' : 'Pin'}">${isPinned ? '★' : '☆'}</button>
+                                    <button class="delete-btn" onclick="deleteNote(state.notebooks[${state.notebooks.indexOf(notebook)}], state.notebooks[${state.notebooks.indexOf(notebook)}].notes[${noteIndex}], event)">×</button>
+                                </div>
                             </div>
-                        `).join('')}
+                        `}).join('')}
                     </div>
                 `;
                 container.appendChild(notebookEl);
             });
+        }
+
+        // Pin/Unpin functions
+        function isNotePinned(notebookId, noteId) {
+            return state.pinnedNotes.some(p => p.notebookId === notebookId && p.noteId === noteId);
+        }
+
+        function togglePin(e, notebookId, noteId) {
+            e.stopPropagation();
+            const index = state.pinnedNotes.findIndex(p => p.notebookId === notebookId && p.noteId === noteId);
+            if (index > -1) {
+                state.pinnedNotes.splice(index, 1);
+            } else {
+                state.pinnedNotes.push({ notebookId, noteId });
+            }
+            renderNotebooks();
+            renderHomePage();
+            savePinnedToStorage();
+        }
+
+        function unpinNote(notebookId, noteId) {
+            const index = state.pinnedNotes.findIndex(p => p.notebookId === notebookId && p.noteId === noteId);
+            if (index > -1) {
+                state.pinnedNotes.splice(index, 1);
+                renderNotebooks();
+                renderHomePage();
+                savePinnedToStorage();
+            }
+        }
+
+        // Home page functions
+        function showHomePage() {
+            // Save current note if any
+            if (state.currentNote && hasUnsavedChanges) {
+                saveNoteData();
+                saveToStorage();
+            }
+            
+            // Stop version history timer
+            stopVersionHistoryTimer();
+            
+            // Clear undo/redo history
+            clearUndoHistory();
+            
+            state.currentView = 'home';
+            state.currentNote = null;
+            
+            document.getElementById('home-page').style.display = 'block';
+            document.getElementById('canvas-container').style.display = 'none';
+            document.getElementById('toolbar').style.display = 'none';
+            document.getElementById('nav-home').classList.add('active');
+            document.getElementById('note-info').textContent = 'Home';
+            
+            const indicator = document.getElementById('save-indicator');
+            indicator.className = 'save-indicator saved';
+            indicator.innerHTML = '<span class="save-dot">●</span> <span class="save-text">Saved</span>';
+            
+            renderHomePage();
+            renderNotebooks();
+        }
+
+        function showEditor() {
+            state.currentView = 'editor';
+            document.getElementById('home-page').style.display = 'none';
+            document.getElementById('canvas-container').style.display = 'block';
+            document.getElementById('nav-home').classList.remove('active');
+        }
+
+        function renderHomePage() {
+            // Render pinned notes
+            const pinnedContainer = document.getElementById('pinned-container');
+            if (state.pinnedNotes.length === 0) {
+                pinnedContainer.innerHTML = `
+                    <div class="empty-pinned">
+                        <p>No pinned notes yet. Click ☆ on a note to pin it here.</p>
+                    </div>
+                `;
+            } else {
+                pinnedContainer.innerHTML = state.pinnedNotes.map(pin => {
+                    const notebook = state.notebooks.find(n => n.id === pin.notebookId);
+                    if (!notebook) return '';
+                    const note = notebook.notes.find(n => n.id === pin.noteId);
+                    if (!note) return '';
+                    
+                    return `
+                        <div class="pinned-card" onclick="openPinnedNote('${pin.notebookId}', '${pin.noteId}')">
+                            <button class="unpin-btn" onclick="event.stopPropagation(); unpinNote('${pin.notebookId}', '${pin.noteId}')" title="Unpin">×</button>
+                            <div class="pinned-card-preview">
+                                ${note.canvasData ? `<img src="${note.canvasData}" alt="Preview">` : ''}
+                            </div>
+                            <div class="pinned-card-title">${note.name}</div>
+                            <div class="pinned-card-notebook">${notebook.name}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            // Render notebooks
+            const notebooksContainer = document.getElementById('notebooks-home-container');
+            if (state.notebooks.length === 0) {
+                notebooksContainer.innerHTML = `
+                    <div class="empty-pinned">
+                        <p>No notebooks yet. Create one to get started!</p>
+                    </div>
+                `;
+            } else {
+                notebooksContainer.innerHTML = state.notebooks.map(notebook => `
+                    <div class="notebook-card" onclick="openNotebook('${notebook.id}')">
+                        <div class="notebook-card-icon">◎</div>
+                        <div class="notebook-card-name">${notebook.name}</div>
+                        <div class="notebook-card-count">${notebook.notes.length} note${notebook.notes.length !== 1 ? 's' : ''}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function openPinnedNote(notebookId, noteId) {
+            const notebook = state.notebooks.find(n => n.id === notebookId);
+            if (!notebook) return;
+            const note = notebook.notes.find(n => n.id === noteId);
+            if (!note) return;
+            selectNote(notebook, note);
+        }
+
+        function openNotebook(notebookId) {
+            const notebook = state.notebooks.find(n => n.id === notebookId);
+            if (!notebook) return;
+            notebook.isOpen = true;
+            state.currentNotebook = notebook;
+            if (notebook.notes.length > 0) {
+                selectNote(notebook, notebook.notes[0]);
+            } else {
+                showEditor();
+                document.getElementById('empty-state').style.display = 'flex';
+                document.getElementById('canvas-wrapper').style.display = 'none';
+                document.getElementById('toolbar').style.display = 'none';
+                document.getElementById('note-info').textContent = notebook.name;
+            }
+            renderNotebooks();
         }
 
         // Save/Load functions
@@ -1103,6 +2107,15 @@
 
         function loadNoteData(note) {
             initCanvases();
+            
+            // Clear undo/redo history for new note
+            clearUndoHistory();
+            
+            // Load version history
+            versionHistory = note.versionHistory || [];
+            
+            // Start version history timer
+            startVersionHistoryTimer();
             
             if (note.canvasData) {
                 const img = new Image();
@@ -1135,6 +2148,7 @@
                         if (textBox.textContent.trim() === '') {
                             textBox.remove();
                         }
+                        saveToUndoStack();
                         markUnsaved();
                     });
 
@@ -1209,12 +2223,21 @@
             localStorage.setItem('ultimateNotesApp', JSON.stringify(state.notebooks));
         }
 
+        function savePinnedToStorage() {
+            localStorage.setItem('ultimateNotesAppPinned', JSON.stringify(state.pinnedNotes));
+        }
+
         function loadFromStorage() {
             const saved = localStorage.getItem('ultimateNotesApp');
             if (saved) {
                 state.notebooks = JSON.parse(saved);
-                renderNotebooks();
             }
+            const savedPinned = localStorage.getItem('ultimateNotesAppPinned');
+            if (savedPinned) {
+                state.pinnedNotes = JSON.parse(savedPinned);
+            }
+            renderNotebooks();
+            renderHomePage();
         }
 
         // Debounce helper
@@ -1233,6 +2256,7 @@
         // Initialize
         loadFromStorage();
         initCanvases();
+        showHomePage();
 
         // Manual save
         function manualSave() {
@@ -1249,6 +2273,7 @@
                     e.preventDefault();
                     manualSave();
                 }
+                // Allow Ctrl+Z for undo in text boxes (but use our custom undo for canvas)
                 return;
             }
             
@@ -1259,10 +2284,25 @@
                 return;
             }
             
+            // Ctrl+Z to undo
+            if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+                e.preventDefault();
+                undo();
+                return;
+            }
+            
+            // Ctrl+Y or Ctrl+Shift+Z to redo
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+                e.preventDefault();
+                redo();
+                return;
+            }
+            
             if (e.key === 'd') setTool('draw');
             if (e.key === 'e') setTool('erase');
             if (e.key === 't') setTool('text');
             if (e.key === 'p') setTool('pan');
+            if (e.key === 'g') toggleGrid();
             if (e.key === '+' || e.key === '=') zoomIn();
             if (e.key === '-') zoomOut();
             if (e.key === '0') resetZoom();
