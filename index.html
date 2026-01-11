@@ -122,7 +122,7 @@
         }
 
         body.dark-mode .drawing-canvas {
-            background: #2a2a2a;
+            background: transparent;
         }
 
         body.dark-mode .grid-overlay {
@@ -1099,6 +1099,8 @@
             gap: 4px;
             opacity: 0;
             transition: opacity 0.15s;
+            pointer-events: auto;
+            z-index: 10000;
         }
 
         .media-embed:hover .media-embed-controls {
@@ -1121,6 +1123,12 @@
 
         .media-embed-btn:hover {
             background: rgba(0, 0, 0, 0.8);
+        }
+
+        .media-embed-btn.active {
+            outline: 2px solid rgba(255,255,255,0.12);
+            box-shadow: 0 0 0 2px rgba(0,122,255,0.12) inset;
+            background: rgba(0,122,255,0.9);
         }
 
         .media-embed-loading {
@@ -1353,23 +1361,27 @@
             position: absolute;
             top: 0;
             left: 0;
-            background: #fff;
-            z-index: 1;
+            background: transparent;
+            z-index: 2;
         }
 
         .eraser-cursor {
             position: fixed;
             border-radius: 50%;
-            border: 2px solid #999;
-            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(0,0,0,0.18);
+            background: rgba(255, 255, 255, 0.95);
             pointer-events: none;
-            z-index: 9999;
+            z-index: 999999;
             transform: translate(-50%, -50%);
-            display: none;
+            display: block; /* always in DOM so transitions work */
+            opacity: 0;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+            transition: width 0.08s ease, height 0.08s ease, opacity 0.12s ease, transform 0.12s ease;
+            mix-blend-mode: normal;
         }
 
         .eraser-cursor.visible {
-            display: block;
+            opacity: 1;
         }
 
         /* Version History Modal */
@@ -1653,6 +1665,16 @@
             background: #555;
         }
 
+        .media-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: auto;
+            z-index: 3;
+        }
+
         .text-layer {
             position: absolute;
             top: 0;
@@ -1660,7 +1682,7 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 3;
+            z-index: 5;
         }
 
         .text-box {
@@ -1675,7 +1697,7 @@
             resize: both;
             overflow: auto;
             border-radius: 4px;
-            z-index: 2;
+            z-index: 6;
         }
 
         .text-box:focus {
@@ -2124,6 +2146,83 @@
             </div>
             <div id="notebooks-container"></div>
             <input type="file" id="evernote-import" accept=".enex" style="display:none" onchange="handleEvernoteImport(event)">
+            <!-- AI Portal: Summarize / Ask local LLM -->
+            <div id="ai-portal" style="padding:12px;margin-top:12px;border-top:1px solid rgba(0,0,0,0.06);font-family:Inter, sans-serif;">
+                <div style="font-weight:700;margin-bottom:8px;">AI Tools</div>
+                <textarea id="ai-prompt" placeholder="Summarize notes" style="width:100%;height:64px;margin-bottom:8px;padding:8px;border-radius:6px;border:1px solid #e6e6e6;resize:vertical;font-family:inherit;"></textarea>
+                <!-- AI action buttons removed per user request -->
+                <div id="ai-result" style="margin-top:8px;font-size:0.9rem;color:#222;white-space:pre-wrap;min-height:24px;"></div>
+                <script>
+                    (function() {
+                        const ta = document.getElementById('ai-prompt');
+                        if (!ta) return;
+                        // Enter runs AI; Shift+Enter inserts newline
+                        ta.addEventListener('keydown', function(e) {
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                                e.preventDefault();
+                                const val = ta.value.trim();
+                                if (val) {
+                                    if (typeof askCustomPrompt === 'function') askCustomPrompt();
+                                } else {
+                                    if (typeof summarizeCurrentNote === 'function') summarizeCurrentNote();
+                                }
+                            }
+                        });
+                    })();
+                    // AI helper functions: send prompt to local AI bridge
+                    async function askCustomPrompt() {
+                        const ta = document.getElementById('ai-prompt');
+                        const resultDiv = document.getElementById('ai-result');
+                        const prompt = (ta && ta.value) ? ta.value.trim() : '';
+                        if (!prompt) return summarizeCurrentNote();
+
+                        resultDiv.textContent = 'Thinking...';
+
+                        try {
+                            const resp = await fetch('http://127.0.0.1:3000/api/ai', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ prompt })
+                            });
+                            const json = await resp.json();
+                            if (!resp.ok) {
+                                resultDiv.textContent = 'Error: ' + (json && (json.error || json.detail) ? (json.error || json.detail) : resp.statusText);
+                            } else {
+                                resultDiv.textContent = (json && json.text) ? json.text : JSON.stringify(json, null, 2);
+                            }
+                        } catch (e) {
+                            resultDiv.textContent = 'Error connecting to local AI bridge: ' + (e && e.message ? e.message : e);
+                        }
+                    }
+
+                    // Gather current note text boxes and ask the model to summarize
+                    async function summarizeCurrentNote() {
+                        const resultDiv = document.getElementById('ai-result');
+                        const boxes = Array.from(document.querySelectorAll('.text-box'));
+                        if (boxes.length === 0) {
+                            resultDiv.textContent = 'No text to summarize.';
+                            return;
+                        }
+
+                        const combined = boxes.map(b => b.textContent.trim()).filter(Boolean).join('\n\n');
+                        if (!combined) {
+                            resultDiv.textContent = 'No text to summarize.';
+                            return;
+                        }
+
+                        const prompt = `Please provide a concise summary of the following notes:\n\n${combined}`;
+                        // Reuse askCustomPrompt implementation by filling textarea temporarily
+                        const ta = document.getElementById('ai-prompt');
+                        const prev = ta ? ta.value : '';
+                        if (ta) ta.value = prompt;
+                        try {
+                            await askCustomPrompt();
+                        } finally {
+                            if (ta) ta.value = prev;
+                        }
+                    }
+                </script>
+            </div>
         </div>
     </div>
 
@@ -2376,6 +2475,7 @@
             <div class="canvas-wrapper" id="canvas-wrapper" style="display: none;">
                 <canvas class="grid-canvas" id="grid-canvas"></canvas>
                 <canvas class="drawing-canvas" id="drawing-canvas"></canvas>
+                <div class="media-layer" id="media-layer"></div>
                 <div class="grid-overlay" id="grid-overlay"></div>
                 <div class="text-layer" id="text-layer"></div>
             </div>
@@ -2472,6 +2572,9 @@
             pendingHeaderLevel: null // For header insertion mode
         };
 
+        // Suppress re-showing the eraser briefly when interacting with UI
+        let eraserSuppressed = false;
+
         // Undo/Redo History
         let undoStack = [];
         let redoStack = [];
@@ -2556,6 +2659,8 @@
         let isDrawing = false;
         let lastX = 0;
         let lastY = 0;
+        // Track last known mouse position for cursor placement
+        let lastMousePos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
         let isPanning = false;
         let panStart = { x: 0, y: 0 };
 
@@ -2601,6 +2706,11 @@
                 return;
             }
 
+            // Prevent drawing when not in draw/erase mode (e.g., select tool)
+            if (state.tool !== 'draw' && state.tool !== 'erase') {
+                return;
+            }
+
             // Save state before drawing starts (for undo)
             saveToUndoStack();
             
@@ -2625,8 +2735,17 @@
             drawCtx.beginPath();
             drawCtx.moveTo(lastX, lastY);
             drawCtx.lineTo(coords.x, coords.y);
-            drawCtx.strokeStyle = state.tool === 'erase' ? getCanvasBackground() : state.color;
-            drawCtx.lineWidth = state.tool === 'erase' ? state.thickness * 3 : state.thickness;
+            // Use compositing for eraser so it truly clears pixels regardless of background
+            if (state.tool === 'erase') {
+                drawCtx.globalCompositeOperation = 'destination-out';
+                drawCtx.strokeStyle = 'rgba(0,0,0,1)';
+                // Scale erase width by zoom so the cleared area matches the visible cursor
+                drawCtx.lineWidth = state.thickness * 6 * (state.zoom || 1);
+            } else {
+                drawCtx.globalCompositeOperation = 'source-over';
+                drawCtx.strokeStyle = state.color;
+                drawCtx.lineWidth = state.thickness;
+            }
             drawCtx.lineCap = 'round';
             drawCtx.lineJoin = 'round';
             drawCtx.stroke();
@@ -2825,7 +2944,52 @@
                     e.preventDefault();
                     e.stopPropagation();
                     selectTextBox(textBox);
+                    // Make draggable when in select mode
+                    makeTextBoxDraggable(textBox);
                 }
+            });
+        }
+
+        // Make a text box draggable when select tool is active
+        function makeTextBoxDraggable(textBox) {
+            if (!textBox || textBox.dataset.draggable === 'true') return;
+            textBox.dataset.draggable = 'true';
+
+            textBox.addEventListener('mousedown', (e) => {
+                if (state.tool !== 'select') return;
+                e.preventDefault();
+                e.stopPropagation();
+
+                let isDragging = false;
+                const startX = e.clientX;
+                const startY = e.clientY;
+                const initialX = parseInt(textBox.style.left) || 0;
+                const initialY = parseInt(textBox.style.top) || 0;
+
+                const onMouseMove = (ev) => {
+                    const dx = (ev.clientX - startX) / state.zoom;
+                    const dy = (ev.clientY - startY) / state.zoom;
+                    if (!isDragging && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
+                        isDragging = true;
+                        textBox.classList.add('dragging');
+                    }
+                    if (isDragging) {
+                        textBox.style.left = (initialX + dx) + 'px';
+                        textBox.style.top = (initialY + dy) + 'px';
+                    }
+                };
+
+                const onMouseUp = () => {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                    if (isDragging) {
+                        setTimeout(() => textBox.classList.remove('dragging'), 100);
+                        markUnsaved();
+                    }
+                };
+
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
             });
         }
 
@@ -2836,29 +3000,74 @@
             // Update eraser cursor position
             if (state.tool === 'erase') {
                 const eraserCursor = document.getElementById('eraser-cursor');
-                eraserCursor.style.left = e.clientX + 'px';
-                eraserCursor.style.top = e.clientY + 'px';
-                eraserCursor.classList.add('visible');
+                if (eraserCursor) {
+                    eraserCursor.style.left = e.clientX + 'px';
+                    eraserCursor.style.top = e.clientY + 'px';
+                }
+                showEraserCursor();
             }
         });
-        drawingCanvas.addEventListener('mouseup', stopDrawing);
-        drawingCanvas.addEventListener('mouseout', (e) => {
-            stopDrawing();
-            // Hide eraser cursor when leaving canvas
-            const eraserCursor = document.getElementById('eraser-cursor');
-            eraserCursor.classList.remove('visible');
+        // Use pointer events for consistent mouse/pen/touch behavior
+        let activePointerId = null;
+        drawingCanvas.addEventListener('pointerdown', (e) => {
+            // Only start if left button (or pen contact)
+            if (e.button && e.button !== 0) return;
+            // Set active pointer id so we can release capture later
+            activePointerId = e.pointerId;
+            try { drawingCanvas.setPointerCapture(activePointerId); } catch (err) {}
+            startDrawing(e);
         });
-        drawingCanvas.addEventListener('mouseenter', (e) => {
-            // Show eraser cursor when entering canvas
+
+        drawingCanvas.addEventListener('pointermove', (e) => {
+            // When pointer is active, draw; otherwise still update eraser cursor
+            if (isDrawing || isPanning) {
+                draw(e);
+            }
+            // Update eraser cursor position and visibility
             if (state.tool === 'erase') {
                 const eraserCursor = document.getElementById('eraser-cursor');
-                eraserCursor.style.left = e.clientX + 'px';
-                eraserCursor.style.top = e.clientY + 'px';
-                eraserCursor.classList.add('visible');
+                if (eraserCursor) {
+                    eraserCursor.style.left = e.clientX + 'px';
+                    eraserCursor.style.top = e.clientY + 'px';
+                    showEraserCursor();
+                }
             }
         });
-        
-        // Click on canvas to deselect text boxes
+
+        drawingCanvas.addEventListener('pointerup', (e) => {
+            stopDrawing();
+            if (activePointerId !== null) {
+                try { drawingCanvas.releasePointerCapture(activePointerId); } catch (err) {}
+                activePointerId = null;
+            }
+        });
+
+        drawingCanvas.addEventListener('pointercancel', (e) => {
+            stopDrawing();
+            if (activePointerId !== null) {
+                try { drawingCanvas.releasePointerCapture(activePointerId); } catch (err) {}
+                activePointerId = null;
+            }
+        });
+
+        drawingCanvas.addEventListener('pointerleave', (e) => {
+            // when pointer leaves drawing canvas, stop drawing but don't necessarily hide cursor
+            stopDrawing();
+            // hide cursor only if pointer not over UI (handled by global handler)
+        });
+
+        drawingCanvas.addEventListener('pointerenter', (e) => {
+            if (state.tool === 'erase') {
+                const eraserCursor = document.getElementById('eraser-cursor');
+                if (eraserCursor) {
+                    eraserCursor.style.left = e.clientX + 'px';
+                    eraserCursor.style.top = e.clientY + 'px';
+                }
+                showEraserCursor();
+            }
+        });
+
+        // Click on canvas to deselect text boxes (pointer-friendly)
         drawingCanvas.addEventListener('click', () => {
             if (state.tool === 'select') {
                 clearTextBoxSelection();
@@ -2946,6 +3155,75 @@
             }
         });
 
+        // Track mouse globally so eraser cursor can be shown immediately when tool is selected
+        document.addEventListener('mousemove', (e) => {
+            lastMousePos.x = e.clientX;
+            lastMousePos.y = e.clientY;
+            const eraserCursor = document.getElementById('eraser-cursor');
+            if (!eraserCursor) return;
+
+            // Decide visibility using elementFromPoint so UI areas (toolbar/sidebar) can show cursor
+            const el = document.elementFromPoint(e.clientX, e.clientY);
+            const isOverDrawing = !!(el && (el.id === 'drawing-canvas' || el.closest('#canvas-container')));
+            const isOverTools = !!(el && (el.closest('#toolbar') || el.closest('.sidebar')));
+
+            if (state.tool === 'erase') {
+                // Position cursor at pointer
+                eraserCursor.style.left = e.clientX + 'px';
+                eraserCursor.style.top = e.clientY + 'px';
+                // Show when over drawing canvas or over toolbar/sidebar (features area)
+                if (isOverDrawing || isOverTools) {
+                    showEraserCursor();
+                } else {
+                    hideEraserCursor();
+                }
+            } else {
+                hideEraserCursor();
+            }
+        });
+
+        // Also hide eraser on window blur or when pointer leaves the document
+        window.addEventListener('blur', () => hideEraserCursor());
+        document.addEventListener('mouseleave', () => hideEraserCursor());
+
+        // Hide eraser when interacting with UI controls (toolbar, inputs, dropdowns)
+        document.addEventListener('pointerdown', (e) => {
+            // If the pointerdown is outside the canvas container, hide the eraser
+            const isInsideCanvas = !!e.target.closest('#canvas-container');
+            if (!isInsideCanvas && state.tool === 'erase') {
+                hideEraserCursor();
+                eraserSuppressed = true;
+                // short debounce to avoid immediate re-show from mousemove
+                setTimeout(() => { eraserSuppressed = false; }, 250);
+            }
+        }, { passive: true });
+
+        // Also hide when focus moves to UI controls (keyboard navigation)
+        document.addEventListener('focusin', (e) => {
+            const isInsideCanvas = !!e.target.closest('#canvas-container');
+            if (!isInsideCanvas && state.tool === 'erase') {
+                hideEraserCursor();
+                eraserSuppressed = true;
+                setTimeout(() => { eraserSuppressed = false; }, 250);
+            }
+        });
+
+        // Touch: update last position and hide if outside canvas
+        document.addEventListener('touchmove', (e) => {
+            if (!e.touches || e.touches.length === 0) return;
+            const t = e.touches[0];
+            lastMousePos.x = t.clientX;
+            lastMousePos.y = t.clientY;
+            const rect = canvasWrapper.getBoundingClientRect();
+            const inside = t.clientX >= rect.left && t.clientX <= rect.right && t.clientY >= rect.top && t.clientY <= rect.bottom;
+            const eraserCursor = document.getElementById('eraser-cursor');
+            if (eraserCursor) {
+                eraserCursor.style.left = t.clientX + 'px';
+                eraserCursor.style.top = t.clientY + 'px';
+                if (!inside) hideEraserCursor();
+            }
+        }, { passive: true });
+
         canvasContainer.addEventListener('touchcancel', () => {
             isTouchZooming = false;
             lastTouchDistance = 0;
@@ -2976,13 +3254,35 @@
             
             const eraserCursor = document.getElementById('eraser-cursor');
             if (tool === 'erase') {
+                // allow eraser to show immediately when switching into erase
+                eraserSuppressed = false;
                 drawingCanvas.style.cursor = 'none';
-                updateEraserCursor();
+                showEraserCursor();
             } else {
-                eraserCursor.classList.remove('visible');
+                // suppress re-show briefly when switching away from erase
+                hideEraserCursor();
+                eraserSuppressed = true;
+                setTimeout(() => { eraserSuppressed = false; }, 250);
                 drawingCanvas.style.cursor = tool === 'pan' ? 'grab' : 
                                              tool === 'text' ? 'text' :
                                              tool === 'select' ? 'default' : 'crosshair';
+            }
+            // When not drawing, let pointer events pass through the drawing canvas
+            // so embeds and text boxes underneath can be interacted with in Select mode.
+            const mediaLayer = document.getElementById('media-layer');
+            const textLayerEl = document.getElementById('text-layer');
+            if (tool === 'draw' || tool === 'erase') {
+                // Ensure the drawing canvas is on top so mouse events reach it
+                drawingCanvas.style.pointerEvents = 'auto';
+                drawingCanvas.style.zIndex = 99999;
+                // Temporarily ignore pointer events on media/text layers while drawing
+                if (mediaLayer) mediaLayer.style.pointerEvents = 'none';
+                if (textLayerEl) textLayerEl.style.pointerEvents = 'none';
+            } else {
+                drawingCanvas.style.pointerEvents = 'none';
+                drawingCanvas.style.zIndex = 2;
+                if (mediaLayer) mediaLayer.style.pointerEvents = 'auto';
+                if (textLayerEl) textLayerEl.style.pointerEvents = 'auto';
             }
         }
 
@@ -3010,10 +3310,33 @@
         
         function updateEraserCursor() {
             const eraserCursor = document.getElementById('eraser-cursor');
-            const size = state.thickness * 3 * state.zoom;
+            // Make eraser circle more visible: larger multiplier
+            const size = Math.max(16, state.thickness * 6 * state.zoom);
             eraserCursor.style.width = size + 'px';
             eraserCursor.style.height = size + 'px';
         }
+
+        function showEraserCursor() {
+            const eraserCursor = document.getElementById('eraser-cursor');
+            if (!eraserCursor) return;
+            if (eraserSuppressed) return;
+            updateEraserCursor();
+            eraserCursor.classList.add('visible');
+            // Position immediately at last known mouse position
+            eraserCursor.style.left = (lastMousePos.x) + 'px';
+            eraserCursor.style.top = (lastMousePos.y) + 'px';
+            // Hide the OS cursor while eraser is visible
+            try { document.body.style.cursor = 'none'; } catch (err) {}
+        }
+
+        function hideEraserCursor() {
+            const eraserCursor = document.getElementById('eraser-cursor');
+            if (!eraserCursor) return;
+            eraserCursor.classList.remove('visible');
+            // Restore OS cursor when eraser hidden
+            try { document.body.style.cursor = ''; } catch (err) {}
+        }
+
 
         // Undo/Redo Functions
         function saveToUndoStack() {
@@ -4428,7 +4751,7 @@
 
         // Create media embed element
         function createMediaEmbed(url, type, options = {}) {
-            const textLayer = document.getElementById('text-layer');
+            const mediaLayer = document.getElementById('media-layer');
             
             const embed = document.createElement('div');
             embed.className = 'media-embed';
@@ -4451,11 +4774,14 @@
             const content = document.createElement('div');
             content.className = 'media-embed-content';
             
-            // Create controls
+            // Create controls (Delete, Forward, Backward, Draw Above toggle)
             const controls = document.createElement('div');
             controls.className = 'media-embed-controls';
             controls.innerHTML = `
                 <button class="media-embed-btn" onclick="deleteMediaEmbed(this.closest('.media-embed'))" title="Delete">×</button>
+                <button class="media-embed-btn" onclick="sendEmbedBackward(this.closest('.media-embed'))" title="Send Back">◀</button>
+                <button class="media-embed-btn" onclick="bringEmbedForward(this.closest('.media-embed'))" title="Bring Forward">▶</button>
+                <button class="media-embed-btn" onclick="toggleDrawAbove(this.closest('.media-embed'))" title="Draw Over">🖌</button>
             `;
             
             // Create resize handle
@@ -4468,7 +4794,8 @@
             embed.appendChild(content);
             embed.appendChild(controls);
             embed.appendChild(resizeHandle);
-            textLayer.appendChild(embed);
+            // Append embeds into the media layer (separate from the text layer)
+            mediaLayer.appendChild(embed);
             
             // Add resize functionality
             makeMediaEmbedResizable(embed, resizeHandle);
@@ -4529,9 +4856,157 @@
             
             // Add select handler
             addMediaEmbedSelectHandler(embed);
+            // Initialize z-order for this embed
+            initEmbedZOrder(embed);
+            try { updateMediaLayerZ(); } catch (e) { /* ignore */ }
             
             markUnsaved();
             return embed;
+        }
+
+        // Z-order management for media embeds
+        function getAllEmbeds() {
+            return Array.from(document.querySelectorAll('.media-embed'));
+        }
+
+        function initEmbedZOrder(embed) {
+            const embeds = getAllEmbeds().filter(e => e !== embed);
+            const maxZ = embeds.reduce((m, e) => {
+                const z = parseInt(e.dataset.z || e.style.zIndex) || 0; return Math.max(m, z);
+            }, 2);
+            const z = (parseInt(embed.dataset.z) || 0) || (maxZ + 1);
+            setEmbedZ(embed, z);
+            normalizeEmbedZs();
+        }
+
+        function setEmbedZ(embed, z) {
+            embed.dataset.z = String(z);
+            embed.style.zIndex = String(z);
+        }
+
+        function normalizeEmbedZs() {
+            const embeds = getAllEmbeds().sort((a, b) => (parseInt(a.dataset.z||a.style.zIndex||0) - parseInt(b.dataset.z||b.style.zIndex||0)));
+            let base = 4; // start above drawing canvas (1) and text-layer/text-box (2-3)
+            embeds.forEach(e => {
+                setEmbedZ(e, base);
+                base++;
+            });
+            // If there's a draw-target, ensure drawing canvas zIndex follows it
+            const drawTargetId = document.getElementById('drawing-canvas')?.dataset.drawTargetId;
+            if (drawTargetId) {
+                const target = document.querySelector(`.media-embed[data-embed-id="${drawTargetId}"]`);
+                if (target) {
+                    const tz = parseInt(target.dataset.z) || 0;
+                    document.getElementById('drawing-canvas').style.zIndex = String(tz + 1);
+                }
+            }
+            // Update media-layer z based on embeds vs text-layer stacking
+            try { updateMediaLayerZ(); } catch (e) { console.warn('updateMediaLayerZ failed', e); }
+        }
+
+        // Raise or lower the media-layer z-index depending on embed z values
+        function updateMediaLayerZ() {
+            const mediaLayer = document.getElementById('media-layer');
+            const textLayer = document.getElementById('text-layer');
+            if (!mediaLayer || !textLayer) return;
+            // Compute max z among text layer and text-boxes to compare against embeds
+            const baseTextZ = parseInt(window.getComputedStyle(textLayer).zIndex) || 5;
+            const textBoxes = Array.from(textLayer.querySelectorAll('.text-box'));
+            const maxTextBoxZ = textBoxes.reduce((m, tb) => Math.max(m, parseInt(tb.style.zIndex || window.getComputedStyle(tb).zIndex || 0)), baseTextZ);
+            const textZ = Math.max(baseTextZ, maxTextBoxZ);
+            const embeds = getAllEmbeds();
+            if (embeds.length === 0) {
+                mediaLayer.style.zIndex = '3';
+                return;
+            }
+            const maxEmbedZ = embeds.reduce((m, e) => Math.max(m, parseInt(e.dataset.z || e.style.zIndex || 0)), 0);
+            if (maxEmbedZ > textZ) {
+                // Bring media-layer above text-layer so top embeds can appear over text and text-boxes
+                mediaLayer.style.zIndex = String(maxEmbedZ + 1);
+            } else {
+                // Keep default media layer beneath text
+                mediaLayer.style.zIndex = '3';
+            }
+        }
+
+        function bringEmbedForward(embed) {
+            const embeds = getAllEmbeds().sort((a,b)=>parseInt(a.dataset.z||a.style.zIndex||0)-parseInt(b.dataset.z||b.style.zIndex||0));
+            const idx = embeds.indexOf(embed);
+            if (idx === -1 || idx === embeds.length - 1) return;
+            // swap z with next
+            const next = embeds[idx+1];
+            const z1 = parseInt(embed.dataset.z||embed.style.zIndex||0);
+            const z2 = parseInt(next.dataset.z||next.style.zIndex||0);
+            setEmbedZ(embed, z2);
+            setEmbedZ(next, z1);
+            // Also move the embed after the next sibling in DOM so it appears visually above
+            try {
+                const parent = embed.parentElement;
+                if (parent && parent.contains(next) && parent.contains(embed)) {
+                    parent.insertBefore(embed, next.nextSibling);
+                }
+            } catch (e) { console.warn('Failed to reorder DOM for bringEmbedForward', e); }
+            console.log('bringEmbedForward:', embed.getAttribute('data-embed-id'), 'newZ', embed.dataset.z);
+            normalizeEmbedZs();
+            markUnsaved();
+        }
+
+        function sendEmbedBackward(embed) {
+            const embeds = getAllEmbeds().sort((a,b)=>parseInt(a.dataset.z||a.style.zIndex||0)-parseInt(b.dataset.z||b.style.zIndex||0));
+            const idx = embeds.indexOf(embed);
+            if (idx <= 0) return;
+            const prev = embeds[idx-1];
+            const z1 = parseInt(embed.dataset.z||embed.style.zIndex||0);
+            const z2 = parseInt(prev.dataset.z||prev.style.zIndex||0);
+            setEmbedZ(embed, z2);
+            setEmbedZ(prev, z1);
+            // Also move the embed before the previous sibling in DOM so it appears visually behind
+            try {
+                const parent = embed.parentElement;
+                if (parent && parent.contains(prev) && parent.contains(embed)) {
+                    parent.insertBefore(embed, prev);
+                }
+            } catch (e) { console.warn('Failed to reorder DOM for sendEmbedBackward', e); }
+            console.log('sendEmbedBackward:', embed.getAttribute('data-embed-id'), 'newZ', embed.dataset.z);
+            normalizeEmbedZs();
+            markUnsaved();
+        }
+
+        function bringEmbedToFront(embed) {
+            const maxZ = getAllEmbeds().reduce((m,e)=>Math.max(m, parseInt(e.dataset.z||e.style.zIndex||0)), 0);
+            setEmbedZ(embed, maxZ + 1);
+            normalizeEmbedZs();
+            markUnsaved();
+        }
+
+        function sendEmbedToBack(embed) {
+            const minZ = getAllEmbeds().reduce((m,e)=>Math.min(m || 9999, parseInt(e.dataset.z||e.style.zIndex||9999)), 9999);
+            setEmbedZ(embed, Math.max(1, minZ - 1));
+            normalizeEmbedZs();
+            markUnsaved();
+        }
+
+        // Toggle drawing layer above a specific embed
+        function toggleDrawAbove(embed) {
+            const canvas = document.getElementById('drawing-canvas');
+            if (!canvas) return;
+            const mediaLayer = document.getElementById('media-layer');
+            const mediaZ = parseInt((mediaLayer && window.getComputedStyle(mediaLayer).zIndex) || 3) || 3;
+            const isActive = canvas.dataset.drawAbove === 'true';
+            if (isActive) {
+                // disable draw-above
+                canvas.dataset.drawAbove = 'false';
+                canvas.style.zIndex = '2';
+                embed.querySelector('.media-embed-btn[title="Draw Over"]')?.classList.remove('active');
+            } else {
+                // enable draw above media layer (but keep text layer above)
+                canvas.dataset.drawAbove = 'true';
+                // Put drawing canvas above media layer but below text-layer
+                canvas.style.zIndex = String(mediaZ + 1);
+                // mark this embed's button active (visual hint)
+                getAllEmbeds().forEach(e=> e.querySelector('.media-embed-btn[title="Draw Over"]')?.classList.remove('active'));
+                embed.querySelector('.media-embed-btn[title="Draw Over"]')?.classList.add('active');
+            }
         }
 
         function loadImageEmbed(embed, container, url, autoSize) {
@@ -4800,44 +5275,112 @@
         function makeMediaEmbedDraggable(embed) {
             let isDragging = false;
             let startX, startY, initialX, initialY;
-            
+
             embed.addEventListener('mousedown', (e) => {
+                // Only allow dragging when select tool is active
+                if (state.tool !== 'select') return;
                 // Don't drag if clicking on controls, resize handle, or iframe
-                if (e.target.closest('.media-embed-controls') || 
+                if (e.target.closest('.media-embed-controls') ||
                     e.target.closest('.media-embed-resize') ||
                     e.target.closest('.media-embed-content iframe')) return;
-                
+
+                e.preventDefault();
+                e.stopPropagation();
+
                 isDragging = false;
                 startX = e.clientX;
                 startY = e.clientY;
                 initialX = parseInt(embed.style.left) || 0;
                 initialY = parseInt(embed.style.top) || 0;
-                
+
+                // Find text boxes that intersect this embed at drag start
+                const embedW = parseInt(embed.style.width) || embed.offsetWidth;
+                const embedH = parseInt(embed.style.height) || embed.offsetHeight;
+                const embedLeft = initialX;
+                const embedTop = initialY;
+
+                const candidateTextBoxes = Array.from(textLayer.querySelectorAll('.text-box'));
+                const linkedTextBoxes = [];
+                candidateTextBoxes.forEach(tb => {
+                    const tbLeft = parseInt(tb.style.left) || 0;
+                    const tbTop = parseInt(tb.style.top) || 0;
+                    const tbW = parseInt(tb.style.width) || tb.offsetWidth;
+                    const tbH = parseInt(tb.style.height) || tb.offsetHeight;
+                    const intersects = !(tbLeft > embedLeft + embedW || tbLeft + tbW < embedLeft || tbTop > embedTop + embedH || tbTop + tbH < embedTop);
+                    if (intersects) {
+                        linkedTextBoxes.push({ el: tb, left: tbLeft, top: tbTop });
+                    }
+                });
+
+                // Prepare for shifting drawing layer visually during drag
+                let drawingShiftX = 0;
+                let drawingShiftY = 0;
+                const originalDrawingLeft = drawingCanvas.style.left || '';
+                const originalDrawingTop = drawingCanvas.style.top || '';
+
                 const onMouseMove = (e) => {
                     const dx = (e.clientX - startX) / state.zoom;
                     const dy = (e.clientY - startY) / state.zoom;
-                    
+
                     if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
                         isDragging = true;
                         embed.classList.add('dragging');
                     }
-                    
+
                     if (isDragging) {
+                        // Move embed
                         embed.style.left = (initialX + dx) + 'px';
                         embed.style.top = (initialY + dy) + 'px';
+
+                        // Move linked text boxes along with the embed
+                        linkedTextBoxes.forEach(info => {
+                            info.el.style.left = (info.left + dx) + 'px';
+                            info.el.style.top = (info.top + dy) + 'px';
+                        });
+
+                        // Visually shift the drawing canvas during drag for immediate feedback
+                        drawingShiftX = dx;
+                        drawingShiftY = dy;
+                        drawingCanvas.style.left = drawingShiftX + 'px';
+                        drawingCanvas.style.top = drawingShiftY + 'px';
                     }
                 };
-                
-                const onMouseUp = () => {
+
+                const onMouseUp = (ev) => {
                     document.removeEventListener('mousemove', onMouseMove);
                     document.removeEventListener('mouseup', onMouseUp);
-                    
+
                     if (isDragging) {
+                        // Before committing drawing move, save undo snapshot
+                        saveToUndoStack();
+
+                        // Commit drawing shift into canvas pixels
+                        if ((drawingShiftX !== 0 || drawingShiftY !== 0)) {
+                            try {
+                                const tmp = document.createElement('canvas');
+                                tmp.width = drawingCanvas.width;
+                                tmp.height = drawingCanvas.height;
+                                const tmpCtx = tmp.getContext('2d');
+                                // drawImage needs numeric offsets in canvas pixels
+                                tmpCtx.drawImage(drawingCanvas, 0, 0);
+
+                                // Clear and redraw shifted image onto the real canvas
+                                drawCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+                                drawCtx.drawImage(tmp, drawingShiftX, drawingShiftY);
+                            } catch (err) {
+                                console.error('Error committing drawing shift:', err);
+                            }
+                        }
+
+                        // Reset any temporary drawing offsets
+                        drawingCanvas.style.left = originalDrawingLeft;
+                        drawingCanvas.style.top = originalDrawingTop;
+
                         markUnsaved();
                         setTimeout(() => embed.classList.remove('dragging'), 100);
                     }
                 };
-                
+
                 document.addEventListener('mousemove', onMouseMove);
                 document.addEventListener('mouseup', onMouseUp);
             });
@@ -5475,6 +6018,11 @@
             
             renderHomePage();
             renderNotebooks();
+            // Hide header navigation and preview when returning to home
+            const headerNav = document.getElementById('header-nav');
+            const headerPreview = document.getElementById('header-preview');
+            if (headerNav) { headerNav.style.display = 'none'; headerNav.innerHTML = ''; }
+            if (headerPreview) { headerPreview.style.display = 'none'; headerPreview.textContent = ''; }
         }
 
         function showEditor() {
@@ -5575,8 +6123,9 @@
                 headerLevel: box.getAttribute('data-header-level') || null
             }));
             
-            // Save media embeds
-            state.currentNote.mediaEmbeds = Array.from(textLayer.querySelectorAll('.media-embed')).map(embed => ({
+            // Save media embeds (they live in #media-layer)
+            const mediaLayer = document.getElementById('media-layer');
+            state.currentNote.mediaEmbeds = Array.from((mediaLayer || document).querySelectorAll('.media-embed')).map(embed => ({
                 id: embed.getAttribute('data-embed-id'),
                 type: embed.getAttribute('data-embed-type'),
                 url: embed.getAttribute('data-embed-url'),
@@ -5803,6 +6352,8 @@
             }
             renderNotebooks();
             renderHomePage();
+            // Make sure AI portal matches current theme on load
+            try { updateAIPortalDarkMode(); } catch (e) { /* ignore */ }
             suppressNextAutoSave = true; // Prevent first auto-save from overwriting imported notes
         }
 
@@ -5820,6 +6371,8 @@
                 // Invert the canvas colors
                 invertCanvasColors();
             }
+            // Update AI portal colors for dark mode
+            updateAIPortalDarkMode();
         }
         
         function isDarkMode() {
@@ -5836,6 +6389,26 @@
         
         function getEraserColor() {
             return getCanvasBackground();
+        }
+
+        // Update AI portal styling for dark mode
+        function updateAIPortalDarkMode() {
+            const ta = document.getElementById('ai-prompt');
+            const res = document.getElementById('ai-result');
+            if (!ta || !res) return;
+            if (isDarkMode()) {
+                ta.style.background = '#1b1b1b';
+                ta.style.color = '#e6e6e6';
+                ta.style.border = '1px solid #333';
+                res.style.background = 'transparent';
+                res.style.color = '#e6e6e6';
+            } else {
+                ta.style.background = '';
+                ta.style.color = '';
+                ta.style.border = '';
+                res.style.background = '';
+                res.style.color = '';
+            }
         }
         
         function invertCanvasColors() {
@@ -5980,6 +6553,149 @@
             if (e.key === '-') zoomOut();
             if (e.key === '0') resetZoom();
         });
+    </script>
+    <script>
+        // Local AI helper: posts prompts to the local bridge at 127.0.0.1:3000
+        async function askLocalAI(prompt) {
+            try {
+                const resp = await fetch('http://127.0.0.1:3000/api/ai', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt })
+                });
+                if (!resp.ok) {
+                    const err = await resp.json().catch(() => ({}));
+                    throw new Error(err.error || 'Local AI bridge error');
+                }
+                const data = await resp.json();
+                return data.text;
+            } catch (e) {
+                console.error('askLocalAI error', e);
+                // Provide a clearer message for common network failures
+                const msg = (e && e.message) ? e.message.toLowerCase() : '';
+                if (e instanceof TypeError || msg.includes('failed to fetch') || msg.includes('networkerror') || msg.includes('network request failed')) {
+                    throw new Error('Failed to contact local AI bridge at http://127.0.0.1:3000.\nMake sure the bridge/server is running (run start-server.ps1) and that port 3000 is reachable.');
+                }
+                throw e;
+            }
+        }
+
+        // Example usage:
+        // askLocalAI('Summarize this note in 3 sentences').then(text => console.log(text)).catch(console.error);
+    </script>
+    <script>
+        // AI portal helpers
+        let lastAIResult = '';
+
+        function showAIResult(text) {
+            const out = document.getElementById('ai-result');
+            if (!out) return;
+            try {
+                if (typeof text === 'string' && text.indexOf('Failed to contact local AI bridge') !== -1) {
+                    const commands = `cd "C:\\Users\\emily\\Documents\\Notes-App"\n# Install deps\nnpm install\n# Start bridge\nnpm start\n# Serve UI\n.\\start-server.ps1`;
+                    out.innerHTML = `
+                        <div style="padding:8px;border:1px solid #f1c40f;background:#fff8e1;border-radius:6px;">
+                            <div style="font-weight:700;color:#b36b00;margin-bottom:6px;">Cannot reach local AI bridge</div>
+                            <div style="margin-bottom:8px;color:#333;white-space:pre-wrap;">${escapeHtml(text)}</div>
+                            <div style="font-size:0.9rem;color:#444;margin-bottom:8px;">Quick fix — open PowerShell and run:</div>
+                            <pre id="bridge-cmds" style="background:#f6f6f6;padding:8px;border-radius:6px;overflow:auto;margin-bottom:8px;">${escapeHtml(commands)}</pre>
+                            <div style="display:flex;gap:8px;">
+                                <button onclick="copyBridgeCommands()" style="padding:6px 10px;border-radius:6px;border:1px solid #ccc;background:white;cursor:pointer;">Copy commands</button>
+                                <button onclick="showBridgeHelpDetails()" style="padding:6px 10px;border-radius:6px;border:1px solid #ccc;background:white;cursor:pointer;">How to install Node</button>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+            } catch (err) {
+                console.error('showAIResult render error', err);
+            }
+            out.textContent = text;
+        }
+
+        function copyBridgeCommands() {
+            const el = document.getElementById('bridge-cmds');
+            if (!el) return;
+            const txt = el.textContent || el.innerText || '';
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(txt).then(() => {
+                    alert('Commands copied to clipboard');
+                }).catch(() => {
+                    prompt('Copy these commands manually:', txt);
+                });
+            } else {
+                prompt('Copy these commands manually:', txt);
+            }
+        }
+
+        function showBridgeHelpDetails() {
+            const help = `Install Node.js (LTS) then run:\n\nwinget install OpenJS.NodeJS.LTS -e\n# or download from https://nodejs.org\n\nThen in project folder:\ncd "C:\\Users\\emily\\Documents\\Notes-App"\nnpm install\nnpm start`;
+            alert(help);
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        async function summarizeCurrentNote() {
+            if (!state.currentNote) return alert('Please open a note first');
+            const content = textLayer.innerText.trim();
+            if (!content) return alert('Current note appears to be empty');
+
+            const userPrompt = document.getElementById('ai-prompt')?.value.trim();
+            const prompt = userPrompt && userPrompt.length > 0
+                ? userPrompt
+                : `Summarize the following note in 3 concise sentences:\n\n${content}`;
+
+            showAIResult('Thinking...');
+            try {
+                const text = await askLocalAI(prompt);
+                lastAIResult = text;
+                showAIResult(text);
+            } catch (e) {
+                showAIResult('Error: ' + (e.message || e));
+            }
+        }
+
+        async function askCustomPrompt() {
+            const p = document.getElementById('ai-prompt')?.value.trim();
+            if (!p) return alert('Enter a prompt first');
+            showAIResult('Thinking...');
+            try {
+                const text = await askLocalAI(p);
+                lastAIResult = text;
+                showAIResult(text);
+            } catch (e) {
+                showAIResult('Error: ' + (e.message || e));
+            }
+        }
+
+        function insertAIResult() {
+            if (!lastAIResult) return alert('No AI result to insert');
+
+            const textBox = document.createElement('div');
+            textBox.className = 'text-box placed';
+            textBox.contentEditable = true;
+            textBox.style.position = 'absolute';
+            textBox.style.left = (200) + 'px';
+            textBox.style.top = (200) + 'px';
+            textBox.style.fontFamily = state.font;
+            textBox.style.fontSize = state.fontSize + 'px';
+            textBox.style.color = state.color;
+            textBox.style.minWidth = '240px';
+            textBox.style.minHeight = '40px';
+            textBox.innerText = lastAIResult;
+            addTextBoxSelectHandler(textBox);
+            textLayer.appendChild(textBox);
+            setTimeout(() => textBox.focus(), 10);
+            saveToUndoStack();
+            markUnsaved();
+        }
     </script>
 </body>
 </html>

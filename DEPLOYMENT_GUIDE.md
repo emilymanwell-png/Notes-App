@@ -111,3 +111,48 @@ This is the best solution because:
 - ✅ Fast global CDN
 
 Need help with deployment? Let me know!
+
+---
+
+## 🤖 Running the GPT4All Local AI Bridge (for AI features)
+
+This app can talk to a local GPT4All (or compatible) binary via a small Node bridge in `server.js`.
+
+Steps to run locally so the app can call the model from the browser:
+
+1. Install or place your GPT4All binary somewhere on your machine and download a model file (e.g. `model.ggml.bin`).
+
+2. Open PowerShell in the project folder (`C:\Users\emily\Documents\Notes-App`).
+
+3. Start the AI bridge (example using PowerShell environment variables):
+
+```powershell
+# Point to the gpt4all executable (or the CLI wrapper you installed)
+$env:GPT4ALL_CMD = 'C:\path\to\gpt4all.exe'  # or just 'gpt4all' if it's on PATH
+
+# Point to the model file
+$env:GPT4ALL_MODEL = 'C:\path\to\model.ggml.bin'
+
+# Optional: customize args, e.g. '--model {model} --prompt {prompt}' is default
+$env:GPT4ALL_ARGS = '--model {model} --prompt {prompt}'
+
+# Start the Node bridge
+npm start
+```
+
+The bridge listens on port `3000` by default and exposes a POST `/api/ai` endpoint that accepts JSON `{ "prompt": "..." }` and returns `{ "text": "..." }`.
+
+4. In a separate terminal, serve the app itself (so browser pages are on `http://localhost:8000`):
+
+```powershell
+.\start-server.ps1
+```
+
+5. Open `http://localhost:8000/index.html` and in the AI panel type a prompt and press Enter. The UI will POST to `http://127.0.0.1:3000/api/ai` by default.
+
+Notes & troubleshooting:
+- If you put the model somewhere else, set `GPT4ALL_MODEL` accordingly.
+- If your GPT4All CLI has a different name, set `GPT4ALL_CMD`.
+- The bridge logs diagnostic messages when it starts; check the terminal running `npm start` if responses fail.
+- If you prefer a single-port deployment, you can serve static files from the Node process and proxy `/api/ai` on the same origin.
+
