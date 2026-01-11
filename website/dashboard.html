@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Cogent</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Dashboard Navigation -->
+        <nav class="dashboard-nav">
+            <div class="dashboard-nav-container">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">◉</span>
+                    <span class="logo-text">Cogent</span>
+                </a>
+                <div class="dashboard-nav-right">
+                    <a href="#" class="btn btn-primary" id="launch-app-btn">Launch App</a>
+                    <div class="user-menu" id="user-menu">
+                        <div class="user-avatar" id="user-avatar">JD</div>
+                        <div class="user-info">
+                            <span class="user-name" id="user-name">John Doe</span>
+                            <span class="user-plan" id="user-plan">Pro Plan</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <div class="dashboard-header">
+                <h1>Welcome back, <span id="greeting-name">John</span>!</h1>
+                <p>Here's what's happening with your Cogent account.</p>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- Usage Stats -->
+                <div class="dashboard-card">
+                    <h3>📓 Notebooks</h3>
+                    <div class="stat-value" id="notebook-count">12</div>
+                    <div class="stat-label">Active notebooks</div>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>📝 Notes</h3>
+                    <div class="stat-value" id="note-count">47</div>
+                    <div class="stat-label">Total notes created</div>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>☁️ Storage</h3>
+                    <div class="stat-value" id="storage-used">2.4 GB</div>
+                    <div class="stat-label">of 10 GB used</div>
+                </div>
+
+                <!-- Subscription Info -->
+                <div class="dashboard-card" style="grid-column: span 2;">
+                    <h3>💳 Your Subscription</h3>
+                    <div class="plan-info">
+                        <span class="plan-badge" id="plan-badge">Pro</span>
+                        <span class="plan-price" id="plan-price">$12<span>/month</span></span>
+                    </div>
+                    <p style="color: var(--color-text-secondary); margin-bottom: 16px;" id="plan-status">
+                        Your next billing date is <strong>February 11, 2026</strong>
+                    </p>
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn btn-secondary" onclick="manageBilling()">Manage Billing</button>
+                        <button class="btn btn-secondary" onclick="changePlan()">Change Plan</button>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="dashboard-card">
+                    <h3>⚡ Quick Actions</h3>
+                    <div class="quick-actions">
+                        <div class="quick-action" onclick="launchApp()">
+                            <div class="quick-action-icon">🚀</div>
+                            <div class="quick-action-label">Launch App</div>
+                        </div>
+                        <div class="quick-action" onclick="openSettings()">
+                            <div class="quick-action-icon">⚙️</div>
+                            <div class="quick-action-label">Settings</div>
+                        </div>
+                        <div class="quick-action" onclick="viewDocs()">
+                            <div class="quick-action-icon">📚</div>
+                            <div class="quick-action-label">Documentation</div>
+                        </div>
+                        <div class="quick-action" onclick="getSupport()">
+                            <div class="quick-action-icon">💬</div>
+                            <div class="quick-action-label">Get Support</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Settings -->
+                <div class="dashboard-card" style="grid-column: span 2;">
+                    <h3>👤 Account Settings</h3>
+                    <form id="account-form" style="max-width: 400px;">
+                        <div class="form-group">
+                            <label for="account-name">Full Name</label>
+                            <input type="text" id="account-name" value="John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label for="account-email">Email Address</label>
+                            <input type="email" id="account-email" value="john@example.com">
+                        </div>
+                        <div style="display: flex; gap: 12px;">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <button type="button" class="btn btn-secondary" onclick="changePassword()">Change Password</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Danger Zone -->
+                <div class="dashboard-card">
+                    <h3>⚠️ Danger Zone</h3>
+                    <p style="color: var(--color-text-secondary); margin-bottom: 16px; font-size: 14px;">
+                        Once you delete your account, there is no going back. Please be certain.
+                    </p>
+                    <button class="btn" style="background: #dc2626; color: white;" onclick="deleteAccount()">
+                        Delete Account
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Menu Dropdown -->
+    <div class="user-dropdown" id="user-dropdown" style="display: none; position: absolute; top: 72px; right: 24px; background: white; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 8px 0; min-width: 200px; box-shadow: var(--shadow-lg); z-index: 1000;">
+        <a href="dashboard.html" style="display: block; padding: 10px 16px; font-size: 14px;">Dashboard</a>
+        <a href="#" style="display: block; padding: 10px 16px; font-size: 14px;" onclick="openSettings()">Settings</a>
+        <hr style="margin: 8px 0; border: none; border-top: 1px solid var(--color-border);">
+        <a href="#" style="display: block; padding: 10px 16px; font-size: 14px; color: #dc2626;" onclick="logout()">Log Out</a>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
