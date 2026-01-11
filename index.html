@@ -1216,6 +1216,196 @@
             background: #fafafa;
         }
 
+        /* Graph View */
+        .graph-view {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            background: #0a0a0f;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .graph-header {
+            margin-bottom: 16px;
+            z-index: 10;
+        }
+
+        .graph-header h2 {
+            color: #fff;
+            margin: 0 0 4px 0;
+            font-size: 1.5rem;
+        }
+
+        .graph-header p {
+            color: rgba(255,255,255,0.6);
+            margin: 0 0 16px 0;
+            font-size: 0.9rem;
+        }
+
+        .graph-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .graph-search-input {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: #fff;
+            font-size: 0.9rem;
+            width: 200px;
+        }
+
+        .graph-search-input::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+
+        .graph-search-input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+
+        .graph-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: #fff;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .graph-btn:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .graph-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .graph-checkbox input {
+            accent-color: #8b5cf6;
+        }
+
+        .graph-container {
+            flex: 1;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0f 100%);
+        }
+
+        #graph-canvas {
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+        }
+
+        #graph-canvas:active {
+            cursor: grabbing;
+        }
+
+        .graph-info-panel {
+            position: absolute;
+            right: 40px;
+            top: 100px;
+            width: 280px;
+            background: rgba(20, 20, 30, 0.95);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 16px;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            display: none;
+        }
+
+        .graph-info-panel.visible {
+            display: block;
+        }
+
+        .graph-info-title {
+            color: #fff;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .graph-info-content {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .graph-info-content .info-section {
+            margin-bottom: 12px;
+        }
+
+        .graph-info-content .info-label {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .graph-info-content .info-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .graph-info-content .tag {
+            background: rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        .graph-info-content .connection-item {
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .graph-info-content .connection-item:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .graph-info-content .connection-item:last-child {
+            border-bottom: none;
+        }
+
+        .graph-node-tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            pointer-events: none;
+            z-index: 1000;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
         /* Toolbar */
         .toolbar {
             display: flex;
@@ -1363,6 +1553,14 @@
             left: 0;
             background: transparent;
             z-index: 2;
+        }
+
+        /* Layer canvases */
+        .layer-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: transparent;
         }
 
         .eraser-cursor {
@@ -1683,6 +1881,19 @@
             height: 100%;
             pointer-events: none;
             z-index: 5;
+        }
+
+        /* Layer content containers */
+        .layer-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        .layer-content .text-box,
+        .layer-content .media-embed {
+            pointer-events: auto;
         }
 
         .text-box {
@@ -2125,6 +2336,11 @@
             opacity: 1;
         }
     </style>
+    
+    <!-- External Modules -->
+    <script src="js/canvas.js"></script>
+    <script src="js/evernote.js"></script>
+    <script src="js/graph.js"></script>
 </head>
 <body>
     <!-- Sidebar -->
@@ -2136,6 +2352,10 @@
             <div class="nav-item active" id="nav-home" onclick="showHomePage()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                 Home
+            </div>
+            <div class="nav-item" id="nav-graph" onclick="showGraphView()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="6" r="3"/><circle cx="19" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><line x1="7.5" y1="7.5" x2="10" y2="16"/><line x1="16.5" y1="7.5" x2="14" y2="16"/><line x1="8" y1="6" x2="16" y2="6"/></svg>
+                Graph View
             </div>
         </div>
         <div class="notebooks-section">
@@ -2245,6 +2465,32 @@
                 <div id="notebooks-home-container" class="notebooks-grid"></div>
             </div>
         </div>
+        
+        <!-- Graph View -->
+        <div class="graph-view" id="graph-view" style="display: none;">
+            <div class="graph-header">
+                <h2>Knowledge Graph</h2>
+                <p>Notes connected by shared terms and patterns</p>
+                <div class="graph-controls">
+                    <input type="text" id="graph-search" placeholder="Search nodes..." class="graph-search-input">
+                    <button class="graph-btn" onclick="resetGraphView()" title="Reset View">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                        Reset
+                    </button>
+                    <label class="graph-checkbox">
+                        <input type="checkbox" id="graph-show-orphans" checked> Show unconnected
+                    </label>
+                </div>
+            </div>
+            <div class="graph-container" id="graph-container">
+                <canvas id="graph-canvas"></canvas>
+            </div>
+            <div class="graph-info-panel" id="graph-info-panel">
+                <div class="graph-info-title">Select a note</div>
+                <div class="graph-info-content"></div>
+            </div>
+        </div>
+        
         <div class="toolbar" id="toolbar" style="display: none;">
             <div class="toolbar-group">
                 <button class="tool-btn active" id="draw-btn" onclick="setTool('draw')" title="Draw">
@@ -2365,6 +2611,14 @@
                         <circle cx="4" cy="20" r="1"/><circle cx="12" cy="20" r="1"/><circle cx="20" cy="20" r="1"/>
                     </svg>
                     Grid
+                </button>
+                <button class="tool-btn" id="layers-btn" onclick="toggleLayerPanel()" title="Toggle Layers Panel">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                        <polyline points="2 17 12 22 22 17"/>
+                        <polyline points="2 12 12 17 22 12"/>
+                    </svg>
+                    Layers
                 </button>
             </div>
             
@@ -2696,12 +2950,15 @@
             }
 
             if (state.tool === 'text') {
+                console.log('Text tool - attempting to create text box');
                 // Don't create new text box if there's currently a focused text box
                 // (this click is just to deselect/blur the current one)
                 const activeElement = document.activeElement;
                 if (activeElement && activeElement.classList.contains('text-box')) {
+                    console.log('Focused text box exists, not creating new one');
                     return;
                 }
+                console.log('Creating text box at', getCanvasCoords(e));
                 createTextBox(e);
                 return;
             }
@@ -2725,6 +2982,7 @@
                 state.panOffset.x = e.clientX - panStart.x;
                 state.panOffset.y = e.clientY - panStart.y;
                 updateCanvasTransform();
+                drawingCanvas.style.cursor = 'grabbing';
                 return;
             }
 
@@ -2732,23 +2990,32 @@
 
             const coords = getCanvasCoords(e);
             
-            drawCtx.beginPath();
-            drawCtx.moveTo(lastX, lastY);
-            drawCtx.lineTo(coords.x, coords.y);
+            // Get the active layer's context from layer manager, fallback to drawCtx
+            let ctx = drawCtx;
+            if (typeof canvasModule !== 'undefined' && canvasModule.manager?.layerManager) {
+                const activeCtx = canvasModule.manager.layerManager.getActiveContext();
+                if (activeCtx) {
+                    ctx = activeCtx;
+                }
+            }
+            
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(coords.x, coords.y);
             // Use compositing for eraser so it truly clears pixels regardless of background
             if (state.tool === 'erase') {
-                drawCtx.globalCompositeOperation = 'destination-out';
-                drawCtx.strokeStyle = 'rgba(0,0,0,1)';
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.strokeStyle = 'rgba(0,0,0,1)';
                 // Scale erase width by zoom so the cleared area matches the visible cursor
-                drawCtx.lineWidth = state.thickness * 6 * (state.zoom || 1);
+                ctx.lineWidth = state.thickness * 6 * (state.zoom || 1);
             } else {
-                drawCtx.globalCompositeOperation = 'source-over';
-                drawCtx.strokeStyle = state.color;
-                drawCtx.lineWidth = state.thickness;
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = state.color;
+                ctx.lineWidth = state.thickness;
             }
-            drawCtx.lineCap = 'round';
-            drawCtx.lineJoin = 'round';
-            drawCtx.stroke();
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.stroke();
 
             lastX = coords.x;
             lastY = coords.y;
@@ -2761,6 +3028,10 @@
             }
             if (isPanning) {
                 isPanning = false;
+                // Reset cursor to grab when pan tool is selected
+                if (state.tool === 'pan') {
+                    drawingCanvas.style.cursor = 'grab';
+                }
             }
         }
 
@@ -2784,8 +3055,28 @@
             textBox.style.color = state.color;
             textBox.style.minWidth = '100px';
             textBox.style.minHeight = '30px';
+            textBox.style.pointerEvents = 'auto';
             
-            textLayer.appendChild(textBox);
+            // Add to active layer's content container if available, otherwise use textLayer
+            let targetContainer = textLayer;
+            
+            if (typeof canvasModule !== 'undefined' && canvasModule.manager?.layerManager) {
+                const activeLayer = canvasModule.manager.layerManager.getActiveLayer();
+                if (activeLayer && activeLayer.contentContainer) {
+                    // Safety check: ensure content container is in DOM (re-insert if needed)
+                    if (!document.body.contains(activeLayer.contentContainer)) {
+                        const textLayerEl = document.getElementById('text-layer');
+                        if (textLayerEl) {
+                            textLayerEl.appendChild(activeLayer.contentContainer);
+                        }
+                    }
+                    
+                    targetContainer = activeLayer.contentContainer;
+                    textBox.setAttribute('data-layer-id', activeLayer.id);
+                }
+            }
+            
+            targetContainer.appendChild(textBox);
             
             // Small delay to ensure DOM is updated before focusing
             setTimeout(() => {
@@ -2993,23 +3284,20 @@
             });
         }
 
-        // Event listeners
-        drawingCanvas.addEventListener('mousedown', startDrawing);
-        drawingCanvas.addEventListener('mousemove', (e) => {
-            draw(e);
-            // Update eraser cursor position
-            if (state.tool === 'erase') {
-                const eraserCursor = document.getElementById('eraser-cursor');
-                if (eraserCursor) {
-                    eraserCursor.style.left = e.clientX + 'px';
-                    eraserCursor.style.top = e.clientY + 'px';
-                }
-                showEraserCursor();
-            }
-        });
         // Use pointer events for consistent mouse/pen/touch behavior
         let activePointerId = null;
         drawingCanvas.addEventListener('pointerdown', (e) => {
+            console.log('pointerdown on drawingCanvas, tool:', state.tool, 'button:', e.button, 'pointerType:', e.pointerType);
+            // Middle mouse button always pans
+            if (e.button === 1) {
+                e.preventDefault();
+                isPanning = true;
+                panStart = { x: e.clientX - state.panOffset.x, y: e.clientY - state.panOffset.y };
+                drawingCanvas.style.cursor = 'grabbing';
+                activePointerId = e.pointerId;
+                try { drawingCanvas.setPointerCapture(activePointerId); } catch (err) {}
+                return;
+            }
             // Only start if left button (or pen contact)
             if (e.button && e.button !== 0) return;
             // Set active pointer id so we can release capture later
@@ -3054,6 +3342,13 @@
             // when pointer leaves drawing canvas, stop drawing but don't necessarily hide cursor
             stopDrawing();
             // hide cursor only if pointer not over UI (handled by global handler)
+        });
+
+        // Prevent default middle mouse button scrolling
+        drawingCanvas.addEventListener('auxclick', (e) => {
+            if (e.button === 1) {
+                e.preventDefault();
+            }
         });
 
         drawingCanvas.addEventListener('pointerenter', (e) => {
@@ -3162,7 +3457,7 @@
             const eraserCursor = document.getElementById('eraser-cursor');
             if (!eraserCursor) return;
 
-            // Decide visibility using elementFromPoint so UI areas (toolbar/sidebar) can show cursor
+            // Decide visibility using elementFromPoint - only show over canvas, NOT over toolbar/sidebar
             const el = document.elementFromPoint(e.clientX, e.clientY);
             const isOverDrawing = !!(el && (el.id === 'drawing-canvas' || el.closest('#canvas-container')));
             const isOverTools = !!(el && (el.closest('#toolbar') || el.closest('.sidebar')));
@@ -3171,8 +3466,8 @@
                 // Position cursor at pointer
                 eraserCursor.style.left = e.clientX + 'px';
                 eraserCursor.style.top = e.clientY + 'px';
-                // Show when over drawing canvas or over toolbar/sidebar (features area)
-                if (isOverDrawing || isOverTools) {
+                // Only show eraser cursor when over drawing canvas, hide over toolbar/sidebar
+                if (isOverDrawing && !isOverTools) {
                     showEraserCursor();
                 } else {
                     hideEraserCursor();
@@ -3271,18 +3566,35 @@
             // so embeds and text boxes underneath can be interacted with in Select mode.
             const mediaLayer = document.getElementById('media-layer');
             const textLayerEl = document.getElementById('text-layer');
-            if (tool === 'draw' || tool === 'erase') {
+            if (tool === 'draw' || tool === 'erase' || tool === 'pan' || tool === 'text') {
                 // Ensure the drawing canvas is on top so mouse events reach it
                 drawingCanvas.style.pointerEvents = 'auto';
                 drawingCanvas.style.zIndex = 99999;
-                // Temporarily ignore pointer events on media/text layers while drawing
-                if (mediaLayer) mediaLayer.style.pointerEvents = 'none';
-                if (textLayerEl) textLayerEl.style.pointerEvents = 'none';
+                // For pan, keep media/text interactive but drawing canvas captures events
+                if (tool === 'pan') {
+                    if (mediaLayer) mediaLayer.style.pointerEvents = 'auto';
+                    if (textLayerEl) textLayerEl.style.pointerEvents = 'auto';
+                } else if (tool === 'text') {
+                    // Text tool: drawing canvas captures clicks to create text boxes
+                    // Text layer stays below drawing canvas so clicks pass through
+                    if (mediaLayer) mediaLayer.style.pointerEvents = 'none';
+                    if (textLayerEl) {
+                        textLayerEl.style.pointerEvents = 'none';
+                        textLayerEl.style.zIndex = 4; // Keep below drawing canvas
+                    }
+                } else {
+                    // Temporarily ignore pointer events on media/text layers while drawing
+                    if (mediaLayer) mediaLayer.style.pointerEvents = 'none';
+                    if (textLayerEl) textLayerEl.style.pointerEvents = 'none';
+                }
             } else {
                 drawingCanvas.style.pointerEvents = 'none';
                 drawingCanvas.style.zIndex = 2;
                 if (mediaLayer) mediaLayer.style.pointerEvents = 'auto';
-                if (textLayerEl) textLayerEl.style.pointerEvents = 'auto';
+                if (textLayerEl) {
+                    textLayerEl.style.pointerEvents = 'auto';
+                    textLayerEl.style.zIndex = 5; // Restore normal z-index
+                }
             }
         }
 
@@ -3682,10 +3994,25 @@
         // Clear canvas
         function clearCanvas() {
             if (confirm('Are you sure you want to clear the canvas?')) {
-                drawCtx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                drawCtx.fillStyle = getCanvasBackground();
-                drawCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                // Clear all layers if using layer manager
+                if (typeof canvasModule !== 'undefined' && canvasModule.manager?.layerManager) {
+                    canvasModule.manager.layerManager.layers.forEach(layer => {
+                        layer.ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                        // Clear content containers
+                        if (layer.contentContainer) {
+                            layer.contentContainer.innerHTML = '';
+                        }
+                    });
+                } else {
+                    drawCtx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                    drawCtx.fillStyle = getCanvasBackground();
+                    drawCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                }
                 textLayer.innerHTML = '';
+                
+                // Clear media layer
+                const mediaLayer = document.getElementById('media-layer');
+                if (mediaLayer) mediaLayer.innerHTML = '';
                 
                 // Re-render subnote blocks
                 if (state.currentNote) {
@@ -4497,13 +4824,18 @@
             updateCanvasTransform();
             
             // Load note data or create blank canvas
-            if (note.canvasData) {
+            if (note.canvasData || note.layersData) {
                 loadNoteData(note);
             } else {
                 // Clear text layer for new note
                 textLayer.innerHTML = '';
-                drawCtx.fillStyle = getCanvasBackground();
-                drawCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                // Clear layers if available
+                if (typeof canvasModule !== 'undefined' && canvasModule.manager?.layerManager) {
+                    canvasModule.manager.layerManager.clearAll();
+                } else {
+                    drawCtx.fillStyle = getCanvasBackground();
+                    drawCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                }
                 // Clear undo history and start version timer
                 clearUndoHistory();
                 versionHistory = note.versionHistory || [];
@@ -4794,8 +5126,17 @@
             embed.appendChild(content);
             embed.appendChild(controls);
             embed.appendChild(resizeHandle);
-            // Append embeds into the media layer (separate from the text layer)
-            mediaLayer.appendChild(embed);
+            
+            // Add to active layer's content container if available, otherwise use mediaLayer
+            let targetContainer = mediaLayer;
+            if (typeof canvasModule !== 'undefined' && canvasModule.manager?.layerManager) {
+                const activeLayer = canvasModule.manager.layerManager.getActiveLayer();
+                if (activeLayer && activeLayer.contentContainer) {
+                    targetContainer = activeLayer.contentContainer;
+                    embed.setAttribute('data-layer-id', activeLayer.id);
+                }
+            }
+            targetContainer.appendChild(embed);
             
             // Add resize functionality
             makeMediaEmbedResizable(embed, resizeHandle);
@@ -6005,6 +6346,9 @@
             document.getElementById('home-page').style.display = 'block';
             document.getElementById('canvas-container').style.display = 'none';
             document.getElementById('toolbar').style.display = 'none';
+            const graphView = document.getElementById('graph-view');
+            if (graphView) graphView.style.display = 'none';
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             document.getElementById('nav-home').classList.add('active');
             document.getElementById('note-info').textContent = 'Home';
             
@@ -6029,7 +6373,9 @@
             state.currentView = 'editor';
             document.getElementById('home-page').style.display = 'none';
             document.getElementById('canvas-container').style.display = 'block';
-            document.getElementById('nav-home').classList.remove('active');
+            const graphView = document.getElementById('graph-view');
+            if (graphView) graphView.style.display = 'none';
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
         }
 
         function renderHomePage() {
@@ -6110,7 +6456,17 @@
         function saveNoteData() {
             if (!state.currentNote) return;
             
-            state.currentNote.canvasData = drawingCanvas.toDataURL();
+            // Save canvas data - prefer layers if available, fallback to flat canvas
+            if (typeof canvasModule !== 'undefined' && canvasModule.manager?.layerManager) {
+                const layerManager = canvasModule.manager.layerManager;
+                // Save full layer data for future loading
+                state.currentNote.layersData = layerManager.serialize();
+                // Also save flattened version for backward compatibility
+                state.currentNote.canvasData = layerManager.getFlattenedDataURL();
+            } else {
+                state.currentNote.canvasData = drawingCanvas.toDataURL();
+            }
+            
             state.currentNote.textBoxes = Array.from(textLayer.querySelectorAll('.text-box')).map(box => ({
                 content: box.innerHTML,
                 left: box.style.left,
@@ -6148,27 +6504,54 @@
             // Start version history timer
             startVersionHistoryTimer();
             
-            if (note.canvasData) {
-                const img = new Image();
-                img.onload = () => {
-                    drawCtx.drawImage(img, 0, 0);
-                    // Save initial state after canvas is loaded
+            // Load canvas data - prefer layers if available
+            if (typeof canvasModule !== 'undefined' && canvasModule.manager?.layerManager) {
+                const layerManager = canvasModule.manager.layerManager;
+                
+                if (note.layersData && note.layersData.length > 0) {
+                    // Load full layer data
+                    layerManager.deserialize(note.layersData);
                     saveInitialState();
-                };
-                img.src = note.canvasData;
+                } else if (note.canvasData) {
+                    // Backward compatibility: load flat canvas into background layer
+                    layerManager.clearAll();
+                    const activeLayer = layerManager.getActiveLayer();
+                    if (activeLayer) {
+                        const img = new Image();
+                        img.onload = () => {
+                            activeLayer.ctx.drawImage(img, 0, 0);
+                            saveInitialState();
+                        };
+                        img.src = note.canvasData;
+                    }
+                } else {
+                    // New blank note
+                    layerManager.clearAll();
+                    saveInitialState();
+                }
             } else {
-                drawCtx.fillStyle = getCanvasBackground();
-                drawCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                // Save initial state for blank canvas
-                saveInitialState();
+                // Fallback to original drawing canvas
+                if (note.canvasData) {
+                    const img = new Image();
+                    img.onload = () => {
+                        drawCtx.drawImage(img, 0, 0);
+                        saveInitialState();
+                    };
+                    img.src = note.canvasData;
+                } else {
+                    drawCtx.fillStyle = getCanvasBackground();
+                    drawCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                    saveInitialState();
+                }
             }
 
-            // Load text boxes
-            textLayer.innerHTML = '';
-            console.log('Loading note:', note.name, 'textBoxes:', note.textBoxes?.length || 0);
+            // Load text boxes - clear only text-box elements, preserve layer content containers
+            // Remove all text-box elements but keep .layer-content containers
+            const textBoxesToRemove = textLayer.querySelectorAll('.text-box');
+            textBoxesToRemove.forEach(box => box.remove());
+            
             if (note.textBoxes && note.textBoxes.length > 0) {
                 note.textBoxes.forEach((boxData, idx) => {
-                    console.log('Creating text box', idx, ':', boxData.content?.substring(0, 50), 'at', boxData.left, boxData.top);
                     const textBox = document.createElement('div');
                     textBox.className = 'text-box placed';
                     // Restore header class if this textbox was a header when saved
@@ -6220,10 +6603,8 @@
                     addTextBoxSelectHandler(textBox);
                     
                     textLayer.appendChild(textBox);
-                    console.log('Appended text box, textLayer children:', textLayer.children.length);
                 });
             }
-            console.log('Final textLayer innerHTML length:', textLayer.innerHTML.length);
             
             // Load media embeds
             if (note.mediaEmbeds) {
@@ -6475,6 +6856,45 @@
         loadFromStorage();
         initCanvases();
         showHomePage();
+        
+        // Initialize tool state (ensure pointer events are set correctly)
+        setTool(state.tool);
+        
+        // Initialize external modules
+        if (typeof canvasModule !== 'undefined') {
+            canvasModule.init({ width: CANVAS_WIDTH, height: CANVAS_HEIGHT });
+            canvasModule.manager.setState(state);
+            canvasModule.manager.onUnsaved = markUnsaved;
+            canvasModule.manager.onSaveToUndo = saveToUndoStack;
+            
+            // Hide the original drawing canvas - we use it only for event capture
+            // Actual drawing happens on layer canvases
+            drawingCanvas.style.background = 'transparent';
+            drawCtx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        }
+        
+        if (typeof evernoteModule !== 'undefined') {
+            evernoteModule.init();
+            evernoteModule.getState = () => state;
+            evernoteModule.getDefaultInkColor = getDefaultInkColor;
+            evernoteModule.renderNotebooks = renderNotebooks;
+            evernoteModule.renderHomePage = renderHomePage;
+        }
+        
+        // Toggle layer panel visibility
+        function toggleLayerPanel() {
+            if (typeof canvasModule !== 'undefined') {
+                canvasModule.toggleLayerPanel();
+                const btn = document.getElementById('layers-btn');
+                const panel = document.getElementById('layer-panel');
+                if (panel && panel.classList.contains('visible')) {
+                    btn?.classList.add('active');
+                } else {
+                    btn?.classList.remove('active');
+                }
+            }
+        }
+        window.toggleLayerPanel = toggleLayerPanel;
         
         // Set initial color based on dark mode
         updateDefaultColor();
