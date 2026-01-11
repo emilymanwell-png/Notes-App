@@ -3457,16 +3457,16 @@
             const eraserCursor = document.getElementById('eraser-cursor');
             if (!eraserCursor) return;
 
-            // Decide visibility using elementFromPoint - only show over canvas, NOT over toolbar/sidebar
+            // Decide visibility using elementFromPoint - only show over canvas, NOT over toolbar/sidebar/layer panel
             const el = document.elementFromPoint(e.clientX, e.clientY);
             const isOverDrawing = !!(el && (el.id === 'drawing-canvas' || el.closest('#canvas-container')));
-            const isOverTools = !!(el && (el.closest('#toolbar') || el.closest('.sidebar')));
+            const isOverTools = !!(el && (el.closest('#toolbar') || el.closest('.sidebar') || el.closest('.layer-panel')));
 
             if (state.tool === 'erase') {
                 // Position cursor at pointer
                 eraserCursor.style.left = e.clientX + 'px';
                 eraserCursor.style.top = e.clientY + 'px';
-                // Only show eraser cursor when over drawing canvas, hide over toolbar/sidebar
+                // Only show eraser cursor when over drawing canvas, hide over toolbar/sidebar/layer panel
                 if (isOverDrawing && !isOverTools) {
                     showEraserCursor();
                 } else {
