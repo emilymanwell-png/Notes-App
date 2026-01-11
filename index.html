@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notes</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Georgia&family=Courier+Prime&family=Comic+Neue&family=Playfair+Display&family=Roboto+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Georgia&family=Courier+Prime&family=Comic+Neue&family=Playfair+Display&family=Roboto+Mono&family=Lora:ital,wght@0,400;0,600;1,400&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Open+Sans:wght@300;400;600&family=Montserrat:wght@300;400;500;600&family=Poppins:wght@300;400;500;600&family=Raleway:wght@300;400;500;600&family=Source+Code+Pro:wght@400;500&family=Fira+Code:wght@400;500&family=Dancing+Script:wght@400;500;600&family=Pacifico&family=Caveat:wght@400;500;600&family=Architects+Daughter&family=Patrick+Hand&family=Shadows+Into+Light&family=Permanent+Marker&family=Satisfy&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -19,6 +19,215 @@
             background: #fafafa;
             color: #333;
             overflow: hidden;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .sidebar {
+            background: #222;
+            border-right-color: #333;
+        }
+
+        body.dark-mode .sidebar-header {
+            border-bottom-color: #333;
+        }
+
+        body.dark-mode .sidebar-header h1 {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .section-title {
+            color: #888;
+        }
+
+        body.dark-mode .add-btn {
+            color: #aaa;
+            border-color: #444;
+        }
+
+        body.dark-mode .add-btn:hover {
+            background: #e0e0e0;
+            color: #222;
+            border-color: #e0e0e0;
+        }
+
+        body.dark-mode .notebook-header:hover {
+            background: #2a2a2a;
+        }
+
+        body.dark-mode .notebook-header.active {
+            background: #333;
+        }
+
+        body.dark-mode .notebook-name {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .note-item {
+            color: #ccc;
+        }
+
+        body.dark-mode .note-item:hover {
+            background: #2a2a2a;
+        }
+
+        body.dark-mode .note-item.active {
+            background: #333;
+            color: #fff;
+        }
+
+        body.dark-mode .main-content {
+            background: #1a1a1a;
+        }
+
+        body.dark-mode .toolbar {
+            background: #222;
+            border-bottom-color: #333;
+        }
+
+        body.dark-mode .tool-btn {
+            color: #ccc;
+        }
+
+        body.dark-mode .tool-btn:hover {
+            background: #333;
+        }
+
+        body.dark-mode .tool-btn.active {
+            background: #444;
+            color: #fff;
+        }
+
+        body.dark-mode .toolbar-label {
+            color: #888;
+        }
+
+        body.dark-mode .toolbar-divider {
+            background: #333;
+        }
+
+        body.dark-mode .font-select {
+            background: #333;
+            border-color: #444;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .canvas-container {
+            background: #2a2a2a;
+        }
+
+        body.dark-mode .drawing-canvas {
+            background: #2a2a2a;
+        }
+
+        body.dark-mode .grid-overlay {
+            background-image: radial-gradient(circle, #555 1px, transparent 1px);
+        }
+
+        body.dark-mode .text-box {
+            border-color: #666;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .text-box:focus {
+            border-color: #888;
+        }
+
+        body.dark-mode .text-box.selected {
+            border-color: #007AFF !important;
+            background: rgba(0, 122, 255, 0.1);
+        }
+
+        body.dark-mode .status-bar {
+            background: #222;
+            border-top-color: #333;
+            color: #888;
+        }
+
+        body.dark-mode .modal-content,
+        body.dark-mode .version-modal {
+            background: #2a2a2a;
+        }
+
+        body.dark-mode .modal-content h2,
+        body.dark-mode .version-modal-header h3 {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .modal-input {
+            background: #333;
+            border-color: #444;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .modal-btn.secondary {
+            background: #444;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .version-modal-header {
+            border-bottom-color: #444;
+        }
+
+        body.dark-mode .version-item:hover {
+            background: #333;
+        }
+
+        body.dark-mode .version-time {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .home-page {
+            background: #1a1a1a;
+        }
+
+        body.dark-mode .home-section-title {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .pinned-note-card,
+        body.dark-mode .notebook-card {
+            background: #2a2a2a;
+            border-color: #333;
+        }
+
+        body.dark-mode .pinned-note-card:hover,
+        body.dark-mode .notebook-card:hover {
+            border-color: #555;
+            background: #333;
+        }
+
+        body.dark-mode .pinned-note-title,
+        body.dark-mode .notebook-card-name {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .pinned-note-notebook,
+        body.dark-mode .notebook-card-count {
+            color: #888;
+        }
+
+        body.dark-mode .nav-home {
+            color: #ccc;
+        }
+
+        body.dark-mode .nav-home:hover {
+            background: #333;
+        }
+
+        body.dark-mode .nav-home.active {
+            background: #333;
+            color: #fff;
+        }
+
+        body.dark-mode .eraser-cursor {
+            background: rgba(42, 42, 42, 0.8);
+            border-color: #666;
         }
 
         /* Sidebar Styles */
@@ -180,6 +389,430 @@
         .note-item:hover .delete-btn,
         .notebook-header:hover .delete-btn {
             opacity: 1;
+        }
+
+        /* Nested Notes */
+        .note-item-container {
+            position: relative;
+        }
+
+        .note-item .note-toggle {
+            font-size: 0.75rem;
+            margin-right: 8px;
+            transition: transform 0.2s, color 0.15s, background 0.15s;
+            color: #666;
+            background: #f0f0f0;
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .note-item .note-toggle:hover {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .note-item .note-toggle.open {
+            transform: rotate(90deg);
+        }
+
+        .note-item .note-toggle.hidden {
+            visibility: hidden;
+        }
+
+        body.dark-mode .note-item .note-toggle {
+            color: #aaa;
+            background: #3a3a3a;
+        }
+
+        body.dark-mode .note-item .note-toggle:hover {
+            background: #4a4a4a;
+            color: #fff;
+        }
+
+        .sub-notes-list {
+            display: none;
+            padding-left: 16px;
+            border-left: 1px solid #e0e0e0;
+            margin-left: 12px;
+        }
+
+        .sub-notes-list.open {
+            display: block;
+        }
+
+        body.dark-mode .sub-notes-list {
+            border-left-color: #444;
+        }
+
+        .note-item .add-subnote-btn {
+            opacity: 0;
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 0.7rem;
+            padding: 2px 5px;
+            border-radius: 4px;
+            transition: all 0.15s ease;
+            margin-right: 4px;
+        }
+
+        .note-item:hover .add-subnote-btn {
+            opacity: 1;
+        }
+
+        .note-item .add-subnote-btn:hover {
+            color: #333;
+            background: rgba(0,0,0,0.05);
+        }
+
+        body.dark-mode .note-item .add-subnote-btn:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Breadcrumb Navigation */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            color: #666;
+            padding: 8px 16px;
+            background: #f8f8f8;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        body.dark-mode .breadcrumb {
+            background: #252525;
+            border-bottom-color: #333;
+            color: #888;
+        }
+
+        .breadcrumb-item {
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+
+        .breadcrumb-item:hover {
+            color: #333;
+        }
+
+        body.dark-mode .breadcrumb-item:hover {
+            color: #fff;
+        }
+
+        .breadcrumb-separator {
+            color: #ccc;
+        }
+
+        body.dark-mode .breadcrumb-separator {
+            color: #555;
+        }
+
+        .breadcrumb-current {
+            color: #333;
+            font-weight: 500;
+        }
+
+        body.dark-mode .breadcrumb-current {
+            color: #e0e0e0;
+        }
+
+        /* Sub-note Links on Canvas (Notion-style) */
+        .subnote-block {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            pointer-events: auto;
+            z-index: 5;
+            min-width: 180px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .subnote-block:hover {
+            background: #f8f8f8;
+            border-color: #333;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .subnote-block-icon {
+            width: 24px;
+            height: 24px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 14px;
+        }
+
+        .subnote-block-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .subnote-block-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #333;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .subnote-block-hint {
+            font-size: 0.7rem;
+            color: #999;
+            margin-top: 2px;
+        }
+
+        .subnote-block-arrow {
+            color: #ccc;
+            margin-left: 8px;
+            font-size: 1rem;
+        }
+
+        body.dark-mode .subnote-block {
+            background: #2a2a2a;
+            border-color: #444;
+        }
+
+        body.dark-mode .subnote-block:hover {
+            background: #333;
+            border-color: #666;
+        }
+
+        body.dark-mode .subnote-block-icon {
+            background: #3a3a3a;
+        }
+
+        body.dark-mode .subnote-block-name {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .subnote-block-hint {
+            color: #666;
+        }
+
+        body.dark-mode .subnote-block-arrow {
+            color: #555;
+        }
+
+        /* Media Embed Blocks */
+        .media-embed {
+            position: absolute;
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            pointer-events: auto;
+            z-index: 3;
+            min-width: 200px;
+            min-height: 80px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            resize: none;
+        }
+
+        .media-embed:hover {
+            border-color: #999;
+        }
+
+        .media-embed.selected {
+            border-color: #007AFF;
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
+        }
+
+        /* Resize handle */
+        .media-embed-resize {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 20px;
+            height: 20px;
+            cursor: nwse-resize;
+            background: linear-gradient(135deg, transparent 50%, rgba(0,0,0,0.1) 50%);
+            border-radius: 0 0 6px 0;
+            z-index: 10;
+        }
+
+        .media-embed:hover .media-embed-resize {
+            background: linear-gradient(135deg, transparent 50%, rgba(0,0,0,0.25) 50%);
+        }
+
+        .media-embed-resize::after {
+            content: '';
+            position: absolute;
+            bottom: 3px;
+            right: 3px;
+            width: 8px;
+            height: 8px;
+            border-right: 2px solid rgba(0,0,0,0.3);
+            border-bottom: 2px solid rgba(0,0,0,0.3);
+        }
+
+        body.dark-mode .media-embed-resize {
+            background: linear-gradient(135deg, transparent 50%, rgba(255,255,255,0.1) 50%);
+        }
+
+        body.dark-mode .media-embed:hover .media-embed-resize {
+            background: linear-gradient(135deg, transparent 50%, rgba(255,255,255,0.25) 50%);
+        }
+
+        body.dark-mode .media-embed-resize::after {
+            border-right-color: rgba(255,255,255,0.4);
+            border-bottom-color: rgba(255,255,255,0.4);
+        }
+
+        .media-embed-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            overflow: hidden;
+        }
+
+        .media-embed img {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            display: block;
+        }
+
+        .media-embed video {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+        }
+
+        .media-embed iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .media-embed-controls {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.15s;
+        }
+
+        .media-embed:hover .media-embed-controls {
+            opacity: 1;
+        }
+
+        .media-embed-btn {
+            width: 24px;
+            height: 24px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .media-embed-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .media-embed-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        .media-embed-error {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #e53935;
+            font-size: 0.85rem;
+        }
+
+        body.dark-mode .media-embed {
+            background: #2a2a2a;
+            border-color: #444;
+        }
+
+        body.dark-mode .media-embed:hover {
+            border-color: #666;
+        }
+
+        body.dark-mode .media-embed-content {
+            background: #333;
+        }
+
+        body.dark-mode .media-embed-loading,
+        body.dark-mode .media-embed-error {
+            color: #999;
+        }
+
+        /* Audio embed styles */
+        .media-embed audio {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .media-embed-audio-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        /* Drag and drop overlay */
+        .canvas-container.drag-over {
+            position: relative;
+        }
+
+        .canvas-container.drag-over::after {
+            content: 'Drop media here';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 122, 255, 0.1);
+            border: 3px dashed #007AFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #007AFF;
+            font-weight: 500;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        body.dark-mode .canvas-container.drag-over::after {
+            background: rgba(0, 122, 255, 0.2);
         }
 
         /* Main Content */
@@ -464,6 +1097,177 @@
             cursor: not-allowed;
         }
 
+        /* Media Dropdown Menu */
+        .media-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .media-dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #fff;
+            min-width: 140px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            z-index: 100;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .media-dropdown-content.show {
+            display: block;
+        }
+
+        .media-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #333;
+            transition: background 0.15s ease;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+        }
+
+        .media-dropdown-item:hover {
+            background: #f5f5f5;
+        }
+
+        .media-dropdown-item svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        body.dark-mode .media-dropdown-content {
+            background: #2a2a2a;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        body.dark-mode .media-dropdown-item {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .media-dropdown-item:hover {
+            background: #3a3a3a;
+        }
+
+        /* Link Embed Modal */
+        .link-embed-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .link-embed-modal.show {
+            display: flex;
+        }
+
+        .link-embed-dialog {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            width: 400px;
+            max-width: 90%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .link-embed-dialog h3 {
+            margin: 0 0 16px 0;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .link-embed-dialog input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        .link-embed-dialog input:focus {
+            outline: none;
+            border-color: #007AFF;
+        }
+
+        .link-embed-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .link-embed-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.15s ease;
+        }
+
+        .link-embed-btn.cancel {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .link-embed-btn.cancel:hover {
+            background: #d0d0d0;
+        }
+
+        .link-embed-btn.embed {
+            background: #007AFF;
+            color: #fff;
+        }
+
+        .link-embed-btn.embed:hover {
+            background: #0066DD;
+        }
+
+        body.dark-mode .link-embed-dialog {
+            background: #2a2a2a;
+        }
+
+        body.dark-mode .link-embed-dialog h3 {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .link-embed-dialog input {
+            background: #333;
+            border-color: #444;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .link-embed-dialog input:focus {
+            border-color: #007AFF;
+        }
+
+        body.dark-mode .link-embed-btn.cancel {
+            background: #444;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .link-embed-btn.cancel:hover {
+            background: #555;
+        }
+
         .text-layer {
             position: absolute;
             top: 0;
@@ -495,6 +1299,11 @@
 
         .text-box.placed {
             border: none;
+        }
+
+        .text-box.selected {
+            border: 2px solid #007AFF !important;
+            background: rgba(0, 122, 255, 0.05);
         }
 
         /* Status Bar */
@@ -956,6 +1765,10 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg>
                     Draw
                 </button>
+                <button class="tool-btn" id="select-btn" onclick="setTool('select')" title="Select (S)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/><path d="M13 13l6 6"/></svg>
+                    Select
+                </button>
                 <button class="tool-btn" id="erase-btn" onclick="setTool('erase')" title="Eraser">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 20H7L3 16c-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0l6 6c.6.6.6 1.5 0 2.1L13 20"/><path d="M6 11l8 8"/></svg>
                     Erase
@@ -988,12 +1801,36 @@
             <div class="toolbar-group">
                 <span class="toolbar-label">Font</span>
                 <select class="font-select" id="font-select">
-                    <option value="'Inter', sans-serif">Inter</option>
-                    <option value="Georgia, serif">Georgia</option>
-                    <option value="'Courier Prime', monospace">Courier</option>
-                    <option value="'Comic Neue', cursive">Comic Sans</option>
-                    <option value="'Playfair Display', serif">Playfair</option>
-                    <option value="'Roboto Mono', monospace">Roboto Mono</option>
+                    <optgroup label="Sans Serif">
+                        <option value="'Inter', sans-serif" style="font-family: 'Inter', sans-serif">Inter</option>
+                        <option value="'Open Sans', sans-serif" style="font-family: 'Open Sans', sans-serif">Open Sans</option>
+                        <option value="'Montserrat', sans-serif" style="font-family: 'Montserrat', sans-serif">Montserrat</option>
+                        <option value="'Poppins', sans-serif" style="font-family: 'Poppins', sans-serif">Poppins</option>
+                        <option value="'Raleway', sans-serif" style="font-family: 'Raleway', sans-serif">Raleway</option>
+                    </optgroup>
+                    <optgroup label="Serif">
+                        <option value="Georgia, serif" style="font-family: Georgia, serif">Georgia</option>
+                        <option value="'Playfair Display', serif" style="font-family: 'Playfair Display', serif">Playfair</option>
+                        <option value="'Lora', serif" style="font-family: 'Lora', serif">Lora</option>
+                        <option value="'Merriweather', serif" style="font-family: 'Merriweather', serif">Merriweather</option>
+                    </optgroup>
+                    <optgroup label="Monospace">
+                        <option value="'Courier Prime', monospace" style="font-family: 'Courier Prime', monospace">Courier</option>
+                        <option value="'Roboto Mono', monospace" style="font-family: 'Roboto Mono', monospace">Roboto Mono</option>
+                        <option value="'Source Code Pro', monospace" style="font-family: 'Source Code Pro', monospace">Source Code Pro</option>
+                        <option value="'Fira Code', monospace" style="font-family: 'Fira Code', monospace">Fira Code</option>
+                    </optgroup>
+                    <optgroup label="Handwriting">
+                        <option value="'Comic Neue', cursive" style="font-family: 'Comic Neue', cursive">Comic Neue</option>
+                        <option value="'Dancing Script', cursive" style="font-family: 'Dancing Script', cursive">Dancing Script</option>
+                        <option value="'Pacifico', cursive" style="font-family: 'Pacifico', cursive">Pacifico</option>
+                        <option value="'Caveat', cursive" style="font-family: 'Caveat', cursive">Caveat</option>
+                        <option value="'Architects Daughter', cursive" style="font-family: 'Architects Daughter', cursive">Architects Daughter</option>
+                        <option value="'Patrick Hand', cursive" style="font-family: 'Patrick Hand', cursive">Patrick Hand</option>
+                        <option value="'Shadows Into Light', cursive" style="font-family: 'Shadows Into Light', cursive">Shadows Into Light</option>
+                        <option value="'Permanent Marker', cursive" style="font-family: 'Permanent Marker', cursive">Permanent Marker</option>
+                        <option value="'Satisfy', cursive" style="font-family: 'Satisfy', cursive">Satisfy</option>
+                    </optgroup>
                 </select>
                 <select class="font-select" id="font-size-select">
                     <option value="12">12</option>
@@ -1052,9 +1889,50 @@
             <div class="toolbar-divider"></div>
             
             <div class="toolbar-group">
+                <div class="media-dropdown">
+                    <button class="tool-btn" onclick="toggleMediaDropdown(event)" title="Add Media">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                            <polyline points="21 15 16 10 5 21"/>
+                        </svg>
+                        Media
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-left:2px">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </button>
+                    <div class="media-dropdown-content" id="media-dropdown">
+                        <button class="media-dropdown-item" onclick="showLinkEmbedDialog()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                            </svg>
+                            Embed Link
+                        </button>
+                        <button class="media-dropdown-item" onclick="triggerMediaUpload()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="17 8 12 3 7 8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                            Embed File
+                        </button>
+                    </div>
+                </div>
+                <input type="file" id="media-upload" accept="image/*,video/*,audio/*" multiple style="display:none" onchange="handleFileUpload(event)">
+            </div>
+            
+            <div class="toolbar-divider"></div>
+            
+            <div class="toolbar-group">
                 <button class="tool-btn" onclick="manualSave()" title="Save (Ctrl+S)">Save</button>
                 <button class="tool-btn" onclick="clearCanvas()">Clear</button>
                 <button class="tool-btn" onclick="exportNote()">Export</button>
+                <button class="tool-btn" id="dark-mode-btn" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                </button>
             </div>
         </div>
 
@@ -1069,6 +1947,18 @@
                 <canvas class="drawing-canvas" id="drawing-canvas"></canvas>
                 <div class="grid-overlay" id="grid-overlay"></div>
                 <div class="text-layer" id="text-layer"></div>
+            </div>
+        </div>
+
+        <!-- Link Embed Modal -->
+        <div class="link-embed-modal" id="link-embed-modal">
+            <div class="link-embed-dialog">
+                <h3>Embed Media Link</h3>
+                <input type="text" id="link-embed-input" placeholder="Paste image, video, or audio URL..." autocomplete="off">
+                <div class="link-embed-buttons">
+                    <button class="link-embed-btn cancel" onclick="closeLinkEmbedDialog()">Cancel</button>
+                    <button class="link-embed-btn embed" onclick="embedLinkFromDialog()">Embed</button>
+                </div>
             </div>
         </div>
 
@@ -1120,7 +2010,8 @@
             fontSize: 16,
             zoom: 1,
             panOffset: { x: 0, y: 0 },
-            gridVisible: false
+            gridVisible: false,
+            parentNoteForSubnote: null // For creating sub-notes
         };
 
         // Undo/Redo History
@@ -1220,6 +2111,11 @@
 
         // Drawing functions
         function startDrawing(e) {
+            // Deselect any selected media embeds
+            document.querySelectorAll('.media-embed.selected').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
             if (state.tool === 'pan') {
                 isPanning = true;
                 panStart = { x: e.clientX - state.panOffset.x, y: e.clientY - state.panOffset.y };
@@ -1227,6 +2123,12 @@
             }
 
             if (state.tool === 'text') {
+                // Don't create new text box if there's currently a focused text box
+                // (this click is just to deselect/blur the current one)
+                const activeElement = document.activeElement;
+                if (activeElement && activeElement.classList.contains('text-box')) {
+                    return;
+                }
                 createTextBox(e);
                 return;
             }
@@ -1255,7 +2157,7 @@
             drawCtx.beginPath();
             drawCtx.moveTo(lastX, lastY);
             drawCtx.lineTo(coords.x, coords.y);
-            drawCtx.strokeStyle = state.tool === 'erase' ? '#ffffff' : state.color;
+            drawCtx.strokeStyle = state.tool === 'erase' ? getCanvasBackground() : state.color;
             drawCtx.lineWidth = state.tool === 'erase' ? state.thickness * 3 : state.thickness;
             drawCtx.lineCap = 'round';
             drawCtx.lineJoin = 'round';
@@ -1308,6 +2210,19 @@
             });
 
             textBox.addEventListener('input', debounce(() => markUnsaved(), 500));
+            
+            // Add click handler for select tool
+            addTextBoxSelectHandler(textBox);
+        }
+
+        function addTextBoxSelectHandler(textBox) {
+            textBox.addEventListener('mousedown', (e) => {
+                if (state.tool === 'select') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    selectTextBox(textBox);
+                }
+            });
         }
 
         // Event listeners
@@ -1336,6 +2251,13 @@
                 eraserCursor.style.left = e.clientX + 'px';
                 eraserCursor.style.top = e.clientY + 'px';
                 eraserCursor.classList.add('visible');
+            }
+        });
+        
+        // Click on canvas to deselect text boxes
+        drawingCanvas.addEventListener('click', () => {
+            if (state.tool === 'select') {
+                clearTextBoxSelection();
             }
         });
 
@@ -1436,10 +2358,17 @@
         });
 
         // Tool functions
+        let selectedTextBox = null;
+
         function setTool(tool) {
             state.tool = tool;
             document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`${tool}-btn`).classList.add('active');
+            
+            // Clear selection when switching tools
+            if (tool !== 'select') {
+                clearTextBoxSelection();
+            }
             
             const eraserCursor = document.getElementById('eraser-cursor');
             if (tool === 'erase') {
@@ -1448,7 +2377,30 @@
             } else {
                 eraserCursor.classList.remove('visible');
                 drawingCanvas.style.cursor = tool === 'pan' ? 'grab' : 
-                                             tool === 'text' ? 'text' : 'crosshair';
+                                             tool === 'text' ? 'text' :
+                                             tool === 'select' ? 'default' : 'crosshair';
+            }
+        }
+
+        function selectTextBox(textBox) {
+            clearTextBoxSelection();
+            selectedTextBox = textBox;
+            textBox.classList.add('selected');
+        }
+
+        function clearTextBoxSelection() {
+            if (selectedTextBox) {
+                selectedTextBox.classList.remove('selected');
+                selectedTextBox = null;
+            }
+        }
+
+        function deleteSelectedTextBox() {
+            if (selectedTextBox) {
+                saveToUndoStack();
+                selectedTextBox.remove();
+                selectedTextBox = null;
+                markUnsaved();
             }
         }
         
@@ -1573,8 +2525,16 @@
                 });
                 textBox.addEventListener('input', debounce(() => markUnsaved(), 500));
                 
+                // Add click handler for select tool
+                addTextBoxSelectHandler(textBox);
+                
                 textLayer.appendChild(textBox);
             });
+            
+            // Re-render subnote blocks
+            if (state.currentNote) {
+                renderSubnoteBlocks(state.currentNote);
+            }
         }
 
         function updateUndoRedoButtons() {
@@ -1584,6 +2544,27 @@
 
         function clearUndoHistory() {
             undoStack = [];
+            redoStack = [];
+            updateUndoRedoButtons();
+        }
+
+        // Save the initial state when a note is first loaded
+        function saveInitialState() {
+            const canvasState = drawingCanvas.toDataURL();
+            const textBoxes = Array.from(textLayer.querySelectorAll('.text-box')).map(box => ({
+                content: box.innerHTML,
+                left: box.style.left,
+                top: box.style.top,
+                width: box.style.width,
+                height: box.style.height,
+                fontFamily: box.style.fontFamily,
+                fontSize: box.style.fontSize,
+                color: box.style.color
+            }));
+            
+            // This is the base state - it goes in the undo stack
+            // but won't be cleared by saveToUndoStack's redo clear
+            undoStack = [{ canvasState, textBoxes }];
             redoStack = [];
             updateUndoRedoButtons();
         }
@@ -1748,9 +2729,15 @@
         function clearCanvas() {
             if (confirm('Are you sure you want to clear the canvas?')) {
                 drawCtx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                drawCtx.fillStyle = '#ffffff';
+                drawCtx.fillStyle = getCanvasBackground();
                 drawCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
                 textLayer.innerHTML = '';
+                
+                // Re-render subnote blocks
+                if (state.currentNote) {
+                    renderSubnoteBlocks(state.currentNote);
+                }
+                
                 saveCurrentNote();
             }
         }
@@ -1772,7 +2759,13 @@
             const title = document.getElementById('modal-title');
             const input = document.getElementById('modal-input');
             
-            title.textContent = mode === 'notebook' ? 'New Notebook' : 'New Note';
+            if (mode === 'notebook') {
+                title.textContent = 'New Notebook';
+            } else if (mode === 'subnote') {
+                title.textContent = 'New Sub-Note';
+            } else {
+                title.textContent = 'New Note';
+            }
             input.placeholder = 'Name';
             input.value = '';
             modal.classList.add('active');
@@ -1781,6 +2774,7 @@
 
         function hideModal() {
             document.getElementById('modal').classList.remove('active');
+            state.parentNoteForSubnote = null;
         }
 
         function confirmModal() {
@@ -1791,6 +2785,8 @@
 
             if (modalMode === 'notebook') {
                 createNotebook(name);
+            } else if (modalMode === 'subnote') {
+                createNote(name, state.parentNoteForSubnote);
             } else {
                 createNote(name);
             }
@@ -1818,19 +2814,88 @@
             saveToStorage();
         }
 
-        function createNote(name) {
+        function createNote(name, parentNote = null) {
             if (!state.currentNotebook) return;
 
             const note = {
                 id: Date.now().toString(),
                 name: name,
                 canvasData: null,
-                textBoxes: []
+                textBoxes: [],
+                mediaEmbeds: [],
+                children: [],
+                parentId: parentNote ? parentNote.id : null,
+                isOpen: false
             };
-            state.currentNotebook.notes.push(note);
+            
+            if (parentNote) {
+                // Add as child of parent note
+                if (!parentNote.children) parentNote.children = [];
+                parentNote.children.push(note);
+            } else {
+                // Add to notebook root
+                state.currentNotebook.notes.push(note);
+            }
+            
             selectNote(state.currentNotebook, note);
             renderNotebooks();
             saveToStorage();
+        }
+
+        // Create sub-note
+        function createSubNote(notebookIndex, noteId, e) {
+            e.stopPropagation();
+            const notebook = state.notebooks[notebookIndex];
+            const parentNote = findNoteById(notebook, noteId);
+            if (parentNote) {
+                state.currentNotebook = notebook;
+                state.parentNoteForSubnote = parentNote;
+                showModal('subnote');
+            }
+        }
+
+        // Find note by ID (recursive)
+        function findNoteById(notebook, noteId, notes = null) {
+            const searchNotes = notes || notebook.notes;
+            for (const note of searchNotes) {
+                if (note.id === noteId) return note;
+                if (note.children && note.children.length > 0) {
+                    const found = findNoteById(notebook, noteId, note.children);
+                    if (found) return found;
+                }
+            }
+            return null;
+        }
+
+        // Find parent note
+        function findParentNote(notebook, noteId, notes = null, parent = null) {
+            const searchNotes = notes || notebook.notes;
+            for (const note of searchNotes) {
+                if (note.id === noteId) return parent;
+                if (note.children && note.children.length > 0) {
+                    const found = findParentNote(notebook, noteId, note.children, note);
+                    if (found !== undefined) return found;
+                }
+            }
+            return undefined;
+        }
+
+        // Get note path (breadcrumb)
+        function getNotePath(notebook, noteId) {
+            const path = [];
+            let currentId = noteId;
+            
+            while (currentId) {
+                const note = findNoteById(notebook, currentId);
+                if (note) {
+                    path.unshift(note);
+                    currentId = note.parentId;
+                } else {
+                    break;
+                }
+            }
+            
+            return path;
         }
 
         function selectNote(notebook, note) {
@@ -1850,18 +2915,957 @@
             document.getElementById('canvas-wrapper').style.display = 'block';
             document.getElementById('toolbar').style.display = 'flex';
             
-            // Initialize canvas if needed
-            if (!note.canvasData) {
-                initCanvases();
-                drawCtx.fillStyle = '#ffffff';
-                drawCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-            } else {
+            // Always initialize canvases first
+            initCanvases();
+            
+            // Load note data or create blank canvas
+            if (note.canvasData) {
                 loadNoteData(note);
+            } else {
+                // Clear text layer for new note
+                textLayer.innerHTML = '';
+                drawCtx.fillStyle = getCanvasBackground();
+                drawCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                // Clear undo history and start version timer
+                clearUndoHistory();
+                versionHistory = note.versionHistory || [];
+                startVersionHistoryTimer();
+                saveInitialState();
             }
 
-            // Update UI
-            document.getElementById('note-info').textContent = `${notebook.name} / ${note.name}`;
+            // Update UI with breadcrumb path
+            updateBreadcrumb(notebook, note);
+            
+            // Render sub-note blocks on canvas
+            renderSubnoteBlocks(note);
+            
             renderNotebooks();
+        }
+
+        // Render sub-note links on canvas (Notion-style blocks)
+        function renderSubnoteBlocks(note) {
+            // Remove existing sub-note blocks
+            const existingBlocks = document.querySelectorAll('.subnote-block');
+            existingBlocks.forEach(block => block.remove());
+            
+            if (!note || !note.children || note.children.length === 0) return;
+            
+            const textLayer = document.getElementById('text-layer');
+            
+            // Position sub-notes starting from a default location
+            // Store positions in note.subnotePositions if they exist
+            if (!note.subnotePositions) {
+                note.subnotePositions = {};
+            }
+            
+            note.children.forEach((child, index) => {
+                // Get stored position or calculate default (center of canvas)
+                const pos = note.subnotePositions[child.id] || {
+                    x: 1800,
+                    y: 1800 + (index * 80)
+                };
+                
+                const block = document.createElement('div');
+                block.className = 'subnote-block';
+                block.style.left = pos.x + 'px';
+                block.style.top = pos.y + 'px';
+                block.setAttribute('data-subnote-id', child.id);
+                
+                block.innerHTML = `
+                    <div class="subnote-block-icon">📄</div>
+                    <div class="subnote-block-content">
+                        <div class="subnote-block-name">${child.name}</div>
+                        <div class="subnote-block-hint">Click to open</div>
+                    </div>
+                    <div class="subnote-block-arrow">→</div>
+                `;
+                
+                // Click to navigate
+                block.addEventListener('click', (e) => {
+                    if (!block.classList.contains('dragging')) {
+                        selectNoteById(state.currentNotebook.id, child.id);
+                    }
+                });
+                
+                // Make draggable
+                makeSubnoteBlockDraggable(block, child.id);
+                
+                textLayer.appendChild(block);
+            });
+        }
+
+        // Make sub-note block draggable
+        function makeSubnoteBlockDraggable(block, childId) {
+            let isDragging = false;
+            let startX, startY, initialX, initialY;
+            
+            block.addEventListener('mousedown', (e) => {
+                if (e.target.closest('.subnote-block-arrow')) return;
+                
+                isDragging = false;
+                startX = e.clientX;
+                startY = e.clientY;
+                initialX = parseInt(block.style.left) || 0;
+                initialY = parseInt(block.style.top) || 0;
+                
+                const onMouseMove = (e) => {
+                    const dx = (e.clientX - startX) / state.zoom;
+                    const dy = (e.clientY - startY) / state.zoom;
+                    
+                    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+                        isDragging = true;
+                        block.classList.add('dragging');
+                    }
+                    
+                    if (isDragging) {
+                        block.style.left = (initialX + dx) + 'px';
+                        block.style.top = (initialY + dy) + 'px';
+                    }
+                };
+                
+                const onMouseUp = () => {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                    
+                    if (isDragging) {
+                        // Save new position
+                        if (!state.currentNote.subnotePositions) {
+                            state.currentNote.subnotePositions = {};
+                        }
+                        state.currentNote.subnotePositions[childId] = {
+                            x: parseInt(block.style.left),
+                            y: parseInt(block.style.top)
+                        };
+                        markUnsaved();
+                        
+                        // Remove dragging class after a short delay
+                        setTimeout(() => {
+                            block.classList.remove('dragging');
+                        }, 100);
+                    }
+                };
+                
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+        }
+
+        // ==================== MEDIA EMBED FUNCTIONS ====================
+        
+        // Detect media type from URL
+        function detectMediaType(url) {
+            const urlLower = url.toLowerCase();
+            
+            // Image extensions
+            if (/\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)(\?.*)?$/i.test(url)) {
+                return 'image';
+            }
+            
+            // Video extensions
+            if (/\.(mp4|webm|ogg|mov|avi|mkv)(\?.*)?$/i.test(url)) {
+                return 'video';
+            }
+            
+            // Audio extensions
+            if (/\.(mp3|wav|ogg|m4a|flac|aac|wma)(\?.*)?$/i.test(url)) {
+                return 'audio';
+            }
+            
+            // YouTube
+            if (urlLower.includes('youtube.com/watch') || urlLower.includes('youtu.be/')) {
+                return 'youtube';
+            }
+            
+            // Vimeo
+            if (urlLower.includes('vimeo.com/')) {
+                return 'vimeo';
+            }
+            
+            // Twitter/X
+            if (urlLower.includes('twitter.com/') || urlLower.includes('x.com/')) {
+                return 'twitter';
+            }
+            
+            // Spotify
+            if (urlLower.includes('spotify.com/')) {
+                return 'spotify';
+            }
+            
+            // SoundCloud
+            if (urlLower.includes('soundcloud.com/')) {
+                return 'soundcloud';
+            }
+            
+            // Google Maps
+            if (urlLower.includes('google.com/maps') || urlLower.includes('goo.gl/maps')) {
+                return 'maps';
+            }
+            
+            // Generic iframe for other URLs
+            if (url.startsWith('http://') || url.startsWith('https://')) {
+                return 'iframe';
+            }
+            
+            // Data URLs (for uploaded files)
+            if (url.startsWith('data:image/')) {
+                return 'image';
+            }
+            if (url.startsWith('data:video/')) {
+                return 'video';
+            }
+            if (url.startsWith('data:audio/')) {
+                return 'audio';
+            }
+            
+            return null;
+        }
+
+        // Get embed URL for various services
+        function getEmbedUrl(url, type) {
+            switch (type) {
+                case 'youtube': {
+                    let videoId = '';
+                    if (url.includes('youtu.be/')) {
+                        // Handle youtu.be/VIDEO_ID format
+                        videoId = url.split('youtu.be/')[1].split(/[?&#]/)[0];
+                    } else if (url.includes('youtube.com/watch')) {
+                        // Handle youtube.com/watch?v=VIDEO_ID format
+                        try {
+                            const urlObj = new URL(url);
+                            videoId = urlObj.searchParams.get('v');
+                        } catch (e) {
+                            // Fallback parsing
+                            const match = url.match(/[?&]v=([^&]+)/);
+                            videoId = match ? match[1] : '';
+                        }
+                    } else if (url.includes('youtube.com/embed/')) {
+                        // Already an embed URL
+                        videoId = url.split('youtube.com/embed/')[1].split(/[?&#]/)[0];
+                    } else if (url.includes('youtube.com/v/')) {
+                        // Old style embed URL
+                        videoId = url.split('youtube.com/v/')[1].split(/[?&#]/)[0];
+                    }
+                    if (!videoId) {
+                        return url; // Return original if parsing failed
+                    }
+                    // Use youtube-nocookie.com for better privacy and fewer errors
+                    return `https://www.youtube-nocookie.com/embed/${videoId}?rel=0`;
+                }
+                case 'vimeo': {
+                    const videoId = url.split('vimeo.com/')[1].split(/[?&/]/)[0];
+                    return `https://player.vimeo.com/video/${videoId}`;
+                }
+                case 'spotify': {
+                    // Convert spotify URL to embed URL
+                    const spotifyPath = url.split('spotify.com/')[1];
+                    return `https://open.spotify.com/embed/${spotifyPath}`;
+                }
+                default:
+                    return url;
+            }
+        }
+
+        // Create media embed element
+        function createMediaEmbed(url, type, options = {}) {
+            const textLayer = document.getElementById('text-layer');
+            
+            const embed = document.createElement('div');
+            embed.className = 'media-embed';
+            embed.setAttribute('data-embed-id', options.id || Date.now().toString());
+            embed.setAttribute('data-embed-type', type);
+            embed.setAttribute('data-embed-url', url);
+            
+            // Set position - default to center of canvas
+            embed.style.left = options.left || '1800px';
+            embed.style.top = options.top || '1800px';
+            
+            // Set size - use provided dimensions or auto-size later
+            if (options.width) embed.style.width = options.width;
+            if (options.height) embed.style.height = options.height;
+            
+            // For new embeds without saved dimensions, start with auto sizing
+            const autoSize = !options.width && !options.height;
+            
+            // Create content container
+            const content = document.createElement('div');
+            content.className = 'media-embed-content';
+            
+            // Create controls
+            const controls = document.createElement('div');
+            controls.className = 'media-embed-controls';
+            controls.innerHTML = `
+                <button class="media-embed-btn" onclick="deleteMediaEmbed(this.closest('.media-embed'))" title="Delete">×</button>
+            `;
+            
+            // Create resize handle
+            const resizeHandle = document.createElement('div');
+            resizeHandle.className = 'media-embed-resize';
+            
+            // Add loading state
+            content.innerHTML = '<div class="media-embed-loading">Loading...</div>';
+            
+            embed.appendChild(content);
+            embed.appendChild(controls);
+            embed.appendChild(resizeHandle);
+            textLayer.appendChild(embed);
+            
+            // Add resize functionality
+            makeMediaEmbedResizable(embed, resizeHandle);
+            
+            // Load the actual content based on type
+            switch (type) {
+                case 'image':
+                    loadImageEmbed(embed, content, url, autoSize);
+                    break;
+                case 'video':
+                    loadVideoEmbed(embed, content, url, autoSize);
+                    break;
+                case 'audio':
+                    loadAudioEmbed(embed, content, url);
+                    if (autoSize) {
+                        embed.style.width = '320px';
+                        embed.style.height = '120px';
+                    }
+                    break;
+                case 'youtube':
+                    loadYouTubeEmbed(content, url);
+                    if (autoSize) {
+                        embed.style.width = '560px';
+                        embed.style.height = '315px';
+                    }
+                    break;
+                case 'vimeo':
+                    loadVimeoEmbed(content, url);
+                    if (autoSize) {
+                        embed.style.width = '560px';
+                        embed.style.height = '315px';
+                    }
+                    break;
+                case 'spotify':
+                    loadIframeEmbed(content, getEmbedUrl(url, type));
+                    if (autoSize) {
+                        embed.style.width = '400px';
+                        embed.style.height = '152px';
+                    }
+                    break;
+                case 'iframe':
+                    loadIframeEmbed(content, url);
+                    if (autoSize) {
+                        embed.style.width = '500px';
+                        embed.style.height = '400px';
+                    }
+                    break;
+                default:
+                    content.innerHTML = '<div class="media-embed-error">Unsupported media type</div>';
+                    if (autoSize) {
+                        embed.style.width = '200px';
+                        embed.style.height = '100px';
+                    }
+            }
+            
+            // Make draggable
+            makeMediaEmbedDraggable(embed);
+            
+            // Add select handler
+            addMediaEmbedSelectHandler(embed);
+            
+            markUnsaved();
+            return embed;
+        }
+
+        function loadImageEmbed(embed, container, url, autoSize) {
+            const img = new Image();
+            img.onload = () => {
+                container.innerHTML = '';
+                container.appendChild(img);
+                
+                // Auto-size embed to fit image (with max constraints)
+                if (autoSize) {
+                    const maxWidth = 800;
+                    const maxHeight = 600;
+                    let width = img.naturalWidth;
+                    let height = img.naturalHeight;
+                    
+                    // Scale down if too large
+                    if (width > maxWidth) {
+                        height = height * (maxWidth / width);
+                        width = maxWidth;
+                    }
+                    if (height > maxHeight) {
+                        width = width * (maxHeight / height);
+                        height = maxHeight;
+                    }
+                    
+                    // Minimum size
+                    width = Math.max(width, 100);
+                    height = Math.max(height, 80);
+                    
+                    embed.style.width = width + 'px';
+                    embed.style.height = height + 'px';
+                }
+            };
+            img.onerror = () => {
+                container.innerHTML = '<div class="media-embed-error">Failed to load image</div>';
+                if (autoSize) {
+                    embed.style.width = '200px';
+                    embed.style.height = '100px';
+                }
+            };
+            img.src = url;
+            img.style.pointerEvents = 'none';
+        }
+
+        function loadVideoEmbed(embed, container, url, autoSize) {
+            const video = document.createElement('video');
+            video.controls = true;
+            video.src = url;
+            video.onloadedmetadata = () => {
+                container.innerHTML = '';
+                container.appendChild(video);
+                
+                // Auto-size embed to fit video (with max constraints)
+                if (autoSize) {
+                    const maxWidth = 800;
+                    const maxHeight = 600;
+                    let width = video.videoWidth;
+                    let height = video.videoHeight;
+                    
+                    // Scale down if too large
+                    if (width > maxWidth) {
+                        height = height * (maxWidth / width);
+                        width = maxWidth;
+                    }
+                    if (height > maxHeight) {
+                        width = width * (maxHeight / height);
+                        height = maxHeight;
+                    }
+                    
+                    // Minimum size
+                    width = Math.max(width, 200);
+                    height = Math.max(height, 150);
+                    
+                    embed.style.width = width + 'px';
+                    embed.style.height = height + 'px';
+                }
+            };
+            video.onerror = () => {
+                container.innerHTML = '<div class="media-embed-error">Failed to load video</div>';
+                if (autoSize) {
+                    embed.style.width = '300px';
+                    embed.style.height = '200px';
+                }
+            };
+        }
+
+        function loadAudioEmbed(embed, container, url) {
+            container.innerHTML = '';
+            container.style.flexDirection = 'column';
+            container.style.padding = '15px';
+            
+            const icon = document.createElement('div');
+            icon.className = 'media-embed-audio-icon';
+            icon.textContent = '🎵';
+            
+            const audio = document.createElement('audio');
+            audio.controls = true;
+            audio.src = url;
+            audio.style.width = '100%';
+            
+            container.appendChild(icon);
+            container.appendChild(audio);
+            
+            audio.onerror = () => {
+                container.innerHTML = '<div class="media-embed-error">Failed to load audio</div>';
+            };
+        }
+
+        function loadIframeEmbed(container, url) {
+            const iframe = document.createElement('iframe');
+            iframe.src = url;
+            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+            iframe.allowFullscreen = true;
+            iframe.setAttribute('frameborder', '0');
+            iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+            iframe.onload = () => {
+                container.innerHTML = '';
+                container.appendChild(iframe);
+            };
+            iframe.onerror = () => {
+                container.innerHTML = '<div class="media-embed-error">Failed to load content</div>';
+            };
+            // Add iframe immediately since onload may not fire for cross-origin
+            container.innerHTML = '';
+            container.appendChild(iframe);
+        }
+
+        // Extract YouTube video ID from URL
+        function getYouTubeVideoId(url) {
+            let videoId = '';
+            if (url.includes('youtu.be/')) {
+                videoId = url.split('youtu.be/')[1].split(/[?&#]/)[0];
+            } else if (url.includes('youtube.com/watch')) {
+                try {
+                    const urlObj = new URL(url);
+                    videoId = urlObj.searchParams.get('v');
+                } catch (e) {
+                    const match = url.match(/[?&]v=([^&]+)/);
+                    videoId = match ? match[1] : '';
+                }
+            } else if (url.includes('youtube.com/embed/')) {
+                videoId = url.split('youtube.com/embed/')[1].split(/[?&#]/)[0];
+            } else if (url.includes('youtube.com/v/')) {
+                videoId = url.split('youtube.com/v/')[1].split(/[?&#]/)[0];
+            }
+            return videoId;
+        }
+
+        // Load YouTube embed with thumbnail fallback
+        function loadYouTubeEmbed(container, url) {
+            const videoId = getYouTubeVideoId(url);
+            if (!videoId) {
+                container.innerHTML = '<div class="media-embed-error">Invalid YouTube URL</div>';
+                return;
+            }
+            
+            const watchUrl = `https://www.youtube.com/watch?v=${videoId}`;
+            const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+            const fallbackThumbnail = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+            
+            // Create clickable thumbnail preview
+            const wrapper = document.createElement('div');
+            wrapper.className = 'youtube-preview';
+            wrapper.style.cssText = 'position:relative;width:100%;height:100%;cursor:pointer;background:#000;display:flex;align-items:center;justify-content:center;';
+            
+            const img = document.createElement('img');
+            img.src = thumbnailUrl;
+            img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+            img.onerror = () => { img.src = fallbackThumbnail; };
+            
+            const playBtn = document.createElement('div');
+            playBtn.innerHTML = `<svg viewBox="0 0 68 48" style="width:68px;height:48px;"><path d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z" fill="#f00"></path><path d="M 45,24 27,14 27,34" fill="#fff"></path></svg>`;
+            playBtn.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.9;transition:opacity 0.2s;';
+            
+            wrapper.appendChild(img);
+            wrapper.appendChild(playBtn);
+            
+            wrapper.onmouseenter = () => { playBtn.style.opacity = '1'; };
+            wrapper.onmouseleave = () => { playBtn.style.opacity = '0.9'; };
+            
+            wrapper.onclick = (e) => {
+                e.stopPropagation();
+                window.open(watchUrl, '_blank');
+            };
+            
+            container.innerHTML = '';
+            container.appendChild(wrapper);
+        }
+
+        // Load Vimeo embed with thumbnail fallback
+        function loadVimeoEmbed(container, url) {
+            const videoId = url.split('vimeo.com/')[1]?.split(/[?&/]/)[0];
+            if (!videoId) {
+                container.innerHTML = '<div class="media-embed-error">Invalid Vimeo URL</div>';
+                return;
+            }
+            
+            const watchUrl = `https://vimeo.com/${videoId}`;
+            
+            // Create a preview that links to Vimeo
+            const wrapper = document.createElement('div');
+            wrapper.className = 'vimeo-preview';
+            wrapper.style.cssText = 'position:relative;width:100%;height:100%;cursor:pointer;background:linear-gradient(135deg,#1ab7ea,#162221);display:flex;align-items:center;justify-content:center;flex-direction:column;';
+            
+            const playBtn = document.createElement('div');
+            playBtn.innerHTML = `<svg viewBox="0 0 24 24" style="width:64px;height:64px;fill:#fff;opacity:0.9;"><path d="M8 5v14l11-7z"/></svg>`;
+            
+            const label = document.createElement('div');
+            label.textContent = 'Click to watch on Vimeo';
+            label.style.cssText = 'color:#fff;font-size:14px;margin-top:10px;opacity:0.8;';
+            
+            wrapper.appendChild(playBtn);
+            wrapper.appendChild(label);
+            
+            wrapper.onclick = (e) => {
+                e.stopPropagation();
+                window.open(watchUrl, '_blank');
+            };
+            
+            container.innerHTML = '';
+            container.appendChild(wrapper);
+        }
+
+        function deleteMediaEmbed(embed) {
+            if (confirm('Delete this media?')) {
+                embed.remove();
+                markUnsaved();
+            }
+        }
+
+        function makeMediaEmbedDraggable(embed) {
+            let isDragging = false;
+            let startX, startY, initialX, initialY;
+            
+            embed.addEventListener('mousedown', (e) => {
+                // Don't drag if clicking on controls, resize handle, or iframe
+                if (e.target.closest('.media-embed-controls') || 
+                    e.target.closest('.media-embed-resize') ||
+                    e.target.closest('.media-embed-content iframe')) return;
+                
+                isDragging = false;
+                startX = e.clientX;
+                startY = e.clientY;
+                initialX = parseInt(embed.style.left) || 0;
+                initialY = parseInt(embed.style.top) || 0;
+                
+                const onMouseMove = (e) => {
+                    const dx = (e.clientX - startX) / state.zoom;
+                    const dy = (e.clientY - startY) / state.zoom;
+                    
+                    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+                        isDragging = true;
+                        embed.classList.add('dragging');
+                    }
+                    
+                    if (isDragging) {
+                        embed.style.left = (initialX + dx) + 'px';
+                        embed.style.top = (initialY + dy) + 'px';
+                    }
+                };
+                
+                const onMouseUp = () => {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                    
+                    if (isDragging) {
+                        markUnsaved();
+                        setTimeout(() => embed.classList.remove('dragging'), 100);
+                    }
+                };
+                
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+        }
+
+        function makeMediaEmbedResizable(embed, handle) {
+            handle.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const startX = e.clientX;
+                const startY = e.clientY;
+                const startWidth = embed.offsetWidth;
+                const startHeight = embed.offsetHeight;
+                
+                // Check if this is an image or video (lock aspect ratio for these)
+                const embedType = embed.getAttribute('data-embed-type');
+                const lockRatio = (embedType === 'image' || embedType === 'video');
+                
+                // Get actual aspect ratio from the media element
+                let aspectRatio = startWidth / startHeight;
+                if (lockRatio) {
+                    const img = embed.querySelector('img');
+                    const video = embed.querySelector('video');
+                    if (img && img.naturalWidth && img.naturalHeight) {
+                        aspectRatio = img.naturalWidth / img.naturalHeight;
+                    } else if (video && video.videoWidth && video.videoHeight) {
+                        aspectRatio = video.videoWidth / video.videoHeight;
+                    }
+                }
+                
+                const onMouseMove = (e) => {
+                    // Calculate diagonal distance from start point
+                    const dx = (e.clientX - startX) / state.zoom;
+                    const dy = (e.clientY - startY) / state.zoom;
+                    
+                    let newWidth, newHeight;
+                    
+                    if (lockRatio) {
+                        // Use diagonal movement for proportional resize
+                        const diagonalDelta = (dx + dy) / 2;
+                        newWidth = Math.max(100, startWidth + diagonalDelta);
+                        newHeight = newWidth / aspectRatio;
+                        
+                        // Ensure minimum height
+                        if (newHeight < 80) {
+                            newHeight = 80;
+                            newWidth = newHeight * aspectRatio;
+                        }
+                    } else {
+                        newWidth = Math.max(100, startWidth + dx);
+                        newHeight = Math.max(80, startHeight + dy);
+                    }
+                    
+                    embed.style.width = newWidth + 'px';
+                    embed.style.height = newHeight + 'px';
+                };
+                
+                const onMouseUp = () => {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                    markUnsaved();
+                };
+                
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+        }
+
+        function addMediaEmbedSelectHandler(embed) {
+            embed.addEventListener('click', (e) => {
+                if (state.tool === 'select') {
+                    // Deselect all other embeds and text boxes
+                    document.querySelectorAll('.media-embed.selected, .text-box.selected').forEach(el => {
+                        el.classList.remove('selected');
+                    });
+                    embed.classList.add('selected');
+                    e.stopPropagation();
+                }
+            });
+        }
+
+        // Handle paste event for media URLs
+        function handlePaste(e) {
+            // Don't intercept paste if typing in a text box
+            if (document.activeElement.classList.contains('text-box') || 
+                document.activeElement.tagName === 'INPUT' ||
+                document.activeElement.tagName === 'TEXTAREA') {
+                return;
+            }
+            
+            // Only handle paste in editor view
+            if (state.currentView !== 'editor' || !state.currentNote) return;
+            
+            const clipboardData = e.clipboardData || window.clipboardData;
+            
+            // Check for image data first
+            const items = clipboardData.items;
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    e.preventDefault();
+                    const blob = items[i].getAsFile();
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        createMediaEmbed(event.target.result, 'image');
+                    };
+                    reader.readAsDataURL(blob);
+                    return;
+                }
+            }
+            
+            // Check for text (URL)
+            const text = clipboardData.getData('text').trim();
+            if (text) {
+                const mediaType = detectMediaType(text);
+                if (mediaType) {
+                    e.preventDefault();
+                    createMediaEmbed(text, mediaType);
+                }
+            }
+        }
+
+        // Add paste event listener
+        document.addEventListener('paste', handlePaste);
+
+        // Toggle media dropdown
+        function toggleMediaDropdown(e) {
+            e.stopPropagation();
+            const dropdown = document.getElementById('media-dropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Close media dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('media-dropdown');
+            if (dropdown && !e.target.closest('.media-dropdown')) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Show link embed dialog
+        function showLinkEmbedDialog() {
+            if (state.currentView !== 'editor' || !state.currentNote) {
+                alert('Please open a note first to add media');
+                return;
+            }
+            document.getElementById('media-dropdown').classList.remove('show');
+            const modal = document.getElementById('link-embed-modal');
+            const input = document.getElementById('link-embed-input');
+            modal.classList.add('show');
+            input.value = '';
+            input.focus();
+        }
+
+        // Close link embed dialog
+        function closeLinkEmbedDialog() {
+            document.getElementById('link-embed-modal').classList.remove('show');
+        }
+
+        // Embed link from dialog
+        function embedLinkFromDialog() {
+            const input = document.getElementById('link-embed-input');
+            const url = input.value.trim();
+            
+            if (!url) {
+                alert('Please enter a URL');
+                return;
+            }
+            
+            const type = detectMediaType(url);
+            if (!type) {
+                alert('Could not detect media type. Please enter a valid image, video, or audio URL.');
+                return;
+            }
+            
+            createMediaEmbed(url, type, {
+                left: '1800px',
+                top: '1800px'
+            });
+            
+            closeLinkEmbedDialog();
+        }
+
+        // Handle Enter key in link embed dialog
+        document.addEventListener('keydown', (e) => {
+            const modal = document.getElementById('link-embed-modal');
+            if (modal && modal.classList.contains('show')) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    embedLinkFromDialog();
+                } else if (e.key === 'Escape') {
+                    closeLinkEmbedDialog();
+                }
+            }
+        });
+
+        // Close modal when clicking backdrop
+        document.getElementById('link-embed-modal')?.addEventListener('click', (e) => {
+            if (e.target.classList.contains('link-embed-modal')) {
+                closeLinkEmbedDialog();
+            }
+        });
+
+        // Trigger file upload dialog
+        function triggerMediaUpload() {
+            if (state.currentView !== 'editor' || !state.currentNote) {
+                alert('Please open a note first to add media');
+                return;
+            }
+            document.getElementById('media-dropdown').classList.remove('show');
+            document.getElementById('media-upload').click();
+        }
+
+        // Handle file upload from file input
+        function handleFileUpload(e) {
+            const files = e.target.files;
+            if (!files || files.length === 0) return;
+            
+            Array.from(files).forEach((file, index) => {
+                embedLocalFile(file, index);
+            });
+            
+            // Reset file input so same file can be selected again
+            e.target.value = '';
+        }
+
+        // Embed a local file
+        function embedLocalFile(file, offsetIndex = 0) {
+            const reader = new FileReader();
+            
+            reader.onload = (event) => {
+                const dataUrl = event.target.result;
+                let type = 'image';
+                
+                if (file.type.startsWith('video/')) {
+                    type = 'video';
+                } else if (file.type.startsWith('audio/')) {
+                    type = 'audio';
+                } else if (file.type.startsWith('image/')) {
+                    type = 'image';
+                }
+                
+                // Offset each file slightly so they don't stack exactly on top of each other
+                const options = {
+                    left: (1800 + offsetIndex * 30) + 'px',
+                    top: (1800 + offsetIndex * 30) + 'px'
+                };
+                
+                createMediaEmbed(dataUrl, type, options);
+            };
+            
+            reader.onerror = () => {
+                alert('Failed to load file: ' + file.name);
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        // Handle drag and drop of files onto canvas
+        function setupDragAndDrop() {
+            const canvasContainer = document.getElementById('canvas-container');
+            
+            canvasContainer.addEventListener('dragover', (e) => {
+                if (state.currentView !== 'editor' || !state.currentNote) return;
+                e.preventDefault();
+                e.stopPropagation();
+                canvasContainer.classList.add('drag-over');
+            });
+            
+            canvasContainer.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                canvasContainer.classList.remove('drag-over');
+            });
+            
+            canvasContainer.addEventListener('drop', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                canvasContainer.classList.remove('drag-over');
+                
+                if (state.currentView !== 'editor' || !state.currentNote) return;
+                
+                const files = e.dataTransfer.files;
+                if (files && files.length > 0) {
+                    Array.from(files).forEach((file, index) => {
+                        // Check if it's an acceptable file type
+                        if (file.type.startsWith('image/') || file.type.startsWith('video/') || file.type.startsWith('audio/')) {
+                            embedLocalFile(file, index);
+                        }
+                    });
+                }
+                
+                // Also check for dropped URLs (text/uri-list or text/plain)
+                const url = e.dataTransfer.getData('text/uri-list') || e.dataTransfer.getData('text/plain');
+                if (url && !files.length) {
+                    const mediaType = detectMediaType(url);
+                    if (mediaType) {
+                        createMediaEmbed(url, mediaType);
+                    }
+                }
+            });
+        }
+
+        // Initialize drag and drop
+        setupDragAndDrop();
+
+        // ==================== END MEDIA EMBED FUNCTIONS ====================
+
+        function updateBreadcrumb(notebook, note) {
+            const path = getNotePath(notebook, note.id);
+            let breadcrumb = `<span class="breadcrumb-item" onclick="showHomePage()">Home</span>`;
+            breadcrumb += `<span class="breadcrumb-separator"> / </span>`;
+            breadcrumb += `<span class="breadcrumb-item" onclick="toggleNotebook(state.notebooks.find(n => n.id === '${notebook.id}'))">${notebook.name}</span>`;
+            
+            path.forEach((pathNote, index) => {
+                breadcrumb += `<span class="breadcrumb-separator"> / </span>`;
+                if (index === path.length - 1) {
+                    breadcrumb += `<span class="breadcrumb-current">${pathNote.name}</span>`;
+                } else {
+                    breadcrumb += `<span class="breadcrumb-item" onclick="selectNoteById('${notebook.id}', '${pathNote.id}')">${pathNote.name}</span>`;
+                }
+            });
+            
+            document.getElementById('note-info').innerHTML = breadcrumb;
         }
 
         function deleteNote(notebook, note, e) {
@@ -1915,38 +3919,145 @@
             renderNotebooks();
         }
 
+        function toggleNoteChildren(notebookIndex, noteId, e) {
+            e.stopPropagation();
+            const notebook = state.notebooks[notebookIndex];
+            const note = findNoteById(notebook, noteId);
+            if (note) {
+                note.isOpen = !note.isOpen;
+                renderNotebooks();
+                saveToStorage();
+            }
+        }
+
+        // Render a single note item with its children recursively
+        function renderNoteItem(notebook, note, notebookIndex, depth = 0) {
+            const isPinned = isNotePinned(notebook.id, note.id);
+            const hasChildren = note.children && note.children.length > 0;
+            const isActive = state.currentNote && state.currentNote.id === note.id;
+            
+            let html = `
+                <div class="note-item-container">
+                    <div class="note-item ${isActive ? 'active' : ''}" onclick="selectNoteById('${notebook.id}', '${note.id}')">
+                        <span>
+                            <span class="note-toggle ${hasChildren ? (note.isOpen ? 'open' : '') : 'hidden'}" onclick="toggleNoteChildren(${notebookIndex}, '${note.id}', event)">▸</span>
+                            ${note.name}
+                        </span>
+                        <div>
+                            <button class="add-subnote-btn" onclick="createSubNote(${notebookIndex}, '${note.id}', event)" title="Add sub-note">+</button>
+                            <button class="pin-btn ${isPinned ? 'pinned' : ''}" onclick="togglePin(event, '${notebook.id}', '${note.id}')" title="${isPinned ? 'Unpin' : 'Pin'}">${isPinned ? '★' : '☆'}</button>
+                            <button class="delete-btn" onclick="deleteNoteById('${notebook.id}', '${note.id}', event)">×</button>
+                        </div>
+                    </div>
+            `;
+            
+            if (hasChildren) {
+                html += `<div class="sub-notes-list ${note.isOpen ? 'open' : ''}">`;
+                note.children.forEach(childNote => {
+                    html += renderNoteItem(notebook, childNote, notebookIndex, depth + 1);
+                });
+                html += `</div>`;
+            }
+            
+            html += `</div>`;
+            return html;
+        }
+
         // Render notebooks
         function renderNotebooks() {
             const container = document.getElementById('notebooks-container');
             container.innerHTML = '';
 
-            state.notebooks.forEach(notebook => {
+            state.notebooks.forEach((notebook, notebookIndex) => {
                 const notebookEl = document.createElement('div');
                 notebookEl.className = 'notebook';
+                
+                let notesHtml = '';
+                notebook.notes.forEach(note => {
+                    notesHtml += renderNoteItem(notebook, note, notebookIndex);
+                });
+                
                 notebookEl.innerHTML = `
-                    <div class="notebook-header ${state.currentNotebook === notebook ? 'active' : ''}" onclick="toggleNotebook(state.notebooks[${state.notebooks.indexOf(notebook)}])">
+                    <div class="notebook-header ${state.currentNotebook && state.currentNotebook.id === notebook.id ? 'active' : ''}" onclick="toggleNotebook(state.notebooks[${notebookIndex}])">
                         <span class="notebook-icon">◎</span>
                         <span class="notebook-name">${notebook.name}</span>
-                        <button class="add-btn" onclick="event.stopPropagation(); state.currentNotebook = state.notebooks[${state.notebooks.indexOf(notebook)}]; showModal('note');" style="margin-right: 8px; width: 18px; height: 18px; font-size: 0.75rem;">+</button>
-                        <button class="delete-btn" onclick="deleteNotebook(state.notebooks[${state.notebooks.indexOf(notebook)}], event)">×</button>
+                        <button class="add-btn" onclick="event.stopPropagation(); state.currentNotebook = state.notebooks[${notebookIndex}]; showModal('note');" style="margin-right: 8px; width: 18px; height: 18px; font-size: 0.75rem;">+</button>
+                        <button class="delete-btn" onclick="deleteNotebook(state.notebooks[${notebookIndex}], event)">×</button>
                         <span class="notebook-toggle ${notebook.isOpen ? 'open' : ''}">▸</span>
                     </div>
                     <div class="notes-list ${notebook.isOpen ? 'open' : ''}">
-                        ${notebook.notes.map((note, noteIndex) => {
-                            const isPinned = isNotePinned(notebook.id, note.id);
-                            return `
-                            <div class="note-item ${state.currentNote === note ? 'active' : ''}" onclick="selectNote(state.notebooks[${state.notebooks.indexOf(notebook)}], state.notebooks[${state.notebooks.indexOf(notebook)}].notes[${noteIndex}])">
-                                <span>${note.name}</span>
-                                <div>
-                                    <button class="pin-btn ${isPinned ? 'pinned' : ''}" onclick="togglePin(event, '${notebook.id}', '${note.id}')" title="${isPinned ? 'Unpin' : 'Pin'}">${isPinned ? '★' : '☆'}</button>
-                                    <button class="delete-btn" onclick="deleteNote(state.notebooks[${state.notebooks.indexOf(notebook)}], state.notebooks[${state.notebooks.indexOf(notebook)}].notes[${noteIndex}], event)">×</button>
-                                </div>
-                            </div>
-                        `}).join('')}
+                        ${notesHtml}
                     </div>
                 `;
                 container.appendChild(notebookEl);
             });
+        }
+
+        // Select note by ID
+        function selectNoteById(notebookId, noteId) {
+            const notebook = state.notebooks.find(n => n.id === notebookId);
+            if (notebook) {
+                const note = findNoteById(notebook, noteId);
+                if (note) {
+                    selectNote(notebook, note);
+                }
+            }
+        }
+
+        // Delete note by ID (handles nested notes)
+        function deleteNoteById(notebookId, noteId, e) {
+            e.stopPropagation();
+            const notebook = state.notebooks.find(n => n.id === notebookId);
+            if (!notebook) return;
+            
+            const note = findNoteById(notebook, noteId);
+            if (!note) return;
+            
+            const childCount = countAllChildren(note);
+            const message = childCount > 0 
+                ? `Delete "${note.name}" and its ${childCount} sub-note(s)?`
+                : `Delete "${note.name}"?`;
+            
+            if (confirm(message)) {
+                removeNoteFromTree(notebook, noteId);
+                
+                // Remove from pinned if pinned
+                const pinnedIndex = state.pinnedNotes.findIndex(p => p.notebookId === notebook.id && p.noteId === noteId);
+                if (pinnedIndex > -1) {
+                    state.pinnedNotes.splice(pinnedIndex, 1);
+                    savePinnedToStorage();
+                }
+                
+                if (state.currentNote && state.currentNote.id === noteId) {
+                    state.currentNote = null;
+                    showHomePage();
+                }
+                
+                renderNotebooks();
+                renderHomePage();
+                saveToStorage();
+            }
+        }
+
+        // Count all children recursively
+        function countAllChildren(note) {
+            if (!note.children || note.children.length === 0) return 0;
+            return note.children.reduce((count, child) => count + 1 + countAllChildren(child), 0);
+        }
+
+        // Remove note from tree
+        function removeNoteFromTree(notebook, noteId, notes = null) {
+            const searchNotes = notes || notebook.notes;
+            for (let i = 0; i < searchNotes.length; i++) {
+                if (searchNotes[i].id === noteId) {
+                    searchNotes.splice(i, 1);
+                    return true;
+                }
+                if (searchNotes[i].children && removeNoteFromTree(notebook, noteId, searchNotes[i].children)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         // Pin/Unpin functions
@@ -1999,6 +4110,10 @@
             document.getElementById('toolbar').style.display = 'none';
             document.getElementById('nav-home').classList.add('active');
             document.getElementById('note-info').textContent = 'Home';
+            
+            // Remove sub-note blocks from canvas
+            const existingBlocks = document.querySelectorAll('.subnote-block');
+            existingBlocks.forEach(block => block.remove());
             
             const indicator = document.getElementById('save-indicator');
             indicator.className = 'save-indicator saved';
@@ -2103,6 +4218,17 @@
                 fontSize: box.style.fontSize,
                 color: box.style.color
             }));
+            
+            // Save media embeds
+            state.currentNote.mediaEmbeds = Array.from(textLayer.querySelectorAll('.media-embed')).map(embed => ({
+                id: embed.getAttribute('data-embed-id'),
+                type: embed.getAttribute('data-embed-type'),
+                url: embed.getAttribute('data-embed-url'),
+                left: embed.style.left,
+                top: embed.style.top,
+                width: embed.style.width,
+                height: embed.style.height
+            }));
         }
 
         function loadNoteData(note) {
@@ -2121,11 +4247,15 @@
                 const img = new Image();
                 img.onload = () => {
                     drawCtx.drawImage(img, 0, 0);
+                    // Save initial state after canvas is loaded
+                    saveInitialState();
                 };
                 img.src = note.canvasData;
             } else {
-                drawCtx.fillStyle = '#ffffff';
+                drawCtx.fillStyle = getCanvasBackground();
                 drawCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                // Save initial state for blank canvas
+                saveInitialState();
             }
 
             // Load text boxes
@@ -2154,7 +4284,23 @@
 
                     textBox.addEventListener('input', debounce(() => markUnsaved(), 500));
                     
+                    // Add click handler for select tool
+                    addTextBoxSelectHandler(textBox);
+                    
                     textLayer.appendChild(textBox);
+                });
+            }
+            
+            // Load media embeds
+            if (note.mediaEmbeds) {
+                note.mediaEmbeds.forEach(embedData => {
+                    createMediaEmbed(embedData.url, embedData.type, {
+                        id: embedData.id,
+                        left: embedData.left,
+                        top: embedData.top,
+                        width: embedData.width,
+                        height: embedData.height
+                    });
                 });
             }
         }
@@ -2236,8 +4382,92 @@
             if (savedPinned) {
                 state.pinnedNotes = JSON.parse(savedPinned);
             }
+            // Load dark mode preference
+            const darkMode = localStorage.getItem('ultimateNotesAppDarkMode');
+            if (darkMode === 'true') {
+                document.body.classList.add('dark-mode');
+            }
             renderNotebooks();
             renderHomePage();
+        }
+
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('ultimateNotesAppDarkMode', isDark);
+            
+            // Update default ink color
+            updateDefaultColor();
+            
+            // Update canvas background when toggling
+            if (state.currentNote) {
+                // Invert the canvas colors
+                invertCanvasColors();
+            }
+        }
+        
+        function isDarkMode() {
+            return document.body.classList.contains('dark-mode');
+        }
+        
+        function getCanvasBackground() {
+            return isDarkMode() ? '#2a2a2a' : '#ffffff';
+        }
+        
+        function getDefaultInkColor() {
+            return isDarkMode() ? '#e0e0e0' : '#333333';
+        }
+        
+        function getEraserColor() {
+            return getCanvasBackground();
+        }
+        
+        function invertCanvasColors() {
+            const imageData = drawCtx.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+            const data = imageData.data;
+            
+            for (let i = 0; i < data.length; i += 4) {
+                // Invert RGB values
+                data[i] = 255 - data[i];       // Red
+                data[i + 1] = 255 - data[i + 1]; // Green
+                data[i + 2] = 255 - data[i + 2]; // Blue
+                // Alpha stays the same
+            }
+            
+            drawCtx.putImageData(imageData, 0, 0);
+            
+            // Also invert text box colors
+            document.querySelectorAll('.text-box').forEach(box => {
+                const currentColor = box.style.color;
+                if (currentColor) {
+                    box.style.color = invertColor(currentColor);
+                }
+            });
+            
+            markUnsaved();
+        }
+        
+        function invertColor(color) {
+            // Handle hex colors
+            if (color.startsWith('#')) {
+                const hex = color.slice(1);
+                const r = 255 - parseInt(hex.substr(0, 2), 16);
+                const g = 255 - parseInt(hex.substr(2, 2), 16);
+                const b = 255 - parseInt(hex.substr(4, 2), 16);
+                return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+            }
+            // Handle rgb colors
+            if (color.startsWith('rgb')) {
+                const match = color.match(/\d+/g);
+                if (match) {
+                    const r = 255 - parseInt(match[0]);
+                    const g = 255 - parseInt(match[1]);
+                    const b = 255 - parseInt(match[2]);
+                    return `rgb(${r}, ${g}, ${b})`;
+                }
+            }
+            return color;
         }
 
         // Debounce helper
@@ -2257,6 +4487,15 @@
         loadFromStorage();
         initCanvases();
         showHomePage();
+        
+        // Set initial color based on dark mode
+        updateDefaultColor();
+        
+        function updateDefaultColor() {
+            const defaultColor = getDefaultInkColor();
+            state.color = defaultColor;
+            document.getElementById('color-picker').value = defaultColor;
+        }
 
         // Manual save
         function manualSave() {
@@ -2298,7 +4537,26 @@
                 return;
             }
             
+            // Delete or Backspace to delete selected text box or media embed
+            if ((e.key === 'Delete' || e.key === 'Backspace') && selectedTextBox) {
+                e.preventDefault();
+                deleteSelectedTextBox();
+                return;
+            }
+            
+            // Delete selected media embed
+            if ((e.key === 'Delete' || e.key === 'Backspace')) {
+                const selectedEmbed = document.querySelector('.media-embed.selected');
+                if (selectedEmbed) {
+                    e.preventDefault();
+                    selectedEmbed.remove();
+                    markUnsaved();
+                    return;
+                }
+            }
+            
             if (e.key === 'd') setTool('draw');
+            if (e.key === 's') setTool('select');
             if (e.key === 'e') setTool('erase');
             if (e.key === 't') setTool('text');
             if (e.key === 'p') setTool('pan');
