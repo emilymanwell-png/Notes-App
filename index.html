@@ -230,6 +230,374 @@
             border-color: #666;
         }
 
+        /* Status Badge Styles */
+        .status-badge {
+            display: inline-block;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-size: 0.6rem;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+            margin-left: 8px;
+            margin-right: 4px;
+            vertical-align: middle;
+            opacity: 0.85;
+        }
+
+        .status-badge.in-progress {
+            background: rgba(245, 158, 11, 0.15);
+            color: #D97706;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .status-badge.finished {
+            background: rgba(16, 185, 129, 0.15);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-badge.needs-review {
+            background: rgba(59, 130, 246, 0.15);
+            color: #2563EB;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        body.dark-mode .status-badge.in-progress {
+            background: rgba(245, 158, 11, 0.15);
+            color: #FBBF24;
+            border-color: rgba(245, 158, 11, 0.4);
+        }
+
+        body.dark-mode .status-badge.finished {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34D399;
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+
+        body.dark-mode .status-badge.needs-review {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60A5FA;
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+
+        /* Status badge on pinned cards */
+        .pinned-card .status-badge {
+            display: block;
+            margin-left: 0;
+            margin-top: 8px;
+            margin-bottom: 4px;
+            font-size: 0.65rem;
+            width: fit-content;
+        }
+
+        /* Status Selector */
+        .status-select {
+            background: #fff;
+            color: #444;
+            border: 1px solid #e0e0e0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-family: inherit;
+            min-width: 140px;
+        }
+
+        .status-select:focus {
+            outline: none;
+            border-color: #333;
+        }
+
+        body.dark-mode .status-select {
+            background: #333;
+            border-color: #444;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .status-select:focus {
+            border-color: #666;
+        }
+
+        /* Outline Sidebar */
+        .outline-sidebar {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 220px;
+            height: 100%;
+            background: #fafafa;
+            border-left: 1px solid #e8e8e8;
+            padding: 16px;
+            overflow-y: auto;
+            z-index: 10;
+            display: none;
+        }
+
+        .outline-sidebar.visible {
+            display: block;
+        }
+
+        .outline-header {
+            font-size: 0.7rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .outline-item {
+            padding: 6px 8px;
+            font-size: 0.8rem;
+            color: #666;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.15s ease;
+            margin-bottom: 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .outline-item:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .outline-item.h1 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding-left: 8px;
+        }
+
+        .outline-item.h2 {
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding-left: 20px;
+        }
+
+        .outline-item.h3 {
+            font-size: 0.75rem;
+            padding-left: 32px;
+        }
+
+        body.dark-mode .outline-sidebar {
+            background: #1a1a1a;
+            border-left-color: #333;
+        }
+
+        body.dark-mode .outline-header {
+            color: #888;
+        }
+
+        body.dark-mode .outline-item {
+            color: #ccc;
+        }
+
+        body.dark-mode .outline-item:hover {
+            background: #2a2a2a;
+            color: #fff;
+        }
+
+        /* Header text styles on canvas */
+        .text-box.header-1 {
+            font-size: 32px !important;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .text-box.header-2 {
+            font-size: 24px !important;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .text-box.header-3 {
+            font-size: 18px !important;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        /* Header nav sidebar (Notion-style, right side) */
+        .header-nav {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: flex-end;
+            pointer-events: auto;
+            padding: 10px 6px;
+            background: transparent;
+        }
+
+        .header-nav-item {
+            height: 3px;
+            border-radius: 2px;
+            background: rgba(0,0,0,0.18);
+            cursor: pointer;
+            transition: background 0.15s, width 0.15s;
+        }
+
+        .header-nav-item.h1 {
+            width: 28px;
+        }
+
+        .header-nav-item.h2 {
+            width: 20px;
+        }
+
+        .header-nav-item.h3 {
+            width: 12px;
+        }
+
+        .header-nav-item:hover {
+            background: rgba(0,122,255,0.7);
+        }
+
+        .header-nav-item.active {
+            background: #007AFF;
+        }
+
+        .header-preview {
+            position: fixed;
+            z-index: 30;
+            max-width: 260px;
+            background: #fff;
+            color: #222;
+            border: 1px solid #e0e0e0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            font-size: 0.8rem;
+            pointer-events: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        body.dark-mode .header-nav-item {
+            background: rgba(255,255,255,0.18);
+        }
+
+        body.dark-mode .header-nav-item:hover {
+            background: rgba(96,165,250,0.7);
+        }
+
+        body.dark-mode .header-nav-item.active {
+            background: #60A5FA;
+        }
+
+        body.dark-mode .header-preview {
+            background: #222;
+            color: #e0e0e0;
+            border-color: #333;
+        }
+
+        /* Import modal */
+        .import-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .import-modal.active {
+            display: flex;
+        }
+
+        .import-modal-content {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            min-width: 320px;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        .import-modal-content h3 {
+            margin: 0 0 16px 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .import-progress {
+            background: #f0f0f0;
+            border-radius: 6px;
+            height: 8px;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+
+        .import-progress-bar {
+            background: #007AFF;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .import-status {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .import-modal-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            justify-content: flex-end;
+        }
+
+        .import-modal-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .import-modal-btn.primary {
+            background: #007AFF;
+            color: #fff;
+        }
+
+        .import-modal-btn.secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        body.dark-mode .import-modal-content {
+            background: #2a2a2a;
+        }
+
+        body.dark-mode .import-modal-content h3 {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .import-progress {
+            background: #444;
+        }
+
+        body.dark-mode .import-status {
+            color: #aaa;
+        }
+
+        body.dark-mode .import-modal-btn.secondary {
+            background: #444;
+            color: #e0e0e0;
+        }
+
         /* Sidebar Styles */
         .sidebar {
             width: 260px;
@@ -347,16 +715,32 @@
         }
 
         .note-item {
-            padding: 8px 16px;
-            margin: 1px 0;
+            padding: 5px 12px 5px 12px;
+            margin: 0.5px 0;
             border-radius: 6px;
             cursor: pointer;
             font-size: 0.8rem;
             color: #666;
             transition: all 0.15s ease;
+            display: block;
+        }
+
+        .note-item-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            width: 100%;
+        }
+
+        .note-item-status-row {
+            display: flex;
+            justify-content: center;
+            margin-top: 3px;
+            margin-bottom: 0;
+        }
+
+        .note-item-status-row .status-badge {
+            margin: 0;
         }
 
         .note-item:hover {
@@ -365,8 +749,9 @@
         }
 
         .note-item.active {
-            background: #333;
-            color: white;
+            background: #e8e8e8;
+            color: #333;
+            font-weight: 500;
         }
 
         .delete-btn {
@@ -1275,7 +1660,7 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 1;
+            z-index: 3;
         }
 
         .text-box {
@@ -1734,9 +2119,11 @@
         <div class="notebooks-section">
             <div class="section-title">
                 <span>Notebooks</span>
-                <button class="add-btn" onclick="showModal('notebook')">+</button>
+                <button class="add-btn" onclick="triggerEvernoteImport()" title="Import from Evernote">↓</button>
+                <button class="add-btn" onclick="showModal('notebook')" title="New Notebook">+</button>
             </div>
             <div id="notebooks-container"></div>
+            <input type="file" id="evernote-import" accept=".enex" style="display:none" onchange="handleEvernoteImport(event)">
         </div>
     </div>
 
@@ -1780,6 +2167,25 @@
                 <button class="tool-btn" id="pan-btn" onclick="setTool('pan')" title="Pan">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
                     Pan
+                </button>
+            </div>
+            
+            <div class="toolbar-divider"></div>
+            
+            <div class="toolbar-group">
+                <span class="toolbar-label">Headers</span>
+                <button class="tool-btn header-btn" id="header-1-btn" onclick="insertHeader(1)" title="Header 1 - Click then click canvas to place">H1</button>
+                <button class="tool-btn header-btn" id="header-2-btn" onclick="insertHeader(2)" title="Header 2 - Click then click canvas to place">H2</button>
+                <button class="tool-btn header-btn" id="header-3-btn" onclick="insertHeader(3)" title="Header 3 - Click then click canvas to place">H3</button>
+                <button class="tool-btn" onclick="toggleOutline()" id="outline-btn" title="Toggle Outline">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+                        <line x1="8" y1="6" x2="21" y2="6"/>
+                        <line x1="8" y1="12" x2="21" y2="12"/>
+                        <line x1="8" y1="18" x2="21" y2="18"/>
+                        <line x1="3" y1="6" x2="3.01" y2="6"/>
+                        <line x1="3" y1="12" x2="3.01" y2="12"/>
+                        <line x1="3" y1="18" x2="3.01" y2="18"/>
+                    </svg>
                 </button>
             </div>
             
@@ -1902,6 +2308,12 @@
                         </svg>
                     </button>
                     <div class="media-dropdown-content" id="media-dropdown">
+                        <button class="media-dropdown-item" onclick="showYouTubeDialog()">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                            </svg>
+                            YouTube Video
+                        </button>
                         <button class="media-dropdown-item" onclick="showLinkEmbedDialog()">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
@@ -1915,11 +2327,23 @@
                                 <polyline points="17 8 12 3 7 8"/>
                                 <line x1="12" y1="3" x2="12" y2="15"/>
                             </svg>
-                            Embed File
+                            Upload File
                         </button>
                     </div>
                 </div>
                 <input type="file" id="media-upload" accept="image/*,video/*,audio/*" multiple style="display:none" onchange="handleFileUpload(event)">
+            </div>
+            
+            <div class="toolbar-divider"></div>
+            
+            <div class="toolbar-group">
+                <span class="toolbar-label">Status</span>
+                <select class="status-select" id="status-select" onchange="updateNoteStatus()">
+                    <option value="none">No Status</option>
+                    <option value="in-progress">📝 In Progress</option>
+                    <option value="finished">✅ Finished</option>
+                    <option value="needs-review">🔍 Needs Review</option>
+                </select>
             </div>
             
             <div class="toolbar-divider"></div>
@@ -1937,6 +2361,13 @@
         </div>
 
         <div class="canvas-container" id="canvas-container" style="display: none;">
+            <div class="outline-sidebar" id="outline-sidebar">
+                <div class="outline-header">Outline</div>
+                <div id="outline-content"></div>
+            </div>
+            <!-- Header navigation sidebar (Notion-style) -->
+            <div class="header-nav" id="header-nav"></div>
+            <div class="header-preview" id="header-preview"></div>
             <div class="eraser-cursor" id="eraser-cursor"></div>
             <div class="empty-state" id="empty-state" style="display: none;">
                 <div class="empty-state-icon">○</div>
@@ -1953,8 +2384,8 @@
         <!-- Link Embed Modal -->
         <div class="link-embed-modal" id="link-embed-modal">
             <div class="link-embed-dialog">
-                <h3>Embed Media Link</h3>
-                <input type="text" id="link-embed-input" placeholder="Paste image, video, or audio URL..." autocomplete="off">
+                <h3 id="link-embed-title">Embed Media Link</h3>
+                <input type="text" id="link-embed-input" placeholder="Paste YouTube, Vimeo, or media URL..." autocomplete="off">
                 <div class="link-embed-buttons">
                     <button class="link-embed-btn cancel" onclick="closeLinkEmbedDialog()">Cancel</button>
                     <button class="link-embed-btn embed" onclick="embedLinkFromDialog()">Embed</button>
@@ -1967,6 +2398,20 @@
             <span class="save-indicator saved" id="save-indicator">
                 <span class="save-dot">●</span> <span class="save-text">Saved</span>
             </span>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div class="import-modal" id="import-modal">
+        <div class="import-modal-content">
+            <h3>Import from Evernote</h3>
+            <div class="import-status" id="import-status">Preparing to import...</div>
+            <div class="import-progress">
+                <div class="import-progress-bar" id="import-progress-bar"></div>
+            </div>
+            <div class="import-modal-buttons">
+                <button class="import-modal-btn secondary" onclick="closeImportModal()">Close</button>
+            </div>
         </div>
     </div>
 
@@ -1996,6 +2441,18 @@
     </div>
 
     <script>
+        // CHECK IF RUNNING FROM FILE SYSTEM - YOUTUBE WON'T WORK
+        if (window.location.protocol === 'file:') {
+            const warningDiv = document.createElement('div');
+            warningDiv.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#ff3b30;color:white;padding:16px;text-align:center;z-index:99999;font-family:Inter,sans-serif;font-size:14px;box-shadow:0 4px 12px rgba(0,0,0,0.3);';
+            warningDiv.innerHTML = `
+                <strong>⚠️ YouTube videos won't work!</strong> You're opening this file directly.<br>
+                <strong>Solution:</strong> Run <code style="background:rgba(0,0,0,0.2);padding:2px 8px;border-radius:4px;font-family:monospace;">start-server.ps1</code> and open <strong>http://localhost:8000/index.html</strong> instead.
+                <button onclick="this.parentElement.remove()" style="margin-left:12px;background:white;color:#ff3b30;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:600;">Dismiss</button>
+            `;
+            document.body.insertBefore(warningDiv, document.body.firstChild);
+        }
+        
         // App State
         let state = {
             notebooks: [],
@@ -2011,7 +2468,8 @@
             zoom: 1,
             panOffset: { x: 0, y: 0 },
             gridVisible: false,
-            parentNoteForSubnote: null // For creating sub-notes
+            parentNoteForSubnote: null, // For creating sub-notes
+            pendingHeaderLevel: null // For header insertion mode
         };
 
         // Undo/Redo History
@@ -2122,6 +2580,16 @@
                 return;
             }
 
+            // Check if we're in header insertion mode
+            if (state.pendingHeaderLevel) {
+                const headerLevel = state.pendingHeaderLevel;
+                state.pendingHeaderLevel = null;
+                // Clear active state from header buttons
+                document.querySelectorAll('.header-btn').forEach(btn => btn.classList.remove('active'));
+                createTextBox(e, headerLevel);
+                return;
+            }
+
             if (state.tool === 'text') {
                 // Don't create new text box if there's currently a focused text box
                 // (this click is just to deselect/blur the current one)
@@ -2178,16 +2646,22 @@
         }
 
         // Text box creation
-        function createTextBox(e) {
+        function createTextBox(e, headerLevel = null) {
             const coords = getCanvasCoords(e);
             const textBox = document.createElement('div');
             textBox.className = 'text-box';
+            if (headerLevel) {
+                textBox.className += ` header-${headerLevel}`;
+                textBox.setAttribute('data-header-level', headerLevel);
+            }
             textBox.contentEditable = 'true';
             textBox.style.position = 'absolute';
             textBox.style.left = coords.x + 'px';
             textBox.style.top = coords.y + 'px';
             textBox.style.fontFamily = state.font;
-            textBox.style.fontSize = state.fontSize + 'px';
+            if (!headerLevel) {
+                textBox.style.fontSize = state.fontSize + 'px';
+            }
             textBox.style.color = state.color;
             textBox.style.minWidth = '100px';
             textBox.style.minHeight = '30px';
@@ -2206,13 +2680,143 @@
                     textBox.classList.add('placed');
                     saveToUndoStack();
                 }
+                updateOutline();
                 markUnsaved();
             });
 
-            textBox.addEventListener('input', debounce(() => markUnsaved(), 500));
+            textBox.addEventListener('input', debounce(() => {
+                updateOutline();
+                markUnsaved();
+            }, 500));
             
             // Add click handler for select tool
             addTextBoxSelectHandler(textBox);
+        }
+
+        // Insert header - set mode to place on next click
+        function insertHeader(level) {
+            if (state.currentView !== 'editor' || !state.currentNote) {
+                alert('Please open a note first');
+                return;
+            }
+            
+            // Toggle header mode
+            if (state.pendingHeaderLevel === level) {
+                // Cancel if clicking same header button
+                state.pendingHeaderLevel = null;
+                document.querySelectorAll('.header-btn').forEach(btn => btn.classList.remove('active'));
+            } else {
+                // Set new header level
+                state.pendingHeaderLevel = level;
+                // Update button states
+                document.querySelectorAll('.header-btn').forEach(btn => btn.classList.remove('active'));
+                document.getElementById(`header-${level}-btn`)?.classList.add('active');
+                // Change cursor to indicate header mode
+                canvasContainer.style.cursor = 'text';
+            }
+        }
+
+        // Toggle outline sidebar
+        function toggleOutline() {
+            const outline = document.getElementById('outline-sidebar');
+            const btn = document.getElementById('outline-btn');
+            outline.classList.toggle('visible');
+            btn.classList.toggle('active');
+            if (outline.classList.contains('visible')) {
+                updateOutline();
+            }
+        }
+
+        // Update outline with all headers
+        function updateOutline() {
+            const outlineContent = document.getElementById('outline-content');
+            if (!outlineContent) return;
+            
+            const headers = textLayer.querySelectorAll('[data-header-level]');
+            
+            if (headers.length === 0) {
+                outlineContent.innerHTML = '<div style="color:#999;font-size:0.75rem;padding:8px 0;">No headers yet</div>';
+                return;
+            }
+            
+            let html = '';
+            headers.forEach((header, index) => {
+                const level = header.getAttribute('data-header-level');
+                const text = header.textContent.trim() || `Header ${level}`;
+                const shortText = text.length > 30 ? text.substring(0, 30) + '...' : text;
+                html += `<div class="outline-item h${level}" onclick="scrollToHeader(${index})" title="${text}">${shortText}</div>`;
+            });
+            
+            outlineContent.innerHTML = html;
+            // Also update the header nav (top bar)
+            updateHeaderNav(headers);
+        }
+
+        // Scroll to header when clicked in outline
+        function scrollToHeader(index) {
+            const headers = textLayer.querySelectorAll('[data-header-level]');
+            if (headers[index]) {
+                const header = headers[index];
+                
+                // Highlight briefly
+                header.style.transition = 'background 0.3s ease';
+                header.style.background = 'rgba(0, 122, 255, 0.1)';
+                setTimeout(() => {
+                    header.style.background = '';
+                }, 500);
+                
+                // Scroll into view
+                header.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // Update header nav sidebar (Notion-style small lines)
+        function updateHeaderNav(headers) {
+            const nav = document.getElementById('header-nav');
+            const preview = document.getElementById('header-preview');
+            if (!nav || !preview) return;
+
+            nav.innerHTML = '';
+            preview.style.display = 'none';
+
+            if (!headers || headers.length === 0) {
+                nav.style.display = 'none';
+                return;
+            }
+
+            headers.forEach((header, index) => {
+                const level = header.getAttribute('data-header-level');
+                const text = header.textContent.trim() || `Header ${level}`;
+
+                const item = document.createElement('div');
+                item.className = `header-nav-item h${level}`;
+                item.dataset.index = index;
+
+                item.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    // Remove active from others
+                    nav.querySelectorAll('.header-nav-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    scrollToHeader(index);
+                });
+
+                item.addEventListener('mouseenter', (e) => {
+                    preview.textContent = text;
+                    preview.style.display = 'block';
+                    const rect = item.getBoundingClientRect();
+                    // Position preview to the left of the line
+                    preview.style.top = rect.top + 'px';
+                    preview.style.left = (rect.left - preview.offsetWidth - 10) + 'px';
+                });
+
+                item.addEventListener('mouseleave', () => {
+                    preview.style.display = 'none';
+                });
+
+                nav.appendChild(item);
+            });
+
+            nav.style.display = 'flex';
         }
 
         function addTextBoxSelectHandler(textBox) {
@@ -2505,16 +3109,38 @@
             textLayer.innerHTML = '';
             stateData.textBoxes.forEach(boxData => {
                 const textBox = document.createElement('div');
-                textBox.className = 'text-box placed';
-                textBox.contentEditable = true;
-                textBox.innerHTML = boxData.content;
-                textBox.style.left = boxData.left;
-                textBox.style.top = boxData.top;
-                textBox.style.width = boxData.width;
-                textBox.style.height = boxData.height;
-                textBox.style.fontFamily = boxData.fontFamily;
-                textBox.style.fontSize = boxData.fontSize;
-                textBox.style.color = boxData.color;
+                    textBox.className = 'text-box placed';
+                    // Restore header class if this textbox was a header when saved
+                    if (boxData.headerLevel) {
+                        textBox.className += ` header-${boxData.headerLevel}`;
+                        textBox.setAttribute('data-header-level', boxData.headerLevel);
+                    }
+                    textBox.contentEditable = true;
+                    // Use textContent for plain imports, innerHTML for saved notes with formatting
+                    if (boxData.content && boxData.content.includes('<')) {
+                        textBox.innerHTML = boxData.content;
+                    } else {
+                        textBox.textContent = boxData.content || '';
+                    }
+                    textBox.style.position = 'absolute';
+                    textBox.style.left = boxData.left;
+                    textBox.style.top = boxData.top;
+                    textBox.style.minWidth = '50px';
+                    textBox.style.minHeight = '20px';
+                    if (boxData.width && boxData.width !== 'auto' && boxData.width !== '') {
+                        textBox.style.width = boxData.width;
+                    }
+                    if (boxData.height && boxData.height !== 'auto' && boxData.height !== '') {
+                        textBox.style.height = boxData.height;
+                    }
+                    if (boxData.fontFamily) textBox.style.fontFamily = boxData.fontFamily;
+                    // For headers, prefer CSS header sizing — avoid setting inline fontSize
+                    if (!boxData.headerLevel) {
+                        if (boxData.fontSize) textBox.style.fontSize = boxData.fontSize;
+                    } else {
+                        textBox.style.fontSize = '';
+                    }
+                    if (boxData.color) textBox.style.color = boxData.color;
                 
                 textBox.addEventListener('blur', () => {
                     if (textBox.textContent.trim() === '') {
@@ -2523,6 +3149,7 @@
                     saveToUndoStack();
                     markUnsaved();
                 });
+
                 textBox.addEventListener('input', debounce(() => markUnsaved(), 500));
                 
                 // Add click handler for select tool
@@ -2717,8 +3344,12 @@
         });
 
         // Font select
+        // Changing the font now only affects future text boxes.
         document.getElementById('font-select').addEventListener('change', (e) => {
             state.font = e.target.value;
+            // Do not overwrite font on existing text boxes; preserve previously-typed text.
+            // New text boxes created after this will use `state.font` (see createTextBox).
+            if (state.currentNote) saveNoteData();
         });
 
         document.getElementById('font-size-select').addEventListener('change', (e) => {
@@ -2742,12 +3373,633 @@
             }
         }
 
-        // Export note
-        function exportNote() {
-            const link = document.createElement('a');
-            link.download = `${state.currentNote?.name || 'note'}.png`;
-            link.href = drawingCanvas.toDataURL();
-            link.click();
+        // Export notes to Evernote ENEX format (replaces previous PNG export)
+        async function exportNote() {
+            try {
+                const enex = await buildENEXFromState();
+                const blob = new Blob([enex], { type: 'application/xml' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                const now = new Date();
+                const filename = `ultimateNotes-export-${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}.enex`;
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                URL.revokeObjectURL(url);
+            } catch (e) {
+                console.error('Export to ENEX failed:', e);
+                alert('Export failed. See console for details.');
+            }
+        }
+
+        // Build ENEX content from current app state
+        async function buildENEXFromState() {
+            // Simple MD5 implementation (adapted) for computing resource hashes
+            function md5cycle(x, k) {
+                var a = x[0], b = x[1], c = x[2], d = x[3];
+                a = ff(a, b, c, d, k[0], 7, -680876936);
+                d = ff(d, a, b, c, k[1], 12, -389564586);
+                c = ff(c, d, a, b, k[2], 17, 606105819);
+                b = ff(b, c, d, a, k[3], 22, -1044525330);
+                a = ff(a, b, c, d, k[4], 7, -176418897);
+                d = ff(d, a, b, c, k[5], 12, 1200080426);
+                c = ff(c, d, a, b, k[6], 17, -1473231341);
+                b = ff(b, c, d, a, k[7], 22, -45705983);
+                a = ff(a, b, c, d, k[8], 7, 1770035416);
+                d = ff(d, a, b, c, k[9], 12, -1958414417);
+                c = ff(c, d, a, b, k[10], 17, -42063);
+                b = ff(b, c, d, a, k[11], 22, -1990404162);
+                a = ff(a, b, c, d, k[12], 7, 1804603682);
+                d = ff(d, a, b, c, k[13], 12, -40341101);
+                c = ff(c, d, a, b, k[14], 17, -1502002290);
+                b = ff(b, c, d, a, k[15], 22, 1236535329);
+                a = gg(a, b, c, d, k[1], 5, -165796510);
+                d = gg(d, a, b, c, k[6], 9, -1069501632);
+                c = gg(c, d, a, b, k[11], 14, 643717713);
+                b = gg(b, c, d, a, k[0], 20, -373897302);
+                a = gg(a, b, c, d, k[5], 5, -701558691);
+                d = gg(d, a, b, c, k[10], 9, 38016083);
+                c = gg(c, d, a, b, k[15], 14, -660478335);
+                b = gg(b, c, d, a, k[4], 20, -405537848);
+                a = gg(a, b, c, d, k[9], 5, 568446438);
+                d = gg(d, a, b, c, k[14], 9, -1019803690);
+                c = gg(c, d, a, b, k[3], 14, -187363961);
+                b = gg(b, c, d, a, k[8], 20, 1163531501);
+                a = gg(a, b, c, d, k[13], 5, -1444681467);
+                d = gg(d, a, b, c, k[2], 9, -51403784);
+                c = gg(c, d, a, b, k[7], 14, 1735328473);
+                b = gg(b, c, d, a, k[12], 20, -1926607734);
+                a = hh(a, b, c, d, k[5], 4, -378558);
+                d = hh(d, a, b, c, k[8], 11, -2022574463);
+                c = hh(c, d, a, b, k[11], 16, 1839030562);
+                b = hh(b, c, d, a, k[14], 23, -35309556);
+                a = hh(a, b, c, d, k[1], 4, -1530992060);
+                d = hh(d, a, b, c, k[4], 11, 1272893353);
+                c = hh(c, d, a, b, k[7], 16, -155497632);
+                b = hh(b, c, d, a, k[10], 23, -1094730640);
+                a = hh(a, b, c, d, k[13], 4, 681279174);
+                d = hh(d, a, b, c, k[0], 11, -358537222);
+                c = hh(c, d, a, b, k[3], 16, -722521979);
+                b = hh(b, c, d, a, k[6], 23, 76029189);
+                a = hh(a, b, c, d, k[9], 4, -640364487);
+                d = hh(d, a, b, c, k[12], 11, -421815835);
+                c = hh(c, d, a, b, k[15], 16, 530742520);
+                b = hh(b, c, d, a, k[2], 23, -995338651);
+                a = ii(a, b, c, d, k[0], 6, -198630844);
+                d = ii(d, a, b, c, k[7], 10, 1126891415);
+                c = ii(c, d, a, b, k[14], 15, -1416354905);
+                b = ii(b, c, d, a, k[5], 21, -57434055);
+                a = ii(a, b, c, d, k[12], 6, 1700485571);
+                d = ii(d, a, b, c, k[3], 10, -1894986606);
+                c = ii(c, d, a, b, k[10], 15, -1051523);
+                b = ii(b, c, d, a, k[1], 21, -2054922799);
+                a = ii(a, b, c, d, k[8], 6, 1873313359);
+                d = ii(d, a, b, c, k[15], 10, -30611744);
+                c = ii(c, d, a, b, k[6], 15, -1560198380);
+                b = ii(b, c, d, a, k[13], 21, 1309151649);
+                a = ii(a, b, c, d, k[4], 6, -145523070);
+                d = ii(d, a, b, c, k[11], 10, -1120210379);
+                c = ii(c, d, a, b, k[2], 15, 718787259);
+                b = ii(b, c, d, a, k[9], 21, -343485551);
+                x[0] = add32(a, x[0]);
+                x[1] = add32(b, x[1]);
+                x[2] = add32(c, x[2]);
+                x[3] = add32(d, x[3]);
+            }
+            function cmn(q, a, b, x, s, t) {
+                a = add32(add32(a, q), add32(x, t));
+                return add32((a << s) | (a >>> (32 - s)), b);
+            }
+            function ff(a, b, c, d, x, s, t) { return cmn((b & c) | (~b & d), a, b, x, s, t); }
+            function gg(a, b, c, d, x, s, t) { return cmn((b & d) | (c & ~d), a, b, x, s, t); }
+            function hh(a, b, c, d, x, s, t) { return cmn(b ^ c ^ d, a, b, x, s, t); }
+            function ii(a, b, c, d, x, s, t) { return cmn(c ^ (b | ~d), a, b, x, s, t); }
+            function md51(s) {
+                var txt = '';
+                var n = s.length,
+                    state = [1732584193, -271733879, -1732584194, 271733878],
+                    i;
+                for (i = 64; i <= s.length; i += 64) {
+                    md5cycle(state, md5blk(s.substring(i - 64, i)));
+                }
+                s = s.substring(i - 64);
+                var tail = new Array(16).fill(0);
+                for (i = 0; i < s.length; i++) tail[i >> 2] |= s.charCodeAt(i) << ((i % 4) << 3);
+                tail[i >> 2] |= 0x80 << ((i % 4) << 3);
+                if (i > 55) {
+                    md5cycle(state, tail);
+                    tail = new Array(16).fill(0);
+                }
+                tail[14] = n * 8;
+                md5cycle(state, tail);
+                return state;
+            }
+            function md5blk(s) {
+                var md5blks = [], i;
+                for (i = 0; i < 64; i += 4) {
+                    md5blks[i >> 2] = s.charCodeAt(i) + (s.charCodeAt(i + 1) << 8) + (s.charCodeAt(i + 2) << 16) + (s.charCodeAt(i + 3) << 24);
+                }
+                return md5blks;
+            }
+            var hex_chr = '0123456789abcdef'.split('');
+            function rhex(n) {
+                var s = '', j = 0;
+                for (; j < 4; j++) s += hex_chr[(n >> (j * 8 + 4)) & 0x0F] + hex_chr[(n >> (j * 8)) & 0x0F];
+                return s;
+            }
+            function hex(x) {
+                for (var i = 0; i < x.length; i++) x[i] = rhex(x[i]);
+                return x.join('');
+            }
+            function md5(s) { return hex(md51(s)); }
+            function add32(a, b) { return (a + b) & 0xFFFFFFFF; }
+
+            // Helper: decode base64 to binary string
+            function b64ToBinaryString(b64) {
+                try {
+                    return atob(b64);
+                } catch (e) {
+                    // fallback
+                    return decodeURIComponent(escape(window.atob(b64)));
+                }
+            }
+
+            // Build ENEX header
+            const exportDate = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+            let enex = '<?xml version="1.0" encoding="UTF-8"?>\n';
+            enex += '<!DOCTYPE en-export SYSTEM "http://xml.evernote.com/pub/evernote-export2.dtd">\n';
+            enex += `<en-export export-date="${exportDate}" application="UltimateNotesApp" version="1.0">\n`;
+
+            // Iterate notebooks and notes
+            const notebooks = state.notebooks || [];
+            for (const nb of notebooks) {
+                for (const note of nb.notes || []) {
+                    enex += '  <note>\n';
+                    enex += `    <title>${escapeHTML(note.name || 'Untitled')}</title>\n`;
+
+                    // Collect resources for this note
+                    const resources = [];
+
+                    // Map mediaEmbeds to resources/en-media or links
+                    let noteHtml = '<en-note>';
+
+                    // Add text boxes as simple divs, preserving order
+                    const textBoxes = note.textBoxes || [];
+                    for (let tb of textBoxes) {
+                        let t = escapeHTML(tb.content || '');
+                        // Replace any media placeholders like [media:ID]
+                        t = t.replace(/\[media:([^\]]+)\]/g, function(_, mid) {
+                            const m = (note.mediaEmbeds || []).find(x => x.id === mid);
+                            if (m) {
+                                if (m.url && m.url.startsWith('data:')) {
+                                    const parts = m.url.split(',');
+                                    const meta = parts[0];
+                                    const b64 = parts[1] || '';
+                                    const mime = (meta.split(':')[1] || '').split(';')[0];
+                                    const bin = b64ToBinaryString(b64);
+                                    const hash = md5(bin);
+                                    resources.push({ mime, data: b64, hash, fileName: m.fileName || 'resource' });
+                                    return `<en-media type="${mime}" hash="${hash}"/>`;
+                                } else if (m.url) {
+                                    // External link — convert to anchor
+                                    return `<a href="${escapeHTML(m.url)}">${escapeHTML(m.url)}</a>`;
+                                }
+                            }
+                            return '';
+                        });
+                        noteHtml += `<div>${t}</div>`;
+                    }
+
+                    noteHtml += '</en-note>';
+
+                    enex += '    <content><![CDATA[' + noteHtml + ']]></content>\n';
+
+                    // Append resources
+                    for (const r of resources) {
+                        enex += '    <resource>\n';
+                        enex += `      <data encoding="base64">${r.data}</data>\n`;
+                        enex += `      <mime>${r.mime}</mime>\n`;
+                        enex += '      <resource-attributes>\n';
+                        enex += `        <file-name>${escapeHTML(r.fileName || 'resource')}</file-name>\n`;
+                        enex += '      </resource-attributes>\n';
+                        enex += '    </resource>\n';
+                    }
+
+                    enex += '  </note>\n';
+                }
+            }
+
+            enex += '</en-export>\n';
+            return enex;
+        }
+
+        // Evernote Import
+        function triggerEvernoteImport() {
+            document.getElementById('evernote-import').click();
+        }
+
+        function handleEvernoteImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Show import modal
+            const modal = document.getElementById('import-modal');
+            const status = document.getElementById('import-status');
+            const progressBar = document.getElementById('import-progress-bar');
+            modal.classList.add('active');
+            status.textContent = 'Reading file...';
+            progressBar.style.width = '10%';
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    status.textContent = 'Parsing Evernote notes...';
+                    progressBar.style.width = '30%';
+                    
+                    const parser = new DOMParser();
+                    const xml = parser.parseFromString(e.target.result, 'text/xml');
+                    const notes = xml.querySelectorAll('note');
+                    
+                    if (notes.length === 0) {
+                        status.textContent = 'No notes found in file.';
+                        progressBar.style.width = '100%';
+                        return;
+                    }
+
+                    // Create a new notebook for the import
+                    const notebookName = file.name.replace('.enex', '') || 'Evernote Import';
+                    const notebook = {
+                        id: Date.now().toString(),
+                        name: notebookName,
+                        notes: [],
+                        isOpen: true
+                    };
+
+                    status.textContent = `Importing ${notes.length} notes...`;
+                    progressBar.style.width = '50%';
+
+                    let imported = 0;
+                    notes.forEach((noteEl, index) => {
+                        const title = noteEl.querySelector('title')?.textContent || `Note ${index + 1}`;
+                        const contentEl = noteEl.querySelector('content');
+                        let content = '';
+                        let extractedMedia = [];
+                        
+                        if (contentEl) {
+                            // Extract ENML content robustly from the XML node.
+                            // In an XMLDocument, `innerHTML` is not reliable. Prefer CDATA node value,
+                            // then serialize child nodes to preserve markup for parseENML.
+                            let rawContent = '';
+
+                            try {
+                                // If the first child is a CDATA section, use its nodeValue
+                                const first = contentEl.firstChild;
+                                if (first && first.nodeType === 4 && first.nodeValue) { // CDATA_SECTION_NODE === 4
+                                    rawContent = first.nodeValue;
+                                } else {
+                                    // Serialize child nodes to a string (preserves any markup)
+                                    const serializer = new XMLSerializer();
+                                    rawContent = Array.from(contentEl.childNodes).map(n => serializer.serializeToString(n)).join('');
+                                }
+                            } catch (xmlErr) {
+                                console.warn('XML extraction error, falling back to textContent:', xmlErr);
+                                rawContent = contentEl.textContent || '';
+                            }
+
+                            console.log('Extracted raw ENML for "' + title + '" (first 200 chars):', rawContent.substring(0, 200));
+
+                            // Some ENML exports HTML-encode entities inside the CDATA; decode them safely
+                            try {
+                                const ta = document.createElement('textarea');
+                                ta.innerHTML = rawContent;
+                                rawContent = ta.value;
+                            } catch (decodeErr) {
+                                console.warn('Failed to decode HTML entities for imported content:', decodeErr);
+                            }
+
+                            // Build a list of resources for this note so we can map inline <en-media> tags
+                            const resourceEls = Array.from(noteEl.querySelectorAll('resource') || []);
+                            const resourcesList = resourceEls.map(res => {
+                                const dataEl = res.querySelector('data');
+                                const mimeEl = res.querySelector('mime');
+                                const fileName = res.querySelector('resource-attributes > file-name')?.textContent || '';
+                                const b64 = (dataEl?.textContent || '').replace(/\s+/g, '');
+                                const mime = (mimeEl?.textContent || '').trim() || '';
+                                return { b64, mime, fileName };
+                            });
+
+                            // Transform any <en-media> and special <img> placeholders into real <img> tags
+                            // and collect extracted media info for later placement as mediaEmbeds.
+                            try {
+                                const mediaDoc = new DOMParser().parseFromString(rawContent, 'text/html');
+
+                                // Select en-media tags and img tags that might reference en-media URIs
+                                const mediaEls = Array.from(mediaDoc.querySelectorAll('en-media, img'))
+                                    .filter(el => el.tagName.toLowerCase() === 'en-media' || (el.tagName.toLowerCase() === 'img' && (el.getAttribute('src') || '').startsWith('en-media')));
+
+                                let mapIdx = 0;
+                                mediaEls.forEach((mEl, mi) => {
+                                    const res = resourcesList[mapIdx];
+                                    if (res && res.b64) {
+                                        const url = `data:${res.mime};base64,${res.b64}`;
+                                        const img = mediaDoc.createElement('img');
+                                        const importId = `import-${index}-${mi}`;
+                                        img.setAttribute('src', url);
+                                        img.setAttribute('data-import-id', importId);
+                                        // Replace the original element with a normal img (so later HTML->text parsing can see it)
+                                        mEl.parentNode.replaceChild(img, mEl);
+
+                                        const type = res.mime.startsWith('image/') ? 'image' : res.mime.startsWith('video/') ? 'video' : res.mime.startsWith('audio/') ? 'audio' : 'file';
+                                        extractedMedia.push({ id: importId, type, url, fileName: res.fileName });
+                                        mapIdx++;
+                                    }
+                                });
+
+                                // Serialize back to string for parseENML
+                                rawContent = mediaDoc.body.innerHTML || rawContent;
+                            } catch (transformErr) {
+                                console.warn('ENML media transform failed:', transformErr);
+                            }
+
+                            // Replace image tags with short placeholders so parseENML keeps a visible marker
+                            try {
+                                rawContent = rawContent.replace(/<img[^>]*data-import-id=["']([^"']+)["'][^>]*>/gi, '\n[media:$1]\n');
+                            } catch (phErr) {
+                                console.warn('Failed to add image placeholders:', phErr);
+                            }
+
+                            content = parseENML(rawContent);
+
+                            // Log transformed/parsing results and media extracted for debugging
+                            console.log('Transformed ENML (first 300 chars):', rawContent.substring(0, 300));
+                            console.log('Parsed content (first 300 chars):', content.substring(0, 300));
+                            console.log('Extracted media for note', extractedMedia);
+                            console.log('Parsed content for "' + title + '":', content.substring(0, 200));
+                        } else {
+                            console.log('No content element found for "' + title + '"');
+                        }
+
+                        const created = noteEl.querySelector('created')?.textContent;
+                        const createdDate = created ? parseEvernoteDate(created) : Date.now();
+
+                        const note = {
+                            id: (Date.now() + index).toString(),
+                            name: title,
+                            canvasData: null,
+                            textBoxes: [],
+                            mediaEmbeds: [],
+                            status: 'none',
+                            children: [],
+                            versionHistory: [],
+                            createdAt: createdDate
+                        };
+
+                        // Add content as text boxes on canvas
+                        // Canvas is 4000x4000, centered, so place content near center (around 1800-2000)
+                        const startX = 1800;
+                        const startY = 1800;
+                        
+                        // Always add the title as a header first
+                        note.textBoxes.push({
+                            content: title,
+                            left: startX + 'px',
+                            top: startY + 'px',
+                            width: '',
+                            height: '',
+                            fontFamily: 'Inter',
+                            fontSize: '24px',
+                            color: getDefaultInkColor(),
+                            headerLevel: '1'
+                        });
+                        console.log('Added title textBox for "' + title + '", textBoxes count:', note.textBoxes.length);
+                        
+                        if (content) {
+                            const lines = content.split('\n').filter(l => l.trim());
+                            console.log('Content lines for "' + title + '":', lines.length, lines);
+                            let yPos = startY + 60;
+                            
+                            lines.forEach((line, lineIndex) => {
+                                if (line.trim()) {
+                                    note.textBoxes.push({
+                                        content: line.trim(),
+                                        left: startX + 'px',
+                                        top: yPos + 'px',
+                                        width: '',
+                                        height: '',
+                                        fontFamily: 'Inter',
+                                        fontSize: '16px',
+                                        color: getDefaultInkColor(),
+                                        headerLevel: null
+                                    });
+                                    yPos += 36;
+                                }
+                            });
+                        }
+                        
+                        console.log('Final textBoxes for "' + title + '":', note.textBoxes.length, note.textBoxes);
+
+                        // Extract any embedded resources (images/audio/video) and add as media embeds
+                        note.mediaEmbeds = note.mediaEmbeds || [];
+                        try {
+                            if (extractedMedia && extractedMedia.length) {
+                                extractedMedia.forEach((m, mi) => {
+                                    note.mediaEmbeds.push({
+                                        id: m.id,
+                                        type: m.type,
+                                        url: m.url,
+                                        fileName: m.fileName,
+                                        left: (startX + 300 + mi * 220) + 'px',
+                                        top: (startY + 30) + 'px',
+                                        width: '200px',
+                                        height: '150px'
+                                    });
+                                });
+                            } else {
+                                const resources = noteEl.querySelectorAll('resource');
+                                resources.forEach((res, rIndex) => {
+                                    const dataEl = res.querySelector('data');
+                                    const mimeEl = res.querySelector('mime');
+                                    if (dataEl && mimeEl) {
+                                        const b64 = (dataEl.textContent || '').replace(/\s+/g, '');
+                                        const mime = (mimeEl.textContent || '').trim();
+                                        if (b64) {
+                                            const url = `data:${mime};base64,${b64}`;
+                                            const type = mime.startsWith('image/') ? 'image' : mime.startsWith('video/') ? 'video' : mime.startsWith('audio/') ? 'audio' : 'file';
+                                            // Place resources near the note start; offset multiple resources
+                                            note.mediaEmbeds.push({
+                                                id: `import-${note.id}-${rIndex}`,
+                                                type: type,
+                                                url: url,
+                                                fileName: res.querySelector('resource-attributes > file-name')?.textContent || '',
+                                                left: (startX + 300 + rIndex * 220) + 'px',
+                                                top: (startY + 30) + 'px',
+                                                width: '200px',
+                                                height: '150px'
+                                            });
+                                        }
+                                    }
+                                });
+                            }
+                        } catch (resErr) {
+                            console.warn('Error extracting resources from ENEX note:', resErr);
+                        }
+
+                            // If one of the embedded resources looks like the main drawing (image/png, or filename contains 'draw'/'sketch'),
+                            // use it as the canvas image (note.canvasData) and remove it from mediaEmbeds so it doesn't appear twice.
+                            try {
+                                if ((!note.canvasData || note.canvasData === null) && note.mediaEmbeds && note.mediaEmbeds.length) {
+                                    let candidateIdx = note.mediaEmbeds.findIndex(m => m.type === 'image' && /draw|sketch|canvas|drawing/i.test(m.fileName || ''));
+                                    if (candidateIdx === -1) {
+                                        // If only a single image resource exists, assume it's the canvas drawing
+                                        const imageCount = note.mediaEmbeds.filter(m => m.type === 'image').length;
+                                        if (imageCount === 1) {
+                                            candidateIdx = note.mediaEmbeds.findIndex(m => m.type === 'image');
+                                        }
+                                    }
+                                    if (candidateIdx !== -1) {
+                                        const c = note.mediaEmbeds[candidateIdx];
+                                        note.canvasData = c.url;
+                                        // Remove from media embeds to avoid duplicate rendering
+                                        note.mediaEmbeds.splice(candidateIdx, 1);
+                                    }
+                                }
+                            } catch (canvasErr) {
+                                console.warn('Error assigning canvasData from resources:', canvasErr);
+                            }
+
+                        notebook.notes.push(note);
+                        imported++;
+                        
+                        const progress = 50 + (imported / notes.length) * 45;
+                        progressBar.style.width = progress + '%';
+                        status.textContent = `Imported ${imported} of ${notes.length} notes...`;
+                    });
+
+                    state.notebooks.push(notebook);
+                    console.log('About to save. Notebook notes:', notebook.notes.map(n => ({name: n.name, textBoxes: n.textBoxes.length})));
+                    
+                    // Check storage size before saving
+                    const dataToSave = JSON.stringify(state.notebooks);
+                    console.log('Data size to save:', dataToSave.length, 'chars');
+                    
+                    try {
+                        localStorage.setItem('ultimateNotesApp', dataToSave);
+                        console.log('Save successful!');
+                        
+                        // Verify save
+                        const saved = JSON.parse(localStorage.getItem('ultimateNotesApp'));
+                        const importedNb = saved.find(nb => nb.id === notebook.id);
+                        console.log('Verified save - notebook notes:', importedNb?.notes.map(n => ({name: n.name, textBoxes: n.textBoxes?.length})));
+                    } catch (saveErr) {
+                        console.error('Save failed:', saveErr);
+                        status.textContent = 'Import failed: Storage is full! Clear some old notes first.';
+                        // Remove the notebook we just added since save failed
+                        state.notebooks.pop();
+                        return;
+                    }
+                    
+                    renderNotebooks();
+                    renderHomePage();
+
+                    progressBar.style.width = '100%';
+                    status.textContent = `Successfully imported ${imported} notes into "${notebookName}"!`;
+
+                    // Prevent immediate auto-save from overwriting imported content
+                    suppressNextAutoSave = true;
+
+                } catch (err) {
+                    console.error('Import error:', err);
+                    status.textContent = 'Error importing file. Please check it\'s a valid .enex file.';
+                    progressBar.style.width = '100%';
+                }
+            };
+
+            reader.onerror = () => {
+                status.textContent = 'Error reading file.';
+                progressBar.style.width = '100%';
+            };
+
+            reader.readAsText(file);
+            event.target.value = ''; // Reset input
+        }
+
+        // Parse ENML (Evernote Markup Language) to plain text
+        function parseENML(enml) {
+            if (!enml || typeof enml !== 'string') {
+                return '';
+            }
+            
+            try {
+                let content = enml.trim();
+                
+                // If it looks like it has XML/HTML tags, parse it
+                if (content.includes('<')) {
+                    // Remove XML declaration and DOCTYPE
+                    content = content.replace(/<\?xml[^>]*\?>/gi, '');
+                    content = content.replace(/<!DOCTYPE[^>]*>/gi, '');
+                    
+                    // Remove en-note wrapper tags (Evernote's root element)
+                    content = content.replace(/<\/?en-note[^>]*>/gi, '');
+                    
+                    // Convert common tags to text with line breaks
+                    content = content.replace(/<br\s*\/?>/gi, '\n');
+                    content = content.replace(/<\/div>/gi, '\n');
+                    content = content.replace(/<\/p>/gi, '\n\n');
+                    content = content.replace(/<\/li>/gi, '\n');
+                    content = content.replace(/<\/h[1-6]>/gi, '\n\n');
+                    content = content.replace(/<\/tr>/gi, '\n');
+                    
+                    // Remove all remaining HTML tags
+                    content = content.replace(/<[^>]+>/g, '');
+                    
+                    // Decode HTML entities
+                    const textarea = document.createElement('textarea');
+                    textarea.innerHTML = content;
+                    content = textarea.value;
+                }
+                
+                // Clean up whitespace
+                content = content.replace(/\r\n/g, '\n');
+                content = content.replace(/[ \t]+/g, ' ');
+                content = content.replace(/\n /g, '\n');
+                content = content.replace(/ \n/g, '\n');
+                content = content.replace(/\n{3,}/g, '\n\n');
+                
+                return content.trim();
+            } catch (e) {
+                console.error('ENML parse error:', e);
+                // Fallback: just strip all tags
+                return enml.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+            }
+        }
+
+        // Parse Evernote date format (yyyyMMddTHHmmssZ)
+        function parseEvernoteDate(dateStr) {
+            try {
+                const year = dateStr.substring(0, 4);
+                const month = dateStr.substring(4, 6);
+                const day = dateStr.substring(6, 8);
+                const hour = dateStr.substring(9, 11);
+                const min = dateStr.substring(11, 13);
+                const sec = dateStr.substring(13, 15);
+                return new Date(`${year}-${month}-${day}T${hour}:${min}:${sec}Z`).getTime();
+            } catch (e) {
+                return Date.now();
+            }
+        }
+
+        // Escape HTML for safe insertion
+        function escapeHTML(str) {
+            return str.replace(/&/g, '&amp;')
+                      .replace(/</g, '&lt;')
+                      .replace(/>/g, '&gt;')
+                      .replace(/"/g, '&quot;');
+        }
+
+        function closeImportModal() {
+            document.getElementById('import-modal').classList.remove('active');
         }
 
         // Modal functions
@@ -2825,7 +4077,8 @@
                 mediaEmbeds: [],
                 children: [],
                 parentId: parentNote ? parentNote.id : null,
-                isOpen: false
+                isOpen: false,
+                status: 'none' // none, in-progress, finished, needs-review
             };
             
             if (parentNote) {
@@ -2917,6 +4170,8 @@
             
             // Always initialize canvases first
             initCanvases();
+            // Apply current canvas transform (zoom / pan) to ensure wrapper matches state
+            updateCanvasTransform();
             
             // Load note data or create blank canvas
             if (note.canvasData) {
@@ -2935,6 +4190,12 @@
 
             // Update UI with breadcrumb path
             updateBreadcrumb(notebook, note);
+            
+            // Update status selector
+            const statusSelect = document.getElementById('status-select');
+            if (statusSelect) {
+                statusSelect.value = note.status || 'none';
+            }
             
             // Render sub-note blocks on canvas
             renderSubnoteBlocks(note);
@@ -3419,45 +4680,80 @@
             return videoId;
         }
 
-        // Load YouTube embed with thumbnail fallback
+        // Load YouTube embed - loads iframe directly to avoid Error 153
         function loadYouTubeEmbed(container, url) {
             const videoId = getYouTubeVideoId(url);
             if (!videoId) {
-                container.innerHTML = '<div class="media-embed-error">Invalid YouTube URL</div>';
+                container.innerHTML = '<div class="media-embed-error">❌ Invalid YouTube URL<br><small>Please check the URL and try again</small></div>';
                 return;
             }
             
-            const watchUrl = `https://www.youtube.com/watch?v=${videoId}`;
-            const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
-            const fallbackThumbnail = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+            // Create iframe without origin parameter (works better for local files)
+            // Using minimal parameters to maximize compatibility
+            const iframe = document.createElement('iframe');
+            iframe.src = `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&playsinline=1`;
+            iframe.setAttribute('frameborder', '0');
+            iframe.setAttribute('allowfullscreen', 'true');
+            iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+            iframe.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
+            iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-popups allow-forms allow-presentation');
+            iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;background:#000;';
             
-            // Create clickable thumbnail preview
-            const wrapper = document.createElement('div');
-            wrapper.className = 'youtube-preview';
-            wrapper.style.cssText = 'position:relative;width:100%;height:100%;cursor:pointer;background:#000;display:flex;align-items:center;justify-content:center;';
+            // Detect if embedding failed (Error 153) and show fallback
+            let embedFailed = false;
+            const errorTimeout = setTimeout(() => {
+                embedFailed = true;
+            }, 5000);
             
-            const img = document.createElement('img');
-            img.src = thumbnailUrl;
-            img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
-            img.onerror = () => { img.src = fallbackThumbnail; };
-            
-            const playBtn = document.createElement('div');
-            playBtn.innerHTML = `<svg viewBox="0 0 68 48" style="width:68px;height:48px;"><path d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z" fill="#f00"></path><path d="M 45,24 27,14 27,34" fill="#fff"></path></svg>`;
-            playBtn.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.9;transition:opacity 0.2s;';
-            
-            wrapper.appendChild(img);
-            wrapper.appendChild(playBtn);
-            
-            wrapper.onmouseenter = () => { playBtn.style.opacity = '1'; };
-            wrapper.onmouseleave = () => { playBtn.style.opacity = '0.9'; };
-            
-            wrapper.onclick = (e) => {
-                e.stopPropagation();
-                window.open(watchUrl, '_blank');
+            iframe.onload = () => {
+                clearTimeout(errorTimeout);
+                // Try to detect if iframe loaded properly
+                try {
+                    if (iframe.contentWindow) {
+                        // Successfully loaded
+                    }
+                } catch (e) {
+                    // Cross-origin, but that's expected
+                }
             };
             
-            container.innerHTML = '';
-            container.appendChild(wrapper);
+            // Fallback: Create a thumbnail with "Watch on YouTube" button
+            const createFallback = () => {
+                const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+                const fallback = document.createElement('div');
+                fallback.style.cssText = 'position:relative;width:100%;height:100%;background:#000 url(' + thumbnailUrl + ') center/cover;display:flex;align-items:center;justify-content:center;cursor:pointer;';
+                fallback.innerHTML = `
+                    <div style="background:rgba(0,0,0,0.85);padding:24px 32px;border-radius:12px;text-align:center;color:white;backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,0.1);">
+                        <div style="font-size:48px;margin-bottom:12px;">▶️</div>
+                        <div style="font-size:16px;font-weight:600;margin-bottom:8px;">Video Embedding Restricted</div>
+                        <div style="font-size:13px;color:#ccc;margin-bottom:16px;">This video can't be embedded</div>
+                        <button style="background:#FF0000;color:white;border:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 4px 12px rgba(255,0,0,0.3);" onmouseover="this.style.background='#CC0000'" onmouseout="this.style.background='#FF0000'">
+                            Watch on YouTube
+                        </button>
+                    </div>
+                `;
+                fallback.onclick = () => {
+                    window.open('https://youtube.com/watch?v=' + videoId, '_blank');
+                };
+                return fallback;
+            };
+            
+            container.innerHTML = '<div class="media-embed-loading">⏳ Loading video...</div>';
+            
+            // Replace loading with iframe
+            setTimeout(() => {
+                container.innerHTML = '';
+                container.appendChild(iframe);
+                
+                // Check if we're on file:// protocol
+                if (window.location.protocol === 'file:') {
+                    // Replace with fallback immediately on file://
+                    setTimeout(() => {
+                        container.innerHTML = '';
+                        container.appendChild(createFallback());
+                    }, 1000);
+                }
+            }, 100);
         }
 
         // Load Vimeo embed with thumbnail fallback
@@ -3476,7 +4772,7 @@
             wrapper.style.cssText = 'position:relative;width:100%;height:100%;cursor:pointer;background:linear-gradient(135deg,#1ab7ea,#162221);display:flex;align-items:center;justify-content:center;flex-direction:column;';
             
             const playBtn = document.createElement('div');
-            playBtn.innerHTML = `<svg viewBox="0 0 24 24" style="width:64px;height:64px;fill:#fff;opacity:0.9;"><path d="M8 5v14l11-7z"/></svg>`;
+            playBtn.innerHTML = `<svg viewBox="0 0 24 24" style="width:64px;height:64px;fill:#fff;opacity:0.9;"><path d="M8 5v14l11-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg>`;
             
             const label = document.createElement('div');
             label.textContent = 'Click to watch on Vimeo';
@@ -3688,9 +4984,31 @@
                 alert('Please open a note first to add media');
                 return;
             }
-            document.getElementById('media-dropdown').classList.remove('show');
+            document.getElementById('media-dropdown')?.classList.remove('show');
             const modal = document.getElementById('link-embed-modal');
+            const title = document.getElementById('link-embed-title');
             const input = document.getElementById('link-embed-input');
+            
+            title.textContent = 'Embed Media Link';
+            input.placeholder = 'Paste YouTube, Vimeo, or media URL...';
+            modal.classList.add('show');
+            input.value = '';
+            input.focus();
+        }
+        
+        // Show YouTube-specific dialog
+        function showYouTubeDialog() {
+            if (state.currentView !== 'editor' || !state.currentNote) {
+                alert('Please open a note first to embed a video');
+                return;
+            }
+            document.getElementById('media-dropdown')?.classList.remove('show');
+            const modal = document.getElementById('link-embed-modal');
+            const title = document.getElementById('link-embed-title');
+            const input = document.getElementById('link-embed-input');
+            
+            title.textContent = '🎥 Embed YouTube Video';
+            input.placeholder = 'Paste YouTube URL (e.g., https://youtube.com/watch?v=...)';
             modal.classList.add('show');
             input.value = '';
             input.focus();
@@ -3930,24 +5248,60 @@
             }
         }
 
+        // Get status label for badge
+        function getStatusLabel(status, short = false) {
+            if (short) {
+                switch(status) {
+                    case 'in-progress': return '⏳';
+                    case 'finished': return '✓';
+                    case 'needs-review': return '👁';
+                    default: return '';
+                }
+            }
+            switch(status) {
+                case 'in-progress': return 'In Progress';
+                case 'finished': return 'Done';
+                case 'needs-review': return 'Review';
+                default: return '';
+            }
+        }
+
+        // Update note status from toolbar
+        function updateNoteStatus() {
+            if (!state.currentNote) return;
+            
+            const statusSelect = document.getElementById('status-select');
+            const newStatus = statusSelect.value;
+            
+            state.currentNote.status = newStatus;
+            renderNotebooks();
+            renderHomePage();
+            saveToStorage();
+            markUnsaved();
+        }
+
         // Render a single note item with its children recursively
         function renderNoteItem(notebook, note, notebookIndex, depth = 0) {
             const isPinned = isNotePinned(notebook.id, note.id);
             const hasChildren = note.children && note.children.length > 0;
             const isActive = state.currentNote && state.currentNote.id === note.id;
+            const statusBadge = note.status && note.status !== 'none' ? `<div class="note-item-status-row"><span class="status-badge ${note.status}">${getStatusLabel(note.status)}</span></div>` : '';
             
             let html = `
                 <div class="note-item-container">
                     <div class="note-item ${isActive ? 'active' : ''}" onclick="selectNoteById('${notebook.id}', '${note.id}')">
-                        <span>
-                            <span class="note-toggle ${hasChildren ? (note.isOpen ? 'open' : '') : 'hidden'}" onclick="toggleNoteChildren(${notebookIndex}, '${note.id}', event)">▸</span>
-                            ${note.name}
-                        </span>
-                        <div>
-                            <button class="add-subnote-btn" onclick="createSubNote(${notebookIndex}, '${note.id}', event)" title="Add sub-note">+</button>
-                            <button class="pin-btn ${isPinned ? 'pinned' : ''}" onclick="togglePin(event, '${notebook.id}', '${note.id}')" title="${isPinned ? 'Unpin' : 'Pin'}">${isPinned ? '★' : '☆'}</button>
-                            <button class="delete-btn" onclick="deleteNoteById('${notebook.id}', '${note.id}', event)">×</button>
+                        <div class="note-item-header">
+                            <span>
+                                <span class="note-toggle ${hasChildren ? (note.isOpen ? 'open' : '') : 'hidden'}" onclick="toggleNoteChildren(${notebookIndex}, '${note.id}', event)">▸</span>
+                                ${note.name}
+                            </span>
+                            <div>
+                                <button class="add-subnote-btn" onclick="createSubNote(${notebookIndex}, '${note.id}', event)" title="Add sub-note">+</button>
+                                <button class="pin-btn ${isPinned ? 'pinned' : ''}" onclick="togglePin(event, '${notebook.id}', '${note.id}')" title="${isPinned ? 'Unpin' : 'Pin'}">${isPinned ? '★' : '☆'}</button>
+                                <button class="delete-btn" onclick="deleteNoteById('${notebook.id}', '${note.id}', event)">×</button>
+                            </div>
                         </div>
+                        ${statusBadge}
                     </div>
             `;
             
@@ -4145,6 +5499,7 @@
                     if (!notebook) return '';
                     const note = notebook.notes.find(n => n.id === pin.noteId);
                     if (!note) return '';
+                    const statusBadge = note.status && note.status !== 'none' ? `<span class="status-badge ${note.status}">${getStatusLabel(note.status)}</span>` : '';
                     
                     return `
                         <div class="pinned-card" onclick="openPinnedNote('${pin.notebookId}', '${pin.noteId}')">
@@ -4152,7 +5507,7 @@
                             <div class="pinned-card-preview">
                                 ${note.canvasData ? `<img src="${note.canvasData}" alt="Preview">` : ''}
                             </div>
-                            <div class="pinned-card-title">${note.name}</div>
+                            <div class="pinned-card-title">${note.name}${statusBadge}</div>
                             <div class="pinned-card-notebook">${notebook.name}</div>
                         </div>
                     `;
@@ -4216,7 +5571,8 @@
                 height: box.style.height,
                 fontFamily: box.style.fontFamily,
                 fontSize: box.style.fontSize,
-                color: box.style.color
+                color: box.style.color,
+                headerLevel: box.getAttribute('data-header-level') || null
             }));
             
             // Save media embeds
@@ -4260,19 +5616,46 @@
 
             // Load text boxes
             textLayer.innerHTML = '';
-            if (note.textBoxes) {
-                note.textBoxes.forEach(boxData => {
+            console.log('Loading note:', note.name, 'textBoxes:', note.textBoxes?.length || 0);
+            if (note.textBoxes && note.textBoxes.length > 0) {
+                note.textBoxes.forEach((boxData, idx) => {
+                    console.log('Creating text box', idx, ':', boxData.content?.substring(0, 50), 'at', boxData.left, boxData.top);
                     const textBox = document.createElement('div');
                     textBox.className = 'text-box placed';
+                    // Restore header class if this textbox was a header when saved
+                    if (boxData.headerLevel) {
+                        textBox.className += ` header-${boxData.headerLevel}`;
+                        textBox.setAttribute('data-header-level', boxData.headerLevel);
+                    }
                     textBox.contentEditable = true;
-                    textBox.innerHTML = boxData.content;
+                    // Use innerHTML when content contains markup, otherwise preserve newlines
+                    if (boxData.content && boxData.content.includes('<')) {
+                        textBox.innerHTML = boxData.content;
+                    } else if (boxData.content && boxData.content.indexOf('\n') !== -1) {
+                        // Escape HTML then convert newlines to <br>
+                        textBox.innerHTML = escapeHTML(boxData.content).replace(/\n/g, '<br>');
+                    } else {
+                        textBox.textContent = boxData.content || '';
+                    }
+                    textBox.style.position = 'absolute';
                     textBox.style.left = boxData.left;
                     textBox.style.top = boxData.top;
-                    textBox.style.width = boxData.width;
-                    textBox.style.height = boxData.height;
-                    textBox.style.fontFamily = boxData.fontFamily;
-                    textBox.style.fontSize = boxData.fontSize;
-                    textBox.style.color = boxData.color;
+                    textBox.style.minWidth = '50px';
+                    textBox.style.minHeight = '20px';
+                    if (boxData.width && boxData.width !== 'auto' && boxData.width !== '') {
+                        textBox.style.width = boxData.width;
+                    }
+                    if (boxData.height && boxData.height !== 'auto' && boxData.height !== '') {
+                        textBox.style.height = boxData.height;
+                    }
+                    if (boxData.fontFamily) textBox.style.fontFamily = boxData.fontFamily;
+                    // For headers, prefer CSS header sizing — avoid setting inline fontSize
+                    if (!boxData.headerLevel) {
+                        if (boxData.fontSize) textBox.style.fontSize = boxData.fontSize;
+                    } else {
+                        textBox.style.fontSize = '';
+                    }
+                    if (boxData.color) textBox.style.color = boxData.color;
                     
                     textBox.addEventListener('blur', () => {
                         if (textBox.textContent.trim() === '') {
@@ -4288,8 +5671,10 @@
                     addTextBoxSelectHandler(textBox);
                     
                     textLayer.appendChild(textBox);
+                    console.log('Appended text box, textLayer children:', textLayer.children.length);
                 });
             }
+            console.log('Final textLayer innerHTML length:', textLayer.innerHTML.length);
             
             // Load media embeds
             if (note.mediaEmbeds) {
@@ -4303,12 +5688,19 @@
                     });
                 });
             }
+
+            // Update outline and header nav after loading text boxes
+            updateOutline();
+
+            // Ensure canvas wrapper transform is applied after loading content
+            updateCanvasTransform();
         }
 
         // Auto-save
         let saveTimeout = null;
         let debounceSaveTimeout = null;
         let hasUnsavedChanges = false;
+        let suppressNextAutoSave = false;
         const SAVE_DELAY = 2000; // Save 2 seconds after user stops making changes
         
         function markUnsaved() {
@@ -4330,6 +5722,12 @@
         
         function saveCurrentNote() {
             if (!state.currentNote) return;
+            
+            // Prevent immediate auto-save from overwriting imported content
+            if (suppressNextAutoSave) {
+                suppressNextAutoSave = false;
+                return;
+            }
             
             const indicator = document.getElementById('save-indicator');
             
@@ -4366,7 +5764,23 @@
         });
 
         function saveToStorage() {
-            localStorage.setItem('ultimateNotesApp', JSON.stringify(state.notebooks));
+            try {
+                localStorage.setItem('ultimateNotesApp', JSON.stringify(state.notebooks));
+            } catch (e) {
+                if (e.name === 'QuotaExceededError') {
+                    console.error('Storage quota exceeded! Trying to free space...');
+                    // Try to free space by clearing version history
+                    state.notebooks.forEach(nb => nb.notes.forEach(n => { 
+                        n.versionHistory = []; 
+                    }));
+                    try {
+                        localStorage.setItem('ultimateNotesApp', JSON.stringify(state.notebooks));
+                        console.log('Saved after clearing version history');
+                    } catch (e2) {
+                        alert('Storage is full! Consider exporting and deleting some notes.');
+                    }
+                }
+            }
         }
 
         function savePinnedToStorage() {
@@ -4389,6 +5803,7 @@
             }
             renderNotebooks();
             renderHomePage();
+            suppressNextAutoSave = true; // Prevent first auto-save from overwriting imported notes
         }
 
         // Dark Mode Toggle
