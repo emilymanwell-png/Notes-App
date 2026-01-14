@@ -8,6 +8,8 @@ class LayerManager {
         this.canvasWrapper = canvasWrapper;
         this.width = width;
         this.height = height;
+        // Use capped devicePixelRatio to avoid extreme memory usage
+        this.pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
         this.layers = [];
         this.activeLayerIndex = 0;
         this.layerCounter = 0;
@@ -22,12 +24,15 @@ class LayerManager {
         const canvas = document.createElement('canvas');
         canvas.id = layerId;
         canvas.className = 'layer-canvas';
-        canvas.width = this.width;
-        canvas.height = this.height;
+        // High-DPI backing store while keeping CSS size constant
+        canvas.width = Math.floor(this.width * this.pixelRatio);
+        canvas.height = Math.floor(this.height * this.pixelRatio);
         canvas.style.cssText = `
             position: absolute;
             top: 0;
             left: 0;
+            width: ${this.width}px;
+            height: ${this.height}px;
             pointer-events: none;
         `;
         
@@ -44,11 +49,15 @@ class LayerManager {
             pointer-events: none;
         `;
         
+        const layerCtx = canvas.getContext('2d');
+        // Note: We keep backing store at high-DPI but don't pre-scale context
+        // The drawing code handles coordinate mapping
+
         const layer = {
             id: layerId,
             name: layerName,
             canvas: canvas,
-            ctx: canvas.getContext('2d'),
+            ctx: layerCtx,
             contentContainer: contentContainer, // For text boxes and media on this layer
             visible: true,
             opacity: 1,
@@ -304,7 +313,8 @@ class LayerManager {
         this.layers.forEach(layer => {
             if (layer.visible) {
                 mergedCtx.globalAlpha = layer.opacity;
-                mergedCtx.drawImage(layer.canvas, 0, 0);
+                // Draw scaled from high-DPI layer backing to CSS-sized merged canvas
+                mergedCtx.drawImage(layer.canvas, 0, 0, this.width, this.height);
             }
         });
         mergedCtx.globalAlpha = 1;
@@ -357,12 +367,42 @@ class LayerManager {
         this.layers.forEach(layer => {
             if (layer.visible) {
                 mergedCtx.globalAlpha = layer.opacity;
-                mergedCtx.drawImage(layer.canvas, 0, 0);
+                mergedCtx.drawImage(layer.canvas, 0, 0, this.width, this.height);
             }
         });
         mergedCtx.globalAlpha = 1;
         
         return mergedCanvas.toDataURL();
+    }
+
+    // Async version of getFlattenedDataURL - doesn't block drawing
+    async getFlattenedDataURLAsync() {
+        return new Promise((resolve) => {
+            const doWork = () => {
+                const mergedCanvas = document.createElement('canvas');
+                mergedCanvas.width = this.width;
+                mergedCanvas.height = this.height;
+                const mergedCtx = mergedCanvas.getContext('2d');
+                
+                // Draw all visible layers from bottom to top
+                this.layers.forEach(layer => {
+                    if (layer.visible) {
+                        mergedCtx.globalAlpha = layer.opacity;
+                        mergedCtx.drawImage(layer.canvas, 0, 0, this.width, this.height);
+                    }
+                });
+                mergedCtx.globalAlpha = 1;
+                
+                resolve(mergedCanvas.toDataURL());
+            };
+            
+            // Use requestIdleCallback to avoid blocking drawing, with setTimeout fallback
+            if (typeof requestIdleCallback !== 'undefined') {
+                requestIdleCallback(doWork, { timeout: 1000 });
+            } else {
+                setTimeout(doWork, 0);
+            }
+        });
     }
 
     // Serialize layers for saving
@@ -376,6 +416,38 @@ class LayerManager {
             blendMode: layer.blendMode,
             imageData: layer.canvas.toDataURL()
         }));
+    }
+
+    // Async version of serialize - processes layers one at a time to avoid blocking
+    async serializeAsync() {
+        const results = [];
+        
+        for (const layer of this.layers) {
+            // Process each layer in a separate task to avoid blocking the main thread
+            const layerData = await new Promise((resolve) => {
+                const doWork = () => {
+                    resolve({
+                        id: layer.id,
+                        name: layer.name,
+                        visible: layer.visible,
+                        opacity: layer.opacity,
+                        locked: layer.locked,
+                        blendMode: layer.blendMode,
+                        imageData: layer.canvas.toDataURL()
+                    });
+                };
+                
+                // Use requestIdleCallback to yield to drawing operations
+                if (typeof requestIdleCallback !== 'undefined') {
+                    requestIdleCallback(doWork, { timeout: 500 });
+                } else {
+                    setTimeout(doWork, 0);
+                }
+            });
+            results.push(layerData);
+        }
+        
+        return results;
     }
 
     // Deserialize and restore layers
@@ -451,6 +523,8 @@ class CanvasManager {
         
         this.CANVAS_WIDTH = options.width || 4000;
         this.CANVAS_HEIGHT = options.height || 4000;
+        // High-DPI rendering ratio (capped for memory safety)
+        this.pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
         
         this.gridCtx = this.gridCanvas?.getContext('2d');
         this.drawCtx = this.drawingCanvas?.getContext('2d');
@@ -465,6 +539,9 @@ class CanvasManager {
         this.isPanning = false;
         this.panStart = { x: 0, y: 0 };
         this.lastMousePos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+
+        // Stroke smoothing buffer
+        this.points = [];
         
         // State reference (will be set by main app)
         this.state = null;
@@ -472,6 +549,10 @@ class CanvasManager {
         // Callbacks
         this.onUnsaved = null;
         this.onSaveToUndo = null;
+
+        // Internal throttle for undo snapshots
+        this._lastUndoAt = 0;
+        this._UNDO_COOLDOWN_MS = 1200;
     }
 
     // Set state reference from main app
@@ -486,10 +567,16 @@ class CanvasManager {
             return;
         }
         
-        this.gridCanvas.width = this.CANVAS_WIDTH;
-        this.gridCanvas.height = this.CANVAS_HEIGHT;
-        this.drawingCanvas.width = this.CANVAS_WIDTH;
-        this.drawingCanvas.height = this.CANVAS_HEIGHT;
+        // High-DPI backing store while keeping CSS dimensions constant
+        this.gridCanvas.width = Math.floor(this.CANVAS_WIDTH * this.pixelRatio);
+        this.gridCanvas.height = Math.floor(this.CANVAS_HEIGHT * this.pixelRatio);
+        this.drawingCanvas.width = Math.floor(this.CANVAS_WIDTH * this.pixelRatio);
+        this.drawingCanvas.height = Math.floor(this.CANVAS_HEIGHT * this.pixelRatio);
+        this.gridCanvas.style.width = this.CANVAS_WIDTH + 'px';
+        this.gridCanvas.style.height = this.CANVAS_HEIGHT + 'px';
+        this.drawingCanvas.style.width = this.CANVAS_WIDTH + 'px';
+        this.drawingCanvas.style.height = this.CANVAS_HEIGHT + 'px';
+        // Note: We keep backing store at high-DPI but coordinate scaling is handled in draw functions
         
         // Set text layer and wrapper dimensions
         if (this.textLayer) {
@@ -595,57 +682,74 @@ class CanvasManager {
             return;
         }
         
-        // Save state for undo
-        if (this.onSaveToUndo) {
-            this.onSaveToUndo();
-        }
+        // Do not push undo at stroke start; defer to stroke end
         
         this.isDrawing = true;
         const coords = this.getCoords(e);
         this.lastX = coords.x;
         this.lastY = coords.y;
+
+        // Initialize smoothing buffer
+        this.points = [coords];
     }
 
     // Draw on canvas
     draw(e) {
         if (!this.state) return;
-        
+
         if (this.isPanning) {
             this.state.panOffset.x = e.clientX - this.panStart.x;
             this.state.panOffset.y = e.clientY - this.panStart.y;
             this.updateTransform();
             return;
         }
-        
+
         if (!this.isDrawing) return;
-        
+
         const coords = this.getCoords(e);
+        this.points.push(coords);
         
         // Get the active layer's context
         const ctx = this.layerManager.getActiveContext() || this.drawCtx;
         if (!ctx) return;
         
-        ctx.beginPath();
-        ctx.moveTo(this.lastX, this.lastY);
-        ctx.lineTo(coords.x, coords.y);
-        
+        // Draw a smoothed segment using quadratic curves
+        const points = this.points;
+        const len = points.length;
+        if (len < 3) {
+            // Not enough points to smooth yet; draw a simple segment
+            ctx.beginPath();
+            ctx.moveTo(this.lastX, this.lastY);
+            ctx.lineTo(coords.x, coords.y);
+        } else {
+            const p1 = points[len - 3];
+            const p2 = points[len - 2];
+            const p3 = points[len - 1];
+            const mid1 = { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 };
+            const mid2 = { x: (p2.x + p3.x) / 2, y: (p2.y + p3.y) / 2 };
+            ctx.beginPath();
+            ctx.moveTo(mid1.x, mid1.y);
+            ctx.quadraticCurveTo(p2.x, p2.y, mid2.x, mid2.y);
+        }
+
         if (this.state.tool === 'erase') {
             ctx.globalCompositeOperation = 'destination-out';
             ctx.strokeStyle = 'rgba(0,0,0,1)';
+            // Keep erase width strong; scale slightly with zoom for feel
             ctx.lineWidth = this.state.thickness * 6 * (this.state.zoom || 1);
         } else {
             ctx.globalCompositeOperation = 'source-over';
             ctx.strokeStyle = this.state.color;
             ctx.lineWidth = this.state.thickness;
         }
-        
+
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.stroke();
         
-        // Reset composite operation
+        // Reset composite operation after stroke to avoid lingering erase mode
         ctx.globalCompositeOperation = 'source-over';
-        
+
         this.lastX = coords.x;
         this.lastY = coords.y;
     }
@@ -656,6 +760,16 @@ class CanvasManager {
             this.isDrawing = false;
             if (this.onUnsaved) {
                 this.onUnsaved();
+            }
+
+            // Clear smoothing buffer
+            this.points = [];
+
+            // Throttled undo snapshot at stroke end
+            const now = Date.now();
+            if (this.onSaveToUndo && (now - this._lastUndoAt > this._UNDO_COOLDOWN_MS)) {
+                this.onSaveToUndo();
+                this._lastUndoAt = now;
             }
         }
         if (this.isPanning) {
@@ -693,7 +807,7 @@ class CanvasManager {
         this.layerManager.layers.forEach(layer => {
             if (layer.visible) {
                 mergedCtx.globalAlpha = layer.opacity;
-                mergedCtx.drawImage(layer.canvas, 0, 0);
+                mergedCtx.drawImage(layer.canvas, 0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT);
             }
         });
         

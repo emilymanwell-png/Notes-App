@@ -230,6 +230,139 @@
             border-color: #666;
         }
 
+        /* Dark Mode - Graph View */
+        body.dark-mode .graph-view {
+            background: #0a0a0f;
+        }
+
+        body.dark-mode .graph-header h2 {
+            color: #fff;
+        }
+
+        body.dark-mode .graph-header p {
+            color: rgba(255,255,255,0.6);
+        }
+
+        body.dark-mode .graph-search-input {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.2);
+            color: #fff;
+        }
+
+        body.dark-mode .graph-search-input::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+
+        body.dark-mode .graph-btn {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.2);
+            color: #fff;
+        }
+
+        body.dark-mode .graph-btn:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        body.dark-mode .graph-checkbox {
+            color: rgba(255,255,255,0.7);
+        }
+
+        body.dark-mode .graph-container {
+            background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0f 100%);
+            border-color: #333;
+        }
+
+        body.dark-mode .graph-info-panel {
+            background: rgba(20, 20, 30, 0.95);
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        body.dark-mode .graph-info-title {
+            color: #fff;
+        }
+
+        body.dark-mode .graph-info-content {
+            color: rgba(255,255,255,0.7);
+        }
+
+        body.dark-mode .graph-info-content .info-label {
+            color: rgba(255,255,255,0.5);
+        }
+
+        body.dark-mode .graph-info-content .connection-item {
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        body.dark-mode .graph-info-content .connection-item:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        body.dark-mode .graph-view-toggle {
+            background: rgba(255,255,255,0.1);
+        }
+
+        body.dark-mode .graph-toggle-btn {
+            color: rgba(255,255,255,0.6);
+        }
+
+        body.dark-mode .graph-toggle-btn:hover {
+            color: rgba(255,255,255,0.9);
+            background: rgba(255,255,255,0.1);
+        }
+
+        body.dark-mode .graph-toggle-btn.active {
+            background: rgba(139, 92, 246, 0.3);
+            color: #fff;
+        }
+
+        body.dark-mode .notes-overview-container {
+            background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0f 100%);
+            border-color: #333;
+        }
+
+        body.dark-mode .note-preview-card {
+            background: rgba(30, 30, 45, 0.95);
+            border-color: rgba(255,255,255,0.1);
+            box-shadow: none;
+        }
+
+        body.dark-mode .note-preview-card:hover {
+            box-shadow: 0 8px 32px rgba(139, 92, 246, 0.2);
+        }
+
+        body.dark-mode .note-preview-header {
+            background: rgba(139, 92, 246, 0.15);
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        body.dark-mode .note-preview-title {
+            color: #fff;
+        }
+
+        body.dark-mode .note-preview-meta {
+            color: rgba(255,255,255,0.5);
+        }
+
+        body.dark-mode .note-preview-text {
+            color: rgba(255,255,255,0.7);
+        }
+
+        body.dark-mode .note-preview-content::after {
+            background: linear-gradient(transparent, rgba(30, 30, 45, 0.95));
+        }
+
+        body.dark-mode .notes-zoom-level {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+
+        body.dark-mode .graph-node-tooltip {
+            background: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            border-color: transparent;
+        }
+
         /* Status Badge Styles */
         .status-badge {
             display: inline-block;
@@ -1222,7 +1355,7 @@
             display: flex;
             flex-direction: column;
             padding: 24px;
-            background: #0a0a0f;
+            background: #f8f9fa;
             position: relative;
             overflow: hidden;
         }
@@ -1233,13 +1366,13 @@
         }
 
         .graph-header h2 {
-            color: #fff;
+            color: #1a1a1a;
             margin: 0 0 4px 0;
             font-size: 1.5rem;
         }
 
         .graph-header p {
-            color: rgba(255,255,255,0.6);
+            color: rgba(0,0,0,0.6);
             margin: 0 0 16px 0;
             font-size: 0.9rem;
         }
@@ -1252,17 +1385,17 @@
         }
 
         .graph-search-input {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
+            background: #fff;
+            border: 1px solid #ddd;
             border-radius: 8px;
             padding: 8px 12px;
-            color: #fff;
+            color: #333;
             font-size: 0.9rem;
             width: 200px;
         }
 
         .graph-search-input::placeholder {
-            color: rgba(255,255,255,0.4);
+            color: #999;
         }
 
         .graph-search-input:focus {
@@ -1275,26 +1408,26 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
+            background: #fff;
+            border: 1px solid #ddd;
             border-radius: 8px;
             padding: 8px 12px;
-            color: #fff;
+            color: #333;
             font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.2s;
         }
 
         .graph-btn:hover {
-            background: rgba(255,255,255,0.15);
-            border-color: rgba(255,255,255,0.3);
+            background: #f0f0f0;
+            border-color: #ccc;
         }
 
         .graph-checkbox {
             display: flex;
             align-items: center;
             gap: 6px;
-            color: rgba(255,255,255,0.7);
+            color: #555;
             font-size: 0.85rem;
             cursor: pointer;
         }
@@ -1308,7 +1441,8 @@
             position: relative;
             border-radius: 12px;
             overflow: hidden;
-            background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0f 100%);
+            background: radial-gradient(circle at 50% 50%, #ffffff 0%, #f0f0f5 100%);
+            border: 1px solid #e0e0e0;
         }
 
         #graph-canvas {
@@ -1326,13 +1460,14 @@
             right: 40px;
             top: 100px;
             width: 280px;
-            background: rgba(20, 20, 30, 0.95);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #ddd;
             border-radius: 12px;
             padding: 16px;
             backdrop-filter: blur(10px);
             z-index: 100;
             display: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
 
         .graph-info-panel.visible {
@@ -1340,14 +1475,14 @@
         }
 
         .graph-info-title {
-            color: #fff;
+            color: #1a1a1a;
             font-weight: 600;
             font-size: 1rem;
             margin-bottom: 8px;
         }
 
         .graph-info-content {
-            color: rgba(255,255,255,0.7);
+            color: #555;
             font-size: 0.85rem;
             line-height: 1.5;
         }
@@ -1357,7 +1492,7 @@
         }
 
         .graph-info-content .info-label {
-            color: rgba(255,255,255,0.5);
+            color: #888;
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -1380,13 +1515,13 @@
 
         .graph-info-content .connection-item {
             padding: 6px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid #eee;
             cursor: pointer;
             transition: background 0.2s;
         }
 
         .graph-info-content .connection-item:hover {
-            background: rgba(255,255,255,0.05);
+            background: rgba(0,0,0,0.03);
         }
 
         .graph-info-content .connection-item:last-child {
@@ -1395,15 +1530,161 @@
 
         .graph-node-tooltip {
             position: absolute;
-            background: rgba(0, 0, 0, 0.9);
-            color: #fff;
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
             padding: 6px 10px;
             border-radius: 6px;
             font-size: 0.8rem;
             pointer-events: none;
             z-index: 1000;
             white-space: nowrap;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border: 1px solid #ddd;
+        }
+
+        /* Graph View Toggle */
+        .graph-view-toggle {
+            display: flex;
+            background: #e8e8e8;
+            border-radius: 8px;
+            padding: 2px;
+            gap: 2px;
+        }
+
+        .graph-toggle-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            color: #666;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .graph-toggle-btn:hover {
+            color: #333;
+            background: rgba(0,0,0,0.05);
+        }
+
+        .graph-toggle-btn.active {
+            background: #8b5cf6;
+            color: #fff;
+        }
+
+        /* Notes Overview */
+        .notes-overview-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            background: radial-gradient(circle at 50% 50%, #ffffff 0%, #f5f5f8 100%);
+            border: 1px solid #e0e0e0;
+        }
+
+        .notes-overview-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: 0 0;
+            padding: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-content: flex-start;
+        }
+
+        .note-preview-card {
+            width: 220px;
+            height: 180px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .note-preview-card:hover {
+            transform: scale(1.02);
+            border-color: rgba(139, 92, 246, 0.5);
+            box-shadow: 0 8px 32px rgba(139, 92, 246, 0.15);
+        }
+
+        .note-preview-header {
+            padding: 12px;
+            background: rgba(139, 92, 246, 0.08);
+            border-bottom: 1px solid #eee;
+        }
+
+        .note-preview-title {
+            color: #1a1a1a;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin: 0 0 4px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .note-preview-meta {
+            color: #888;
+            font-size: 0.7rem;
+        }
+
+        .note-preview-content {
+            flex: 1;
+            padding: 10px 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .note-preview-text {
+            color: #555;
+            font-size: 0.75rem;
+            line-height: 1.5;
+            max-height: 100%;
+            overflow: hidden;
+        }
+
+        .note-preview-canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .note-preview-content::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: linear-gradient(transparent, #fff);
+            pointer-events: none;
+        }
+
+        .notes-zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .notes-zoom-level {
+            background: #e8e8e8;
+            color: #333;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            min-width: 50px;
+            text-align: center;
         }
 
         /* Toolbar */
@@ -2154,6 +2435,8 @@
 
         .home-header {
             margin-bottom: 32px;
+            display: flex;
+            align-items: center;
         }
 
         .home-header h2 {
@@ -2166,6 +2449,32 @@
         .home-header p {
             color: #999;
             font-size: 0.9rem;
+        }
+        
+        .back-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            margin-right: 12px;
+            color: #666;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        
+        .back-btn:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        body.dark-mode .back-btn {
+            color: #aaa;
+        }
+        
+        body.dark-mode .back-btn:hover {
+            background: #333;
+            color: #fff;
         }
 
         .home-section {
@@ -2466,24 +2775,64 @@
             </div>
         </div>
         
+        <!-- Notebook Detail Page (sub-homepage) -->
+        <div class="home-page" id="notebook-detail-page" style="display: none;">
+            <div class="home-header">
+                <button class="back-btn" onclick="goBackFromNotebook()" style="background:none;border:none;cursor:pointer;font-size:1.5rem;margin-right:12px;color:#666;">←</button>
+                <div>
+                    <h2 id="notebook-detail-title">Notebook</h2>
+                    <p id="notebook-detail-path">Path</p>
+                </div>
+            </div>
+            
+            <div class="home-section" id="subnotebooks-section">
+                <div class="home-section-title">Sub-Notebooks</div>
+                <div id="subnotebooks-container" class="notebooks-grid"></div>
+            </div>
+            
+            <div class="home-section">
+                <div class="home-section-title">Notes</div>
+                <div id="notebook-notes-container" class="pinned-grid"></div>
+            </div>
+        </div>
+        
         <!-- Graph View -->
         <div class="graph-view" id="graph-view" style="display: none;">
             <div class="graph-header">
                 <h2>Knowledge Graph</h2>
                 <p>Notes connected by shared terms and patterns</p>
                 <div class="graph-controls">
+                    <div class="graph-view-toggle">
+                        <button class="graph-toggle-btn active" id="toggle-graph-view" onclick="switchGraphMode('graph')" title="Graph View">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="3"/><circle cx="4" cy="6" r="2"/><circle cx="20" cy="6" r="2"/><circle cx="4" cy="18" r="2"/><circle cx="20" cy="18" r="2"/><path d="M12 9V6M12 15v3M9 12H6M15 12h3"/></svg>
+                            Graph
+                        </button>
+                        <button class="graph-toggle-btn" id="toggle-notes-view" onclick="switchGraphMode('notes')" title="Notes Overview">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                            Notes
+                        </button>
+                    </div>
                     <input type="text" id="graph-search" placeholder="Search nodes..." class="graph-search-input">
                     <button class="graph-btn" onclick="resetGraphView()" title="Reset View">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
                         Reset
                     </button>
-                    <label class="graph-checkbox">
+                    <label class="graph-checkbox" id="orphans-checkbox">
                         <input type="checkbox" id="graph-show-orphans" checked> Show unconnected
                     </label>
+                    <div class="notes-zoom-controls" id="header-zoom-controls" style="display: none;">
+                        <button class="graph-btn" onclick="graphView.zoomNotesView(-0.2)" title="Zoom Out">−</button>
+                        <span class="notes-zoom-level" id="notes-zoom-level">100%</span>
+                        <button class="graph-btn" onclick="graphView.zoomNotesView(0.2)" title="Zoom In">+</button>
+                    </div>
                 </div>
             </div>
             <div class="graph-container" id="graph-container">
                 <canvas id="graph-canvas"></canvas>
+            </div>
+            <!-- Notes Overview Container -->
+            <div class="notes-overview-container" id="notes-overview-container" style="display: none;">
+                <div class="notes-overview-grid" id="notes-overview-grid"></div>
             </div>
             <div class="graph-info-panel" id="graph-info-panel">
                 <div class="graph-info-title">Select a note</div>
@@ -2684,7 +3033,7 @@
                         </button>
                     </div>
                 </div>
-                <input type="file" id="media-upload" accept="image/*,video/*,audio/*" multiple style="display:none" onchange="handleFileUpload(event)">
+                <input type="file" id="media-upload" accept="image/*,video/*,audio/*,.pdf,application/pdf" multiple style="display:none" onchange="handleFileUpload(event)">
             </div>
             
             <div class="toolbar-divider"></div>
@@ -2739,7 +3088,7 @@
         <div class="link-embed-modal" id="link-embed-modal">
             <div class="link-embed-dialog">
                 <h3 id="link-embed-title">Embed Media Link</h3>
-                <input type="text" id="link-embed-input" placeholder="Paste YouTube, Vimeo, or media URL..." autocomplete="off">
+                <input type="text" id="link-embed-input" placeholder="Paste YouTube, Vimeo, Evernote, or media URL..." autocomplete="off">
                 <div class="link-embed-buttons">
                     <button class="link-embed-btn cancel" onclick="closeLinkEmbedDialog()">Cancel</button>
                     <button class="link-embed-btn embed" onclick="embedLinkFromDialog()">Embed</button>
@@ -2918,11 +3267,13 @@
         let isPanning = false;
         let panStart = { x: 0, y: 0 };
 
-        // Get canvas coordinates
+        // Get canvas coordinates (scaled for high-DPI backing store)
         function getCanvasCoords(e) {
             const rect = drawingCanvas.getBoundingClientRect();
-            const x = (e.clientX - rect.left) / state.zoom;
-            const y = (e.clientY - rect.top) / state.zoom;
+            // Get pixel ratio from canvas module if available, else default to 1
+            const pixelRatio = (typeof canvasModule !== 'undefined' && canvasModule.manager?.pixelRatio) || 1;
+            const x = ((e.clientX - rect.left) / state.zoom) * pixelRatio;
+            const y = ((e.clientY - rect.top) / state.zoom) * pixelRatio;
             return { x, y };
         }
 
@@ -2999,6 +3350,9 @@
                 }
             }
             
+            // Get pixel ratio for scaling line width to match high-DPI backing
+            const pixelRatio = (typeof canvasModule !== 'undefined' && canvasModule.manager?.pixelRatio) || 1;
+            
             ctx.beginPath();
             ctx.moveTo(lastX, lastY);
             ctx.lineTo(coords.x, coords.y);
@@ -3006,12 +3360,12 @@
             if (state.tool === 'erase') {
                 ctx.globalCompositeOperation = 'destination-out';
                 ctx.strokeStyle = 'rgba(0,0,0,1)';
-                // Scale erase width by zoom so the cleared area matches the visible cursor
-                ctx.lineWidth = state.thickness * 6 * (state.zoom || 1);
+                // Scale erase width by zoom and pixel ratio
+                ctx.lineWidth = state.thickness * 6 * (state.zoom || 1) * pixelRatio;
             } else {
                 ctx.globalCompositeOperation = 'source-over';
                 ctx.strokeStyle = state.color;
-                ctx.lineWidth = state.thickness;
+                ctx.lineWidth = state.thickness * pixelRatio;
             }
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
@@ -3650,9 +4004,38 @@
         }
 
 
-        // Undo/Redo Functions
-        function saveToUndoStack() {
-            const canvasState = drawingCanvas.toDataURL();
+        // Undo/Redo Functions (async + throttled to reduce lag)
+        let lastUndoAt = 0;
+        const UNDO_COOLDOWN_MS = 1200;
+        let pendingUndoTimeout = null;
+
+        async function saveToUndoStack() {
+            const now = Date.now();
+
+            // Throttle frequent snapshots (handwriting creates many short strokes)
+            if (now - lastUndoAt < UNDO_COOLDOWN_MS) {
+                if (pendingUndoTimeout) clearTimeout(pendingUndoTimeout);
+                pendingUndoTimeout = setTimeout(() => {
+                    // Re-enter after cooldown
+                    saveToUndoStack();
+                }, UNDO_COOLDOWN_MS - (now - lastUndoAt));
+                return;
+            }
+
+            // Use async merge of layers to avoid blocking the UI
+            let canvasState;
+            try {
+                if (window.canvasModule?.manager?.layerManager?.getFlattenedDataURLAsync) {
+                    canvasState = await window.canvasModule.manager.layerManager.getFlattenedDataURLAsync();
+                } else {
+                    // Fallback to base canvas if layers unavailable
+                    canvasState = drawingCanvas.toDataURL();
+                }
+            } catch (e) {
+                console.warn('Async undo snapshot failed, using fallback:', e);
+                canvasState = drawingCanvas.toDataURL();
+            }
+
             const textBoxes = Array.from(textLayer.querySelectorAll('.text-box')).map(box => ({
                 content: box.innerHTML,
                 left: box.style.left,
@@ -3663,17 +4046,18 @@
                 fontSize: box.style.fontSize,
                 color: box.style.color
             }));
-            
+
             undoStack.push({ canvasState, textBoxes });
-            
+            lastUndoAt = Date.now();
+
             // Limit stack size
             if (undoStack.length > MAX_UNDO_STACK) {
                 undoStack.shift();
             }
-            
+
             // Clear redo stack when new action is performed
             redoStack = [];
-            
+
             updateUndoRedoButtons();
         }
 
@@ -4504,13 +4888,17 @@
                                     if (candidateIdx === -1) {
                                         // If only a single image resource exists, assume it's the canvas drawing
                                         const imageCount = note.mediaEmbeds.filter(m => m.type === 'image').length;
+                                        console.log(`Note "${note.name}": ${imageCount} images, ${note.mediaEmbeds.length} total embeds`);
                                         if (imageCount === 1) {
                                             candidateIdx = note.mediaEmbeds.findIndex(m => m.type === 'image');
+                                            console.log(`Note "${note.name}": Single image - will use as canvasData`);
                                         }
                                     }
                                     if (candidateIdx !== -1) {
                                         const c = note.mediaEmbeds[candidateIdx];
+                                        console.log(`Note "${note.name}": Assigning image to canvasData, url length: ${c.url.length}`);
                                         note.canvasData = c.url;
+                                        console.log(`Note "${note.name}": canvasData URL (first 200):`, c.url.slice(0, 200));
                                         // Remove from media embeds to avoid duplicate rendering
                                         note.mediaEmbeds.splice(candidateIdx, 1);
                                     }
@@ -4663,6 +5051,8 @@
             
             if (mode === 'notebook') {
                 title.textContent = 'New Notebook';
+            } else if (mode === 'subnotebook') {
+                title.textContent = 'New Sub-Notebook';
             } else if (mode === 'subnote') {
                 title.textContent = 'New Sub-Note';
             } else {
@@ -4686,13 +5076,26 @@
             if (!name) return;
 
             if (modalMode === 'notebook') {
+                state.parentNotebookForSubnotebook = null;
+                createNotebook(name);
+            } else if (modalMode === 'subnotebook') {
+                // Prevent creating subnotebook if already at depth 5
+                let parent = state.parentNotebookForSubnotebook;
+                let depth = 0;
+                while (parent) {
+                    depth++;
+                    parent = parent.parentId ? window.findNotebookById(parent.parentId) : null;
+                }
+                if (depth >= 5) {
+                    alert('Maximum subfolder depth (5) reached.');
+                    return;
+                }
                 createNotebook(name);
             } else if (modalMode === 'subnote') {
                 createNote(name, state.parentNoteForSubnote);
             } else {
                 createNote(name);
             }
-            
             hideModal();
         }
 
@@ -4708,10 +5111,20 @@
                 id: Date.now().toString(),
                 name: name,
                 notes: [],
-                isOpen: true
+                isOpen: true,
+                children: [], // subnotebooks
+                parentId: null
             };
-            state.notebooks.push(notebook);
+            // If creating as a subnotebook
+            if (state.parentNotebookForSubnotebook) {
+                if (!state.parentNotebookForSubnotebook.children) state.parentNotebookForSubnotebook.children = [];
+                notebook.parentId = state.parentNotebookForSubnotebook.id;
+                state.parentNotebookForSubnotebook.children.push(notebook);
+            } else {
+                state.notebooks.push(notebook);
+            }
             state.currentNotebook = notebook;
+            state.parentNotebookForSubnotebook = null;
             renderNotebooks();
             saveToStorage();
         }
@@ -4801,7 +5214,7 @@
             return path;
         }
 
-        function selectNote(notebook, note) {
+        async function selectNote(notebook, note) {
             // Save current note before switching
             if (state.currentNote) {
                 saveNoteData();
@@ -4825,7 +5238,7 @@
             
             // Load note data or create blank canvas
             if (note.canvasData || note.layersData) {
-                loadNoteData(note);
+                await loadNoteData(note);
             } else {
                 // Clear text layer for new note
                 textLayer.innerHTML = '';
@@ -5017,8 +5430,11 @@
                 return 'maps';
             }
             
-            // Generic iframe for other URLs
-            if (url.startsWith('http://') || url.startsWith('https://')) {
+            // Evernote note links
+            // Catch ALL evernote.com URLs as evernote-link type (not iframe)
+            if (/evernote\.com/i.test(url) || /^evernote:\/\//i.test(url)) {
+                return 'evernote-link';
+            } else if (url.startsWith('http://') || url.startsWith('https://')) {
                 return 'iframe';
             }
             
@@ -5031,6 +5447,13 @@
             }
             if (url.startsWith('data:audio/')) {
                 return 'audio';
+            }
+            if (url.startsWith('data:application/pdf')) {
+                return 'pdf';
+            }
+            // URL ending in .pdf
+            if (url.toLowerCase().endsWith('.pdf')) {
+                return 'pdf';
             }
             
             return null;
@@ -5083,29 +5506,34 @@
 
         // Create media embed element
         function createMediaEmbed(url, type, options = {}) {
+            // Final safeguard: never embed Evernote links as iframes (catch all evernote.com URLs)
+            if (type === 'iframe' && /evernote\.com/i.test(url)) {
+                return null;
+            }
+
             const mediaLayer = document.getElementById('media-layer');
-            
+
             const embed = document.createElement('div');
             embed.className = 'media-embed';
             embed.setAttribute('data-embed-id', options.id || Date.now().toString());
             embed.setAttribute('data-embed-type', type);
             embed.setAttribute('data-embed-url', url);
-            
+
             // Set position - default to center of canvas
-            embed.style.left = options.left || '1800px';
-            embed.style.top = options.top || '1800px';
-            
+            embed.style.left = options.left || '100px';
+            embed.style.top = options.top || '100px';
+
             // Set size - use provided dimensions or auto-size later
             if (options.width) embed.style.width = options.width;
             if (options.height) embed.style.height = options.height;
-            
+
             // For new embeds without saved dimensions, start with auto sizing
             const autoSize = !options.width && !options.height;
-            
+
             // Create content container
             const content = document.createElement('div');
             content.className = 'media-embed-content';
-            
+
             // Create controls (Delete, Forward, Backward, Draw Above toggle)
             const controls = document.createElement('div');
             controls.className = 'media-embed-controls';
@@ -5115,18 +5543,18 @@
                 <button class="media-embed-btn" onclick="bringEmbedForward(this.closest('.media-embed'))" title="Bring Forward">▶</button>
                 <button class="media-embed-btn" onclick="toggleDrawAbove(this.closest('.media-embed'))" title="Draw Over">🖌</button>
             `;
-            
+
             // Create resize handle
             const resizeHandle = document.createElement('div');
-            resizeHandle.className = 'media-embed-resize';
-            
+            // ...existing code...
+
             // Add loading state
             content.innerHTML = '<div class="media-embed-loading">Loading...</div>';
-            
+
             embed.appendChild(content);
             embed.appendChild(controls);
             embed.appendChild(resizeHandle);
-            
+
             // Add to active layer's content container if available, otherwise use mediaLayer
             let targetContainer = mediaLayer;
             if (typeof canvasModule !== 'undefined' && canvasModule.manager?.layerManager) {
@@ -5137,10 +5565,10 @@
                 }
             }
             targetContainer.appendChild(embed);
-            
+
             // Add resize functionality
             makeMediaEmbedResizable(embed, resizeHandle);
-            
+
             // Load the actual content based on type
             switch (type) {
                 case 'image':
@@ -5177,11 +5605,55 @@
                         embed.style.height = '152px';
                     }
                     break;
+                case 'evernote-link':
+                    // Rich Evernote preview card
+                    const noteId = url.match(/\/([a-f0-9-]+)(?:\?|$)/i)?.[1] || '';
+                    const shortUrl = url.length > 50 ? url.substring(0, 47) + '...' : url;
+                    content.innerHTML = `
+                        <div style="display:flex;flex-direction:column;height:100%;background:linear-gradient(135deg, #f8faf5 0%, #e8f5e0 100%);border-radius:8px;overflow:hidden;font-family:Inter,sans-serif;pointer-events:auto;" onclick="event.stopPropagation();">
+                            <div style="background:#1db954;padding:12px 16px;display:flex;align-items:center;gap:12px;">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+                                    <path d="M8 3a2 2 0 0 0-2 2v4a2 2 0 0 1-2 2H3v2h1a2 2 0 0 1 2 2v4a2 2 0 0 0 2 2h2v-2H8v-4a2 2 0 0 0-2-2 2 2 0 0 0 2-2V5h2V3H8zm8 0a2 2 0 0 1 2 2v4a2 2 0 0 0 2 2h1v2h-1a2 2 0 0 0-2 2v4a2 2 0 0 1-2 2h-2v-2h2v-4a2 2 0 0 1 2-2 2 2 0 0 1-2-2V5h-2V3h2z"/>
+                                </svg>
+                                <span style="color:white;font-weight:600;font-size:1.1rem;">Evernote Note</span>
+                            </div>
+                            <div style="flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;">
+                                <div style="display:flex;align-items:center;gap:10px;">
+                                    <span style="font-size:2.5rem;">📝</span>
+                                    <div style="flex:1;">
+                                        <div style="font-weight:600;font-size:1rem;color:#2d3748;margin-bottom:4px;">Linked Note</div>
+                                        <div style="font-size:0.85rem;color:#718096;word-break:break-all;">${shortUrl}</div>
+                                    </div>
+                                </div>
+                                <div style="margin-top:auto;display:flex;gap:10px;">
+                                    <a href="${url}" target="_blank" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;background:#1db954;color:white;text-decoration:none;border-radius:8px;font-weight:600;font-size:0.95rem;transition:background 0.2s;" onmouseover="this.style.background='#18a349'" onmouseout="this.style.background='#1db954'">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                            <polyline points="15 3 21 3 21 9"/>
+                                            <line x1="10" y1="14" x2="21" y2="3"/>
+                                        </svg>
+                                        Open in Evernote
+                                    </a>
+                                </div>
+                            </div>
+                        </div>`;
+                    if (autoSize) {
+                        embed.style.width = '320px';
+                        embed.style.height = '220px';
+                    }
+                    break;
                 case 'iframe':
                     loadIframeEmbed(content, url);
                     if (autoSize) {
                         embed.style.width = '500px';
                         embed.style.height = '400px';
+                    }
+                    break;
+                case 'pdf':
+                    loadPdfEmbed(content, url);
+                    if (autoSize) {
+                        embed.style.width = '600px';
+                        embed.style.height = '800px';
                     }
                     break;
                 default:
@@ -5453,6 +5925,45 @@
             
             audio.onerror = () => {
                 container.innerHTML = '<div class="media-embed-error">Failed to load audio</div>';
+            };
+        }
+
+        function loadPdfEmbed(container, url) {
+            container.innerHTML = '';
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.height = '100%';
+            
+            // Create toolbar
+            const toolbar = document.createElement('div');
+            toolbar.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#f5f5f5;border-bottom:1px solid #ddd;';
+            toolbar.innerHTML = `
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:1.2rem;">📄</span>
+                    <span style="font-weight:600;font-size:0.9rem;color:#333;">PDF Document</span>
+                </div>
+                <a href="${url}" download style="padding:6px 12px;background:#007AFF;color:white;text-decoration:none;border-radius:6px;font-size:0.85rem;font-weight:500;">Download</a>
+            `;
+            
+            // Create PDF viewer using embed element
+            const pdfViewer = document.createElement('embed');
+            pdfViewer.src = url;
+            pdfViewer.type = 'application/pdf';
+            pdfViewer.style.cssText = 'flex:1;width:100%;height:100%;border:none;';
+            
+            container.appendChild(toolbar);
+            container.appendChild(pdfViewer);
+            
+            // Fallback for browsers that don't support embedded PDFs
+            pdfViewer.onerror = () => {
+                container.innerHTML = `
+                    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;padding:20px;text-align:center;">
+                        <span style="font-size:4rem;">📄</span>
+                        <div style="font-weight:600;font-size:1.1rem;color:#333;">PDF Document</div>
+                        <div style="color:#666;font-size:0.9rem;">Your browser cannot display this PDF inline.</div>
+                        <a href="${url}" download style="padding:12px 24px;background:#007AFF;color:white;text-decoration:none;border-radius:8px;font-weight:600;">Download PDF</a>
+                    </div>
+                `;
             };
         }
 
@@ -5838,8 +6349,14 @@
             if (text) {
                 const mediaType = detectMediaType(text);
                 if (mediaType) {
-                    e.preventDefault();
-                    createMediaEmbed(text, mediaType);
+                    // Prevent double embedding for Evernote links
+                    if (mediaType === 'evernote-link') {
+                        e.preventDefault();
+                        createMediaEmbed(text, 'evernote-link');
+                    } else {
+                        e.preventDefault();
+                        createMediaEmbed(text, mediaType);
+                    }
                 }
             }
         }
@@ -5874,7 +6391,7 @@
             const input = document.getElementById('link-embed-input');
             
             title.textContent = 'Embed Media Link';
-            input.placeholder = 'Paste YouTube, Vimeo, or media URL...';
+            input.placeholder = 'Paste YouTube, Vimeo, Evernote, or media URL...';
             modal.classList.add('show');
             input.value = '';
             input.focus();
@@ -5915,7 +6432,7 @@
             
             const type = detectMediaType(url);
             if (!type) {
-                alert('Could not detect media type. Please enter a valid image, video, or audio URL.');
+                alert('Could not detect media type. Please enter a valid image, video, audio, or Evernote link URL.');
                 return;
             }
             
@@ -5984,6 +6501,8 @@
                     type = 'audio';
                 } else if (file.type.startsWith('image/')) {
                     type = 'image';
+                } else if (file.type === 'application/pdf') {
+                    type = 'pdf';
                 }
                 
                 // Offset each file slightly so they don't stack exactly on top of each other
@@ -6201,39 +6720,69 @@
             return html;
         }
 
-        // Render notebooks
+        // Recursive render for unlimited-depth subnotebooks
         function renderNotebooks() {
             const container = document.getElementById('notebooks-container');
             container.innerHTML = '';
 
-            state.notebooks.forEach((notebook, notebookIndex) => {
+            function renderNotebookTree(notebook, notebookIndex, depth = 0, parentContainer = null) {
                 const notebookEl = document.createElement('div');
                 notebookEl.className = 'notebook';
-                
+                notebookEl.style.marginLeft = (depth * 18) + 'px';
+
                 let notesHtml = '';
                 notebook.notes.forEach(note => {
                     notesHtml += renderNoteItem(notebook, note, notebookIndex);
                 });
-                
+
+                // Add subnotebook button (no folder icon, with tooltip)
+                const addSubNotebookBtn = `<button class=\"add-btn\" title=\"New Notebook\" onclick=\"event.stopPropagation(); state.parentNotebookForSubnotebook = window.findNotebookById('${notebook.id}'); showModal('subnotebook');\" style=\"margin-right: 4px; width: 18px; height: 18px; font-size: 0.75rem;\">+</button>`;
+
                 notebookEl.innerHTML = `
-                    <div class="notebook-header ${state.currentNotebook && state.currentNotebook.id === notebook.id ? 'active' : ''}" onclick="toggleNotebook(state.notebooks[${notebookIndex}])">
-                        <span class="notebook-icon">◎</span>
-                        <span class="notebook-name">${notebook.name}</span>
-                        <button class="add-btn" onclick="event.stopPropagation(); state.currentNotebook = state.notebooks[${notebookIndex}]; showModal('note');" style="margin-right: 8px; width: 18px; height: 18px; font-size: 0.75rem;">+</button>
-                        <button class="delete-btn" onclick="deleteNotebook(state.notebooks[${notebookIndex}], event)">×</button>
-                        <span class="notebook-toggle ${notebook.isOpen ? 'open' : ''}">▸</span>
+                    <div class=\"notebook-header ${state.currentNotebook && state.currentNotebook.id === notebook.id ? 'active' : ''}\" onclick=\"toggleNotebook(window.findNotebookById('${notebook.id}'))\">
+                        <span class=\"notebook-icon\">◎</span>
+                        <span class=\"notebook-name\">${notebook.name}</span>
+                        ${addSubNotebookBtn}
+                        <button class=\"add-btn\" title=\"New Note\" onclick=\"event.stopPropagation(); state.currentNotebook = window.findNotebookById('${notebook.id}'); showModal('note');\" style=\"margin-right: 8px; width: 18px; height: 18px; font-size: 0.75rem;\">+</button>
+                        <button class=\"delete-btn\" onclick=\"deleteNotebook(window.findNotebookById('${notebook.id}'), event)\">×</button>
+                        <span class=\"notebook-toggle ${notebook.isOpen ? 'open' : ''}\">▸</span>
                     </div>
-                    <div class="notes-list ${notebook.isOpen ? 'open' : ''}">
+                    <div class=\"notes-list ${notebook.isOpen ? 'open' : ''}\">
                         ${notesHtml}
                     </div>
                 `;
-                container.appendChild(notebookEl);
+                
+                // Append to parent container or main container
+                const targetContainer = parentContainer || container;
+                targetContainer.appendChild(notebookEl);
+                
+                // Recursively render children inside the notes-list when parent is open
+                if (notebook.children && notebook.children.length > 0 && notebook.isOpen) {
+                    const notesList = notebookEl.querySelector('.notes-list');
+                    notebook.children.forEach((child, idx) => renderNotebookTree(child, idx, depth + 1, notesList));
+                }
+            }
+
+            // Helper to find notebook by id recursively
+            window.findNotebookById = function(id, notebooks = state.notebooks) {
+                for (const nb of notebooks) {
+                    if (nb.id === id) return nb;
+                    if (nb.children && nb.children.length > 0) {
+                        const found = window.findNotebookById(id, nb.children);
+                        if (found) return found;
+                    }
+                }
+                return null;
+            };
+
+            state.notebooks.forEach((notebook, notebookIndex) => {
+                renderNotebookTree(notebook, notebookIndex, 0);
             });
         }
 
         // Select note by ID
         function selectNoteById(notebookId, noteId) {
-            const notebook = state.notebooks.find(n => n.id === notebookId);
+            const notebook = window.findNotebookById(notebookId);
             if (notebook) {
                 const note = findNoteById(notebook, noteId);
                 if (note) {
@@ -6340,10 +6889,15 @@
             // Clear undo/redo history
             clearUndoHistory();
             
+            // Clear notebook navigation stack
+            notebookNavStack = [];
+            state.viewingNotebook = null;
+            
             state.currentView = 'home';
             state.currentNote = null;
             
             document.getElementById('home-page').style.display = 'block';
+            document.getElementById('notebook-detail-page').style.display = 'none';
             document.getElementById('canvas-container').style.display = 'none';
             document.getElementById('toolbar').style.display = 'none';
             const graphView = document.getElementById('graph-view');
@@ -6372,6 +6926,7 @@
         function showEditor() {
             state.currentView = 'editor';
             document.getElementById('home-page').style.display = 'none';
+            document.getElementById('notebook-detail-page').style.display = 'none';
             document.getElementById('canvas-container').style.display = 'block';
             const graphView = document.getElementById('graph-view');
             if (graphView) graphView.style.display = 'none';
@@ -6389,9 +6944,9 @@
                 `;
             } else {
                 pinnedContainer.innerHTML = state.pinnedNotes.map(pin => {
-                    const notebook = state.notebooks.find(n => n.id === pin.notebookId);
+                    const notebook = window.findNotebookById(pin.notebookId);
                     if (!notebook) return '';
-                    const note = notebook.notes.find(n => n.id === pin.noteId);
+                    const note = findNoteById(notebook, pin.noteId);
                     if (!note) return '';
                     const statusBadge = note.status && note.status !== 'none' ? `<span class="status-badge ${note.status}">${getStatusLabel(note.status)}</span>` : '';
                     
@@ -6408,8 +6963,31 @@
                 }).join('');
             }
             
-            // Render notebooks
+            // Render notebooks (including sub-notebooks)
             const notebooksContainer = document.getElementById('notebooks-home-container');
+            
+            // Helper to count all notes recursively (including sub-notes)
+            function countAllNotes(notebook) {
+                let count = notebook.notes ? notebook.notes.length : 0;
+                // Count notes in children recursively
+                if (notebook.notes) {
+                    notebook.notes.forEach(note => {
+                        if (note.children) count += countChildNotes(note);
+                    });
+                }
+                // Count notes in sub-notebooks
+                if (notebook.children) {
+                    notebook.children.forEach(child => count += countAllNotes(child));
+                }
+                return count;
+            }
+            
+            function countChildNotes(note) {
+                if (!note.children) return 0;
+                return note.children.reduce((sum, child) => sum + 1 + countChildNotes(child), 0);
+            }
+            
+            // Only show top-level notebooks on home page (sub-notebooks shown when you click into a notebook)
             if (state.notebooks.length === 0) {
                 notebooksContainer.innerHTML = `
                     <div class="empty-pinned">
@@ -6417,42 +6995,233 @@
                     </div>
                 `;
             } else {
-                notebooksContainer.innerHTML = state.notebooks.map(notebook => `
-                    <div class="notebook-card" onclick="openNotebook('${notebook.id}')">
-                        <div class="notebook-card-icon">◎</div>
-                        <div class="notebook-card-name">${notebook.name}</div>
-                        <div class="notebook-card-count">${notebook.notes.length} note${notebook.notes.length !== 1 ? 's' : ''}</div>
-                    </div>
-                `).join('');
+                notebooksContainer.innerHTML = state.notebooks.map(notebook => {
+                    const noteCount = countAllNotes(notebook);
+                    const subNotebookCount = notebook.children ? notebook.children.length : 0;
+                    const subIndicator = subNotebookCount > 0 ? ` · ${subNotebookCount} sub-notebook${subNotebookCount !== 1 ? 's' : ''}` : '';
+                    return `
+                        <div class="notebook-card" onclick="openNotebook('${notebook.id}')">
+                            <div class="notebook-card-icon">◎</div>
+                            <div class="notebook-card-name">${notebook.name}</div>
+                            <div class="notebook-card-count">${noteCount} note${noteCount !== 1 ? 's' : ''}${subIndicator}</div>
+                        </div>
+                    `;
+                }).join('');
             }
         }
 
         function openPinnedNote(notebookId, noteId) {
-            const notebook = state.notebooks.find(n => n.id === notebookId);
+            const notebook = window.findNotebookById(notebookId);
             if (!notebook) return;
-            const note = notebook.notes.find(n => n.id === noteId);
+            const note = findNoteById(notebook, noteId);
             if (!note) return;
             selectNote(notebook, note);
         }
 
+        // Stack to track notebook navigation history
+        let notebookNavStack = [];
+
         function openNotebook(notebookId) {
-            const notebook = state.notebooks.find(n => n.id === notebookId);
+            const notebook = window.findNotebookById(notebookId);
             if (!notebook) return;
             notebook.isOpen = true;
             state.currentNotebook = notebook;
-            if (notebook.notes.length > 0) {
-                selectNote(notebook, notebook.notes[0]);
-            } else {
-                showEditor();
-                document.getElementById('empty-state').style.display = 'flex';
-                document.getElementById('canvas-wrapper').style.display = 'none';
-                document.getElementById('toolbar').style.display = 'none';
-                document.getElementById('note-info').textContent = notebook.name;
-            }
+            
+            // Show the notebook detail page instead of immediately opening a note
+            showNotebookDetailPage(notebook);
             renderNotebooks();
+        }
+        
+        function showNotebookDetailPage(notebook) {
+            // Hide other views
+            document.getElementById('home-page').style.display = 'none';
+            document.getElementById('graph-view').style.display = 'none';
+            document.getElementById('canvas-wrapper').style.display = 'none';
+            document.getElementById('toolbar').style.display = 'none';
+            document.getElementById('empty-state').style.display = 'none';
+            
+            // Show notebook detail page
+            const detailPage = document.getElementById('notebook-detail-page');
+            detailPage.style.display = 'block';
+            
+            // Set title and path
+            document.getElementById('notebook-detail-title').textContent = notebook.name;
+            
+            // Build breadcrumb path
+            const path = getNotebookPath(notebook.id);
+            document.getElementById('notebook-detail-path').textContent = path.join(' → ');
+            
+            // Render sub-notebooks
+            const subnotebooksContainer = document.getElementById('subnotebooks-container');
+            const subnotebooksSection = document.getElementById('subnotebooks-section');
+            
+            if (notebook.children && notebook.children.length > 0) {
+                subnotebooksSection.style.display = 'block';
+                subnotebooksContainer.innerHTML = notebook.children.map(child => {
+                    const noteCount = countAllNotesInNotebook(child);
+                    return `
+                        <div class="notebook-card" onclick="navigateToSubNotebook('${child.id}')">
+                            <div class="notebook-card-icon">◉</div>
+                            <div class="notebook-card-name">${child.name}</div>
+                            <div class="notebook-card-count">${noteCount} note${noteCount !== 1 ? 's' : ''}</div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                subnotebooksSection.style.display = 'none';
+            }
+            
+            // Render notes in this notebook
+            const notesContainer = document.getElementById('notebook-notes-container');
+            
+            if (notebook.notes && notebook.notes.length > 0) {
+                notesContainer.innerHTML = notebook.notes.map(note => {
+                    const statusBadge = note.status && note.status !== 'none' ? `<span class="status-badge ${note.status}">${getStatusLabel(note.status)}</span>` : '';
+                    const childCount = note.children ? note.children.length : 0;
+                    const childIndicator = childCount > 0 ? `<span style="font-size:0.75rem;color:#888;margin-left:4px;">(+${childCount})</span>` : '';
+                    
+                    return `
+                        <div class="pinned-card" onclick="openNoteFromDetail('${notebook.id}', '${note.id}')">
+                            <div class="pinned-card-preview">
+                                ${note.canvasData ? `<img src="${note.canvasData}" alt="Preview">` : '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:2rem;color:#ccc;">📝</div>'}
+                            </div>
+                            <div class="pinned-card-title">${note.name}${childIndicator}${statusBadge}</div>
+                            <div class="pinned-card-notebook">${new Date(note.created).toLocaleDateString()}</div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                notesContainer.innerHTML = `
+                    <div class="empty-pinned">
+                        <p>No notes in this notebook yet. Click + to create one.</p>
+                    </div>
+                `;
+            }
+            
+            // Update nav
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            
+            // Track current view
+            state.currentView = 'notebook-detail';
+            state.viewingNotebook = notebook;
+        }
+        
+        function navigateToSubNotebook(notebookId) {
+            // Push current notebook to stack for back navigation
+            if (state.viewingNotebook) {
+                notebookNavStack.push(state.viewingNotebook.id);
+            }
+            const notebook = window.findNotebookById(notebookId);
+            if (notebook) {
+                notebook.isOpen = true;
+                state.currentNotebook = notebook;
+                showNotebookDetailPage(notebook);
+                renderNotebooks();
+            }
+        }
+        
+        function openNoteFromDetail(notebookId, noteId) {
+            const notebook = window.findNotebookById(notebookId);
+            if (!notebook) return;
+            const note = findNoteById(notebook, noteId);
+            if (!note) return;
+            selectNote(notebook, note);
+        }
+        
+        function goBackFromNotebook() {
+            if (notebookNavStack.length > 0) {
+                const prevNotebookId = notebookNavStack.pop();
+                const prevNotebook = window.findNotebookById(prevNotebookId);
+                if (prevNotebook) {
+                    showNotebookDetailPage(prevNotebook);
+                    return;
+                }
+            }
+            // Go back to home
+            showHomePage();
+        }
+        
+        function getNotebookPath(notebookId, notebooks = state.notebooks, path = ['Home']) {
+            for (const nb of notebooks) {
+                if (nb.id === notebookId) {
+                    return [...path, nb.name];
+                }
+                if (nb.children && nb.children.length > 0) {
+                    const found = getNotebookPath(notebookId, nb.children, [...path, nb.name]);
+                    if (found.length > path.length + 1) return found;
+                }
+            }
+            return path;
+        }
+        
+        function countAllNotesInNotebook(notebook) {
+            let count = notebook.notes ? notebook.notes.length : 0;
+            if (notebook.notes) {
+                notebook.notes.forEach(note => {
+                    if (note.children) count += countChildNotesRecursive(note);
+                });
+            }
+            if (notebook.children) {
+                notebook.children.forEach(child => count += countAllNotesInNotebook(child));
+            }
+            return count;
+        }
+        
+        function countChildNotesRecursive(note) {
+            if (!note.children) return 0;
+            return note.children.reduce((sum, child) => sum + 1 + countChildNotesRecursive(child), 0);
         }
 
         // Save/Load functions
+        // Async version for autosave - doesn't block drawing
+        async function saveNoteDataAsync() {
+            if (!state.currentNote) return;
+            
+            // Save canvas data - prefer layers if available, fallback to flat canvas
+            if (typeof canvasModule !== 'undefined' && canvasModule.manager?.layerManager) {
+                const layerManager = canvasModule.manager.layerManager;
+                // Save full layer data for future loading (async to avoid blocking)
+                state.currentNote.layersData = await layerManager.serializeAsync();
+                // Also save flattened version for backward compatibility (async)
+                state.currentNote.canvasData = await layerManager.getFlattenedDataURLAsync();
+            } else {
+                // Wrap sync toDataURL in requestIdleCallback to avoid blocking
+                state.currentNote.canvasData = await new Promise((resolve) => {
+                    const doWork = () => resolve(drawingCanvas.toDataURL());
+                    if (typeof requestIdleCallback !== 'undefined') {
+                        requestIdleCallback(doWork, { timeout: 1000 });
+                    } else {
+                        setTimeout(doWork, 0);
+                    }
+                });
+            }
+            
+            state.currentNote.textBoxes = Array.from(textLayer.querySelectorAll('.text-box')).map(box => ({
+                content: box.innerHTML,
+                left: box.style.left,
+                top: box.style.top,
+                width: box.style.width,
+                height: box.style.height,
+                fontFamily: box.style.fontFamily,
+                fontSize: box.style.fontSize,
+                color: box.style.color,
+                headerLevel: box.getAttribute('data-header-level') || null
+            }));
+            
+            // Save media embeds (they live in #media-layer)
+            const mediaLayer = document.getElementById('media-layer');
+            state.currentNote.mediaEmbeds = Array.from((mediaLayer || document).querySelectorAll('.media-embed')).map(embed => ({
+                id: embed.getAttribute('data-embed-id'),
+                type: embed.getAttribute('data-embed-type'),
+                url: embed.getAttribute('data-embed-url'),
+                left: embed.style.left,
+                top: embed.style.top,
+                width: embed.style.width,
+                height: embed.style.height
+            }));
+        }
+        
+        // Sync version for critical saves (beforeunload, etc.)
         function saveNoteData() {
             if (!state.currentNote) return;
             
@@ -6492,7 +7261,7 @@
             }));
         }
 
-        function loadNoteData(note) {
+        async function loadNoteData(note) {
             initCanvases();
             
             // Clear undo/redo history for new note
@@ -6535,6 +7304,12 @@
                     const img = new Image();
                     img.onload = () => {
                         drawCtx.drawImage(img, 0, 0);
+                        // Draw a visible red border to confirm image is rendered
+                        drawCtx.save();
+                        drawCtx.strokeStyle = 'red';
+                        drawCtx.lineWidth = 8;
+                        drawCtx.strokeRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                        drawCtx.restore();
                         saveInitialState();
                     };
                     img.src = note.canvasData;
@@ -6608,7 +7383,18 @@
             
             // Load media embeds
             if (note.mediaEmbeds) {
-                note.mediaEmbeds.forEach(embedData => {
+                const seenEvernoteLinks = new Set();
+                // Process media embeds - load from IndexedDB if needed
+                const processedEmbeds = await processMediaForLoad(note.mediaEmbeds);
+                processedEmbeds.forEach(embedData => {
+                    // If this is an iframe for an Evernote link, skip it if an evernote-link embed exists for the same URL
+                    if (
+                        embedData.type === 'iframe' &&
+                        /^(https?:\/\/www\.evernote\.com\/shard\/|evernote:\/\/view\/)/i.test(embedData.url) &&
+                        processedEmbeds.some(e => e.type === 'evernote-link' && e.url === embedData.url)
+                    ) {
+                        return;
+                    }
                     createMediaEmbed(embedData.url, embedData.type, {
                         id: embedData.id,
                         left: embedData.left,
@@ -6645,12 +7431,50 @@
             if (debounceSaveTimeout) clearTimeout(debounceSaveTimeout);
             debounceSaveTimeout = setTimeout(() => {
                 if (hasUnsavedChanges && state.currentNote) {
-                    saveCurrentNote();
+                    saveCurrentNoteAsync();
                 }
             }, SAVE_DELAY);
         }
         
-        function saveCurrentNote() {
+        // Async save for autosave - doesn't block drawing
+        async function saveCurrentNoteAsync() {
+            if (!state.currentNote) return;
+            
+            // Prevent immediate auto-save from overwriting imported content
+            if (suppressNextAutoSave) {
+                suppressNextAutoSave = false;
+                return;
+            }
+            
+            const indicator = document.getElementById('save-indicator');
+            
+            // Show saving state
+            indicator.className = 'save-indicator saving';
+            indicator.innerHTML = '<span class="save-dot">○</span> <span class="save-text">Saving...</span>';
+            
+            // Use async save to avoid blocking drawing
+            await saveNoteDataAsync();
+            await saveToStorage();
+            hasUnsavedChanges = false;
+
+            // Clear any existing timeout
+            if (saveTimeout) clearTimeout(saveTimeout);
+            
+            // Show "just saved" state briefly
+            setTimeout(() => {
+                indicator.className = 'save-indicator just-saved';
+                indicator.innerHTML = '<span class="save-dot">✓</span> <span class="save-text">Saved just now</span>';
+                
+                // Then fade to normal saved state
+                saveTimeout = setTimeout(() => {
+                    indicator.className = 'save-indicator saved';
+                    indicator.innerHTML = '<span class="save-dot">●</span> <span class="save-text">Saved</span>';
+                }, 2000);
+            }, 400);
+        }
+        
+        // Sync save for critical operations (manual save, etc.) - now async
+        async function saveCurrentNote() {
             if (!state.currentNote) return;
             
             // Prevent immediate auto-save from overwriting imported content
@@ -6666,7 +7490,7 @@
             indicator.innerHTML = '<span class="save-dot">○</span> <span class="save-text">Saving...</span>';
             
             saveNoteData();
-            saveToStorage();
+            await saveToStorage();
             hasUnsavedChanges = false;
 
             // Clear any existing timeout
@@ -6689,26 +7513,180 @@
         window.addEventListener('beforeunload', (e) => {
             if (hasUnsavedChanges && state.currentNote) {
                 saveNoteData();
-                saveToStorage();
+                // Use sync localStorage save for beforeunload - IndexedDB async won't complete in time
+                try {
+                    localStorage.setItem('ultimateNotesApp', JSON.stringify(state.notebooks));
+                } catch (e) {
+                    console.error('Failed to save before unload:', e);
+                }
             }
         });
 
-        function saveToStorage() {
+        // IndexedDB for large media storage
+        const DB_NAME = 'NotesAppMediaDB';
+        const DB_VERSION = 1;
+        const MEDIA_STORE = 'media';
+        let mediaDB = null;
+
+        function initMediaDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                
+                request.onerror = () => {
+                    console.error('Failed to open IndexedDB:', request.error);
+                    reject(request.error);
+                };
+                
+                request.onsuccess = () => {
+                    mediaDB = request.result;
+                    console.log('IndexedDB initialized for media storage');
+                    resolve(mediaDB);
+                };
+                
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains(MEDIA_STORE)) {
+                        db.createObjectStore(MEDIA_STORE, { keyPath: 'id' });
+                        console.log('Created media object store');
+                    }
+                };
+            });
+        }
+
+        async function saveMediaToDB(id, dataUrl) {
+            if (!mediaDB) await initMediaDB();
+            return new Promise((resolve, reject) => {
+                const transaction = mediaDB.transaction([MEDIA_STORE], 'readwrite');
+                const store = transaction.objectStore(MEDIA_STORE);
+                const request = store.put({ id, dataUrl, timestamp: Date.now() });
+                request.onsuccess = () => resolve(id);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        async function getMediaFromDB(id) {
+            if (!mediaDB) await initMediaDB();
+            return new Promise((resolve, reject) => {
+                const transaction = mediaDB.transaction([MEDIA_STORE], 'readonly');
+                const store = transaction.objectStore(MEDIA_STORE);
+                const request = store.get(id);
+                request.onsuccess = () => resolve(request.result?.dataUrl || null);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        async function deleteMediaFromDB(id) {
+            if (!mediaDB) await initMediaDB();
+            return new Promise((resolve, reject) => {
+                const transaction = mediaDB.transaction([MEDIA_STORE], 'readwrite');
+                const store = transaction.objectStore(MEDIA_STORE);
+                const request = store.delete(id);
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        // Check if a data URL is large enough to store in IndexedDB
+        function isLargeMedia(dataUrl) {
+            return dataUrl && dataUrl.startsWith('data:') && dataUrl.length > 50000; // > 50KB
+        }
+
+        // Process media embeds for saving - store large ones in IndexedDB
+        async function processMediaForSave(mediaEmbeds) {
+            const processed = [];
+            for (const embed of mediaEmbeds) {
+                if (isLargeMedia(embed.url)) {
+                    // Store in IndexedDB and save reference
+                    const mediaId = embed.id || `media-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                    try {
+                        await saveMediaToDB(mediaId, embed.url);
+                        processed.push({
+                            ...embed,
+                            url: `indexeddb://${mediaId}`, // Reference to IndexedDB
+                            originalId: mediaId
+                        });
+                        console.log(`Saved large media to IndexedDB: ${mediaId}`);
+                    } catch (e) {
+                        console.error('Failed to save media to IndexedDB:', e);
+                        processed.push(embed); // Keep original if IndexedDB fails
+                    }
+                } else {
+                    processed.push(embed);
+                }
+            }
+            return processed;
+        }
+
+        // Process media embeds for loading - retrieve from IndexedDB
+        async function processMediaForLoad(mediaEmbeds) {
+            const processed = [];
+            for (const embed of mediaEmbeds) {
+                if (embed.url && embed.url.startsWith('indexeddb://')) {
+                    const mediaId = embed.url.replace('indexeddb://', '');
+                    try {
+                        const dataUrl = await getMediaFromDB(mediaId);
+                        if (dataUrl) {
+                            processed.push({ ...embed, url: dataUrl });
+                        } else {
+                            console.warn(`Media not found in IndexedDB: ${mediaId}`);
+                        }
+                    } catch (e) {
+                        console.error('Failed to load media from IndexedDB:', e);
+                    }
+                } else {
+                    processed.push(embed);
+                }
+            }
+            return processed;
+        }
+
+        async function saveToStorage() {
             try {
+                // Process all notes to save large media to IndexedDB
+                for (const notebook of state.notebooks) {
+                    await processNotebookMediaForSave(notebook);
+                }
                 localStorage.setItem('ultimateNotesApp', JSON.stringify(state.notebooks));
             } catch (e) {
                 if (e.name === 'QuotaExceededError') {
                     console.error('Storage quota exceeded! Trying to free space...');
                     // Try to free space by clearing version history
-                    state.notebooks.forEach(nb => nb.notes.forEach(n => { 
-                        n.versionHistory = []; 
-                    }));
+                    state.notebooks.forEach(nb => {
+                        const processNotes = (notes) => {
+                            notes.forEach(n => { 
+                                n.versionHistory = [];
+                                if (n.children) processNotes(n.children);
+                            });
+                        };
+                        processNotes(nb.notes || []);
+                    });
                     try {
                         localStorage.setItem('ultimateNotesApp', JSON.stringify(state.notebooks));
                         console.log('Saved after clearing version history');
                     } catch (e2) {
                         alert('Storage is full! Consider exporting and deleting some notes.');
                     }
+                } else {
+                    console.error('Save error:', e);
+                }
+            }
+        }
+
+        async function processNotebookMediaForSave(notebook) {
+            const processNotes = async (notes) => {
+                for (const note of notes) {
+                    if (note.mediaEmbeds && note.mediaEmbeds.length > 0) {
+                        note.mediaEmbeds = await processMediaForSave(note.mediaEmbeds);
+                    }
+                    if (note.children && note.children.length > 0) {
+                        await processNotes(note.children);
+                    }
+                }
+            };
+            await processNotes(notebook.notes || []);
+            if (notebook.children && notebook.children.length > 0) {
+                for (const child of notebook.children) {
+                    await processNotebookMediaForSave(child);
                 }
             }
         }
@@ -6717,7 +7695,14 @@
             localStorage.setItem('ultimateNotesAppPinned', JSON.stringify(state.pinnedNotes));
         }
 
-        function loadFromStorage() {
+        async function loadFromStorage() {
+            // Initialize IndexedDB first
+            try {
+                await initMediaDB();
+            } catch (e) {
+                console.error('Failed to init IndexedDB:', e);
+            }
+            
             const saved = localStorage.getItem('ultimateNotesApp');
             if (saved) {
                 state.notebooks = JSON.parse(saved);

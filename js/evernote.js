@@ -143,21 +143,55 @@ class EvernoteManager {
         if (contentEl) {
             let rawContent = this._extractContent(contentEl);
             
-            // Build resource list
-            const resourceEls = Array.from(noteEl.querySelectorAll('resource') || []);
-            const resourcesList = resourceEls.map(res => {
-                const dataEl = res.querySelector('data');
-                const mimeEl = res.querySelector('mime');
-                const fileName = res.querySelector('resource-attributes > file-name')?.textContent || '';
-                const b64 = (dataEl?.textContent || '').replace(/\s+/g, '');
+            // Build resource map - use order-based matching to avoid memory-intensive MD5 computation
+            // Large base64 images can cause memory issues when computing hashes
+            // Use getElementsByTagName for better XML compatibility than querySelectorAll
+            const resourceEls = Array.from(noteEl.getElementsByTagName('resource') || []);
+            const resourcesList = [];
+            
+            console.log(`Note ${index}: Found ${resourceEls.length} resources via getElementsByTagName`);
+            
+            resourceEls.forEach((res, idx) => {
+                // Use getElementsByTagName for better XML compatibility
+                const dataEls = res.getElementsByTagName('data');
+                const mimeEls = res.getElementsByTagName('mime');
+                const dataEl = dataEls.length > 0 ? dataEls[0] : null;
+                const mimeEl = mimeEls.length > 0 ? mimeEls[0] : null;
+
+                // Try to get filename from resource-attributes
+                const attrEls = res.getElementsByTagName('resource-attributes');
+                let fileName = '';
+                if (attrEls.length > 0) {
+                    const fileNameEls = attrEls[0].getElementsByTagName('file-name');
+                    if (fileNameEls.length > 0) {
+                        fileName = fileNameEls[0].textContent || '';
+                    }
+                }
+
+                // Join all text nodes in <data> (in case of splitting)
+                let b64 = '';
+                if (dataEl) {
+                    b64 = Array.from(dataEl.childNodes).map(n => n.textContent).join('');
+                    console.log(`Note ${index} Resource ${idx}: raw joined base64 (first 200):`, b64.slice(0, 200));
+                    b64 = b64.replace(/\s+/g, '');
+                    // Pad base64 to multiple of 4
+                    while (b64.length % 4 !== 0) b64 += '=';
+                    console.log(`Note ${index} Resource ${idx}: cleaned base64 (first 200):`, b64.slice(0, 200));
+                }
                 const mime = (mimeEl?.textContent || '').trim() || '';
-                return { b64, mime, fileName };
+
+                console.log(`  Resource ${idx}: mime=${mime}, b64 length=${b64.length}`);
+
+                const resourceData = { b64, mime, fileName, index: idx };
+                resourcesList.push(resourceData);
             });
 
-            // Transform media elements
+            // Transform media elements - resources are matched by their order in the ENEX file
             const mediaResult = this._transformMediaElements(rawContent, resourcesList, index);
             rawContent = mediaResult.content;
             extractedMedia = mediaResult.extractedMedia;
+            
+            console.log(`Note ${index}: Extracted ${extractedMedia.length} media items`);
 
             // Add placeholders for media
             rawContent = rawContent.replace(/<img[^>]*data-import-id=["']([^"']+)["'][^>]*>/gi, '\n[media:$1]\n');
@@ -222,7 +256,9 @@ class EvernoteManager {
 
         // Add extracted media as embeds
         if (extractedMedia.length > 0) {
+            console.log(`Note ${index}: Adding ${extractedMedia.length} items to mediaEmbeds`);
             extractedMedia.forEach((m, mi) => {
+                console.log(`  Media ${mi}: type=${m.type}, url length=${m.url.length}`);
                 note.mediaEmbeds.push({
                     id: m.id,
                     type: m.type,
@@ -235,6 +271,7 @@ class EvernoteManager {
                 });
             });
         } else {
+            console.log(`Note ${index}: No extracted media, trying direct extraction`);
             // Try to extract resources directly
             this._extractResourcesDirectly(noteEl, note, startX, startY);
         }
@@ -276,26 +313,28 @@ class EvernoteManager {
     }
 
     // Transform en-media and img elements
+    // Uses order-based matching to avoid memory-intensive hash computation
     _transformMediaElements(rawContent, resourcesList, noteIndex) {
         const extractedMedia = [];
         
         try {
-            const mediaDoc = new DOMParser().parseFromString(rawContent, 'text/html');
-            const mediaEls = Array.from(mediaDoc.querySelectorAll('en-media, img'))
-                .filter(el => el.tagName.toLowerCase() === 'en-media' || 
-                    (el.tagName.toLowerCase() === 'img' && (el.getAttribute('src') || '').startsWith('en-media')));
-
-            let mapIdx = 0;
-            mediaEls.forEach((mEl, mi) => {
-                const res = resourcesList[mapIdx];
+            // Use regex to find en-media tags since DOMParser may not handle custom XML tags well
+            const enMediaRegex = /<en-media[^>]*\/?>/gi;
+            const enMediaMatches = rawContent.match(enMediaRegex) || [];
+            
+            console.log(`Note ${noteIndex}: Found ${enMediaMatches.length} en-media tags in content`);
+            console.log(`Note ${noteIndex}: Have ${resourcesList.length} resources available`);
+            
+            let mediaIndex = 0;
+            rawContent = rawContent.replace(enMediaRegex, (match) => {
+                console.log(`Note ${noteIndex}: Processing en-media tag ${mediaIndex}: ${match.substring(0, 100)}...`);
+                
+                const res = resourcesList[mediaIndex];
+                
                 if (res && res.b64) {
                     const url = `data:${res.mime};base64,${res.b64}`;
-                    const img = mediaDoc.createElement('img');
-                    const importId = `import-${noteIndex}-${mi}`;
-                    img.setAttribute('src', url);
-                    img.setAttribute('data-import-id', importId);
-                    mEl.parentNode.replaceChild(img, mEl);
-
+                    const importId = `import-${noteIndex}-${mediaIndex}`;
+                    
                     const type = res.mime.startsWith('image/') ? 'image' : 
                                  res.mime.startsWith('video/') ? 'video' : 
                                  res.mime.startsWith('audio/') ? 'audio' : 'file';
@@ -306,11 +345,18 @@ class EvernoteManager {
                         url, 
                         fileName: res.fileName 
                     });
-                    mapIdx++;
+                    
+                    console.log(`Note ${noteIndex}: Matched resource ${mediaIndex} with mime ${res.mime}`);
+                    mediaIndex++;
+                    return `<img src="${url}" data-import-id="${importId}" />`;
+                } else {
+                    console.log(`Note ${noteIndex}: No resource available for media tag ${mediaIndex}`);
                 }
+                
+                mediaIndex++;
+                return ''; // Remove unmatched en-media tags
             });
-
-            rawContent = mediaDoc.body.innerHTML || rawContent;
+            
         } catch (transformErr) {
             console.warn('ENML media transform failed:', transformErr);
         }

@@ -19,6 +19,15 @@ class GraphView {
         this.zoom = 1;
         this.animationFrame = null;
         
+        // View mode: 'graph' or 'notes'
+        this.viewMode = 'graph';
+        
+        // Notes overview state
+        this.notesZoom = 1;
+        this.notesOffset = { x: 0, y: 0 };
+        this.notesPanning = false;
+        this.notesPanStart = { x: 0, y: 0 };
+        
         // Physics simulation parameters
         this.simulation = {
             running: true,
@@ -64,12 +73,16 @@ class GraphView {
         this.canvas.addEventListener('wheel', (e) => this.handleWheel(e));
         this.canvas.addEventListener('dblclick', (e) => this.handleDoubleClick(e));
         
-        // Search input
+        // Search input - works for both graph and notes view
         const searchInput = document.getElementById('graph-search');
         if (searchInput) {
             searchInput.addEventListener('input', (e) => {
                 this.searchQuery = e.target.value.toLowerCase();
-                this.render();
+                if (this.viewMode === 'graph') {
+                    this.render();
+                } else if (typeof state !== 'undefined' && state.notebooks) {
+                    this.renderNotesOverview(state.notebooks);
+                }
             });
         }
         
@@ -107,31 +120,41 @@ class GraphView {
         let colorIndex = 0;
         const allNotes = [];
         
-        // Collect all notes from all notebooks
-        notebooks.forEach(notebook => {
+        // Collect all notes from a notebook (including sub-notes)
+        const collectNotes = (notes, parentNotebook) => {
+            notes.forEach(note => {
+                allNotes.push({
+                    note: note,
+                    notebook: parentNotebook,
+                    color: this.notebookColors[parentNotebook.id]
+                });
+                if (note.children && note.children.length > 0) {
+                    collectNotes(note.children, parentNotebook);
+                }
+            });
+        };
+        
+        // Recursively process notebooks and sub-notebooks
+        const processNotebook = (notebook) => {
             // Assign color to notebook
             if (!this.notebookColors[notebook.id]) {
                 this.notebookColors[notebook.id] = this.colors[colorIndex % this.colors.length];
                 colorIndex++;
             }
             
-            const collectNotes = (notes, parentNotebook) => {
-                notes.forEach(note => {
-                    allNotes.push({
-                        note: note,
-                        notebook: parentNotebook,
-                        color: this.notebookColors[parentNotebook.id]
-                    });
-                    if (note.children && note.children.length > 0) {
-                        collectNotes(note.children, parentNotebook);
-                    }
-                });
-            };
-            
+            // Collect notes from this notebook
             if (notebook.notes) {
                 collectNotes(notebook.notes, notebook);
             }
-        });
+            
+            // Process sub-notebooks recursively
+            if (notebook.children && notebook.children.length > 0) {
+                notebook.children.forEach(child => processNotebook(child));
+            }
+        };
+        
+        // Process all top-level notebooks
+        notebooks.forEach(notebook => processNotebook(notebook));
         
         // Create nodes
         const canvasWidth = this.canvas.width / window.devicePixelRatio;
@@ -353,8 +376,11 @@ class GraphView {
         const canvasWidth = this.canvas.width / window.devicePixelRatio;
         const canvasHeight = this.canvas.height / window.devicePixelRatio;
         
-        // Clear canvas
-        this.ctx.fillStyle = '#0a0a0f';
+        // Check for dark mode
+        const isDark = document.body.classList.contains('dark-mode');
+        
+        // Clear canvas with appropriate background
+        this.ctx.fillStyle = isDark ? '#0a0a0f' : '#f8f9fa';
         this.ctx.fillRect(0, 0, canvasWidth, canvasHeight);
         
         // Apply transformations
@@ -399,7 +425,12 @@ class GraphView {
                 this.ctx.strokeStyle = `rgba(139, 92, 246, ${0.5 + edge.strength * 0.5})`;
                 this.ctx.lineWidth = 1.5 + edge.strength * 1.5;
             } else {
-                this.ctx.strokeStyle = `rgba(255, 255, 255, ${0.1 + edge.strength * 0.15})`;
+                // Use different colors for light/dark mode
+                if (isDark) {
+                    this.ctx.strokeStyle = `rgba(255, 255, 255, ${0.1 + edge.strength * 0.15})`;
+                } else {
+                    this.ctx.strokeStyle = `rgba(0, 0, 0, ${0.1 + edge.strength * 0.2})`;
+                }
                 this.ctx.lineWidth = 0.5 + edge.strength;
             }
             
@@ -455,14 +486,14 @@ class GraphView {
             
             // Draw border
             if (isSelected) {
-                this.ctx.strokeStyle = '#fff';
+                this.ctx.strokeStyle = isDark ? '#fff' : '#333';
                 this.ctx.lineWidth = 2;
                 this.ctx.stroke();
             }
             
             // Draw label for selected/hovered or large nodes
             if ((isSelected || isHovered || connectionCount > 2) && this.zoom > 0.5) {
-                this.ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+                this.ctx.fillStyle = isDark ? `rgba(255, 255, 255, ${alpha})` : `rgba(0, 0, 0, ${alpha})`;
                 this.ctx.font = '11px Inter, system-ui, sans-serif';
                 this.ctx.textAlign = 'center';
                 this.ctx.fillText(node.label, node.x, node.y + radius + 14);
@@ -699,13 +730,335 @@ class GraphView {
         this.hideInfoPanel();
         this.searchQuery = '';
         
+        // Reset notes overview
+        this.notesZoom = 1;
+        this.notesOffset = { x: 0, y: 0 };
+        
         const searchInput = document.getElementById('graph-search');
         if (searchInput) searchInput.value = '';
         
         // Rebuild and restart simulation
         if (typeof state !== 'undefined' && state.notebooks) {
             this.buildGraph(state.notebooks);
+            if (this.viewMode === 'notes') {
+                this.renderNotesOverview(state.notebooks);
+            }
         }
+    }
+
+    // Switch between graph and notes view modes
+    switchMode(mode) {
+        this.viewMode = mode;
+        
+        const graphContainer = document.getElementById('graph-container');
+        const notesContainer = document.getElementById('notes-overview-container');
+        const graphToggle = document.getElementById('toggle-graph-view');
+        const notesToggle = document.getElementById('toggle-notes-view');
+        const orphansCheckbox = document.getElementById('orphans-checkbox');
+        
+        const headerZoomControls = document.getElementById('header-zoom-controls');
+        
+        if (mode === 'graph') {
+            graphContainer.style.display = 'block';
+            notesContainer.style.display = 'none';
+            graphToggle.classList.add('active');
+            notesToggle.classList.remove('active');
+            if (orphansCheckbox) orphansCheckbox.style.display = '';
+            if (headerZoomControls) headerZoomControls.style.display = 'none';
+            
+            // Restart simulation
+            if (typeof state !== 'undefined' && state.notebooks) {
+                this.buildGraph(state.notebooks);
+            }
+        } else {
+            graphContainer.style.display = 'none';
+            notesContainer.style.display = 'block';
+            graphToggle.classList.remove('active');
+            notesToggle.classList.add('active');
+            if (orphansCheckbox) orphansCheckbox.style.display = 'none';
+            if (headerZoomControls) headerZoomControls.style.display = 'flex';
+            
+            // Stop graph simulation
+            this.stopSimulation();
+            
+            // Render notes overview
+            if (typeof state !== 'undefined' && state.notebooks) {
+                this.renderNotesOverview(state.notebooks);
+            }
+        }
+    }
+
+    // Render notes as preview cards
+    renderNotesOverview(notebooks) {
+        const container = document.getElementById('notes-overview-container');
+        const grid = document.getElementById('notes-overview-grid');
+        
+        if (!container || !grid) return;
+        
+        // Collect all notes
+        const allNotes = [];
+        let colorIndex = 0;
+        
+        const collectNotes = (notes, notebook, depth = 0) => {
+            notes.forEach(note => {
+                allNotes.push({
+                    note: note,
+                    notebook: notebook,
+                    color: this.notebookColors[notebook.id] || this.colors[colorIndex % this.colors.length],
+                    depth: depth
+                });
+                if (note.children && note.children.length > 0) {
+                    collectNotes(note.children, notebook, depth + 1);
+                }
+            });
+        };
+        
+        const processNotebook = (notebook) => {
+            if (!this.notebookColors[notebook.id]) {
+                this.notebookColors[notebook.id] = this.colors[colorIndex % this.colors.length];
+                colorIndex++;
+            }
+            
+            if (notebook.notes) {
+                collectNotes(notebook.notes, notebook);
+            }
+            
+            if (notebook.children && notebook.children.length > 0) {
+                notebook.children.forEach(child => processNotebook(child));
+            }
+        };
+        
+        notebooks.forEach(notebook => processNotebook(notebook));
+        
+        // Filter by search
+        const filteredNotes = allNotes.filter(item => {
+            if (!this.searchQuery) return true;
+            const query = this.searchQuery.toLowerCase();
+            return item.note.name.toLowerCase().includes(query) ||
+                   item.notebook.name.toLowerCase().includes(query) ||
+                   (item.note.textBoxes && item.note.textBoxes.some(box => 
+                       box.content && box.content.toLowerCase().includes(query)
+                   ));
+        });
+        
+        // Build HTML
+        let html = '';
+        filteredNotes.forEach(item => {
+            const preview = this.getNotePreview(item.note);
+            const hasCanvas = item.note.canvasData || item.note.layersData;
+            
+            html += `
+                <div class="note-preview-card" 
+                     onclick="selectNoteById('${item.notebook.id}', '${item.note.id}')"
+                     style="border-left: 3px solid ${item.color}">
+                    <div class="note-preview-header" style="background: ${item.color}22">
+                        <div class="note-preview-title">${this.escapeHtml(item.note.name)}</div>
+                        <div class="note-preview-meta">${this.escapeHtml(item.notebook.name)}</div>
+                    </div>
+                    <div class="note-preview-content">
+                        ${hasCanvas ? 
+                            `<img class="note-preview-canvas" src="${item.note.canvasData || ''}" alt="Note preview" onerror="this.style.display='none'">` :
+                            `<div class="note-preview-text">${preview}</div>`
+                        }
+                    </div>
+                </div>
+            `;
+        });
+        
+        grid.innerHTML = html;
+        
+        // Update zoom level display in header
+        const zoomLevel = document.getElementById('notes-zoom-level');
+        if (zoomLevel) {
+            zoomLevel.textContent = Math.round(this.notesZoom * 100) + '%';
+        }
+        this.updateNotesTransform();
+        
+        // Add pan/zoom event listeners
+        this.initNotesOverviewEvents(container);
+    }
+
+    getNotePreview(note) {
+        if (!note.textBoxes || note.textBoxes.length === 0) {
+            return '<span style="color: rgba(255,255,255,0.4); font-style: italic;">Empty note</span>';
+        }
+        
+        // Combine text from all text boxes
+        let text = note.textBoxes
+            .map(box => box.content || '')
+            .join(' ')
+            .replace(/<[^>]*>/g, ' ')  // Remove HTML tags
+            .replace(/\s+/g, ' ')       // Normalize whitespace
+            .trim();
+        
+        // Truncate
+        if (text.length > 150) {
+            text = text.substring(0, 150) + '...';
+        }
+        
+        return this.escapeHtml(text) || '<span style="color: rgba(255,255,255,0.4); font-style: italic;">Empty note</span>';
+    }
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    initNotesOverviewEvents(container) {
+        // Remove old listeners
+        container.onmousedown = null;
+        container.onmousemove = null;
+        container.onmouseup = null;
+        container.onmouseleave = null;
+        container.onwheel = null;
+        
+        // Pan
+        container.onmousedown = (e) => {
+            if (e.target.classList.contains('note-preview-card') || 
+                e.target.closest('.note-preview-card') ||
+                e.target.closest('.notes-overview-zoom-controls')) return;
+            
+            this.notesPanning = true;
+            this.notesPanStart = {
+                x: e.clientX - this.notesOffset.x,
+                y: e.clientY - this.notesOffset.y
+            };
+            container.style.cursor = 'grabbing';
+        };
+        
+        container.onmousemove = (e) => {
+            if (!this.notesPanning) return;
+            
+            this.notesOffset.x = e.clientX - this.notesPanStart.x;
+            this.notesOffset.y = e.clientY - this.notesPanStart.y;
+            this.updateNotesTransform();
+        };
+        
+        container.onmouseup = () => {
+            this.notesPanning = false;
+            container.style.cursor = 'grab';
+        };
+        
+        container.onmouseleave = () => {
+            this.notesPanning = false;
+            container.style.cursor = 'grab';
+        };
+        
+        // Zoom with wheel
+        container.onwheel = (e) => {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -0.1 : 0.1;
+            this.zoomNotesView(delta, e.clientX, e.clientY);
+        };
+        
+        // Touch events for pinch zoom and pan
+        let lastTouchDistance = 0;
+        let lastTouchCenter = { x: 0, y: 0 };
+        let isTouching = false;
+        
+        container.ontouchstart = (e) => {
+            if (e.target.closest('.note-preview-card')) return;
+            
+            if (e.touches.length === 2) {
+                // Pinch zoom start
+                const touch1 = e.touches[0];
+                const touch2 = e.touches[1];
+                lastTouchDistance = Math.hypot(
+                    touch2.clientX - touch1.clientX,
+                    touch2.clientY - touch1.clientY
+                );
+                lastTouchCenter = {
+                    x: (touch1.clientX + touch2.clientX) / 2,
+                    y: (touch1.clientY + touch2.clientY) / 2
+                };
+            } else if (e.touches.length === 1) {
+                // Pan start
+                isTouching = true;
+                this.notesPanStart = {
+                    x: e.touches[0].clientX - this.notesOffset.x,
+                    y: e.touches[0].clientY - this.notesOffset.y
+                };
+            }
+        };
+        
+        container.ontouchmove = (e) => {
+            e.preventDefault();
+            
+            if (e.touches.length === 2) {
+                // Pinch zoom
+                const touch1 = e.touches[0];
+                const touch2 = e.touches[1];
+                const currentDistance = Math.hypot(
+                    touch2.clientX - touch1.clientX,
+                    touch2.clientY - touch1.clientY
+                );
+                const currentCenter = {
+                    x: (touch1.clientX + touch2.clientX) / 2,
+                    y: (touch1.clientY + touch2.clientY) / 2
+                };
+                
+                if (lastTouchDistance > 0) {
+                    const scale = currentDistance / lastTouchDistance;
+                    const delta = (scale - 1) * 0.5;
+                    this.zoomNotesView(delta, currentCenter.x, currentCenter.y);
+                }
+                
+                lastTouchDistance = currentDistance;
+                lastTouchCenter = currentCenter;
+            } else if (e.touches.length === 1 && isTouching) {
+                // Pan
+                this.notesOffset.x = e.touches[0].clientX - this.notesPanStart.x;
+                this.notesOffset.y = e.touches[0].clientY - this.notesPanStart.y;
+                this.updateNotesTransform();
+            }
+        };
+        
+        container.ontouchend = (e) => {
+            if (e.touches.length < 2) {
+                lastTouchDistance = 0;
+            }
+            if (e.touches.length === 0) {
+                isTouching = false;
+            }
+        };
+        
+        container.style.cursor = 'grab';
+    }
+
+    zoomNotesView(delta, mouseX, mouseY) {
+        const container = document.getElementById('notes-overview-container');
+        const grid = document.getElementById('notes-overview-grid');
+        if (!container || !grid) return;
+        
+        const oldZoom = this.notesZoom;
+        this.notesZoom = Math.max(0.2, Math.min(2, this.notesZoom + delta));
+        
+        // Zoom towards mouse position if provided
+        if (mouseX !== undefined && mouseY !== undefined) {
+            const rect = container.getBoundingClientRect();
+            const mx = mouseX - rect.left;
+            const my = mouseY - rect.top;
+            
+            const zoomChange = this.notesZoom / oldZoom;
+            this.notesOffset.x = mx - (mx - this.notesOffset.x) * zoomChange;
+            this.notesOffset.y = my - (my - this.notesOffset.y) * zoomChange;
+        }
+        
+        this.updateNotesTransform();
+        
+        // Update zoom level display
+        const zoomLevel = document.getElementById('notes-zoom-level');
+        if (zoomLevel) {
+            zoomLevel.textContent = Math.round(this.notesZoom * 100) + '%';
+        }
+    }
+
+    updateNotesTransform() {
+        const grid = document.getElementById('notes-overview-grid');
+        if (!grid) return;
+        
+        grid.style.transform = `translate(${this.notesOffset.x}px, ${this.notesOffset.y}px) scale(${this.notesZoom})`;
     }
 }
 
@@ -729,8 +1082,17 @@ function showGraphView() {
     
     // Get notebooks from state
     if (typeof state !== 'undefined' && state.notebooks) {
-        graphView.buildGraph(state.notebooks);
+        if (graphView.viewMode === 'graph') {
+            graphView.buildGraph(state.notebooks);
+        } else {
+            graphView.renderNotesOverview(state.notebooks);
+        }
     }
+}
+
+// Switch graph mode (graph/notes)
+function switchGraphMode(mode) {
+    graphView.switchMode(mode);
 }
 
 // Reset graph view
@@ -740,5 +1102,6 @@ function resetGraphView() {
 
 // Make functions globally available
 window.showGraphView = showGraphView;
+window.switchGraphMode = switchGraphMode;
 window.resetGraphView = resetGraphView;
 window.graphView = graphView;
