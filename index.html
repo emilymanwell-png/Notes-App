@@ -5484,9 +5484,10 @@
         }
 
         // Create sub-note
-        function createSubNote(notebookIndex, noteId, e) {
+        function createSubNote(notebookId, noteId, e) {
             e.stopPropagation();
-            const notebook = state.notebooks[notebookIndex];
+            const notebook = window.findNotebookById(notebookId);
+            if (!notebook) return;
             const parentNote = findNoteById(notebook, noteId);
             if (parentNote) {
                 state.currentNotebook = notebook;
@@ -5498,8 +5499,9 @@
         // Find note by ID (recursive)
         function findNoteById(notebook, noteId, notes = null) {
             const searchNotes = notes || notebook.notes;
+            const targetId = String(noteId);
             for (const note of searchNotes) {
-                if (note.id === noteId) return note;
+                if (String(note.id) === targetId) return note;
                 if (note.children && note.children.length > 0) {
                     const found = findNoteById(notebook, noteId, note.children);
                     if (found) return found;
@@ -7110,9 +7112,10 @@
             renderNotebooks();
         }
 
-        function toggleNoteChildren(notebookIndex, noteId, e) {
+        function toggleNoteChildren(notebookId, noteId, e) {
             e.stopPropagation();
-            const notebook = state.notebooks[notebookIndex];
+            const notebook = window.findNotebookById(notebookId);
+            if (!notebook) return;
             const note = findNoteById(notebook, noteId);
             if (note) {
                 note.isOpen = !note.isOpen;
@@ -7165,11 +7168,11 @@
                     <div class="note-item ${isActive ? 'active' : ''}" onclick="selectNoteById('${notebook.id}', '${note.id}')">
                         <div class="note-item-header">
                             <span>
-                                <span class="note-toggle ${hasChildren ? (note.isOpen ? 'open' : '') : 'hidden'}" onclick="toggleNoteChildren(${notebookIndex}, '${note.id}', event)">▸</span>
+                                <span class="note-toggle ${hasChildren ? (note.isOpen ? 'open' : '') : 'hidden'}" onclick="toggleNoteChildren('${notebook.id}', '${note.id}', event)">▸</span>
                                 ${note.name}
                             </span>
                             <div>
-                                <button class="add-subnote-btn" onclick="createSubNote(${notebookIndex}, '${note.id}', event)" title="Add sub-note">+</button>
+                                <button class="add-subnote-btn" onclick="createSubNote('${notebook.id}', '${note.id}', event)" title="Add sub-note">+</button>
                                 <button class="pin-btn ${isPinned ? 'pinned' : ''}" onclick="togglePin(event, '${notebook.id}', '${note.id}')" title="${isPinned ? 'Unpin' : 'Pin'}">${isPinned ? '★' : '☆'}</button>
                                 <button class="delete-btn" onclick="deleteNoteById('${notebook.id}', '${note.id}', event)">×</button>
                             </div>
