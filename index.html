@@ -768,6 +768,62 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             font-weight: 500;
+            gap: 4px;
+        }
+
+        .section-title span:first-child {
+            flex: 1;
+        }
+
+        .notebook-sort-select {
+            background: transparent;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 3px 6px;
+            font-size: 0.65rem;
+            color: #666;
+            cursor: pointer;
+            outline: none;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        .notebook-sort-select:hover {
+            border-color: #999;
+        }
+
+        body.dark-mode .notebook-sort-select {
+            background: transparent;
+            border-color: #444;
+            color: #aaa;
+        }
+
+        body.dark-mode .notebook-sort-select:hover {
+            border-color: #666;
+        }
+
+        .notebook-pin-btn {
+            opacity: 0;
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 0.75rem;
+            padding: 2px 4px;
+            transition: all 0.15s ease;
+        }
+
+        .notebook-header:hover .notebook-pin-btn {
+            opacity: 1;
+        }
+
+        .notebook-pin-btn.pinned {
+            opacity: 1;
+            color: #f5a623;
+        }
+
+        .notebook-pin-btn:hover {
+            color: #f5a623;
         }
 
         .add-btn {
@@ -912,6 +968,20 @@
         /* Nested Notes */
         .note-item-container {
             position: relative;
+            cursor: grab;
+        }
+
+        .note-item-container:active {
+            cursor: grabbing;
+        }
+
+        .note-item-container.dragging {
+            opacity: 0.5;
+        }
+
+        .note-item-container.drag-over {
+            border: 2px dashed #007aff;
+            background: rgba(0, 122, 255, 0.05);
         }
 
         .note-item .note-toggle {
@@ -2517,6 +2587,116 @@
             color: #999;
             margin-bottom: 16px;
             font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .home-section-title .notebook-sort-select {
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        /* Drag and drop styles for custom sorting */
+        .notebook-card.dragging,
+        .notebook.dragging {
+            opacity: 0.5;
+            background: #f0f0f0;
+        }
+
+        .notebook-card.drag-over,
+        .notebook.drag-over {
+            border: 2px dashed #007aff;
+            background: rgba(0, 122, 255, 0.05);
+        }
+
+        .notebook-card {
+            cursor: grab;
+        }
+
+        .notebook-card:active {
+            cursor: grabbing;
+        }
+
+        body.dark-mode .notebook-card.dragging,
+        body.dark-mode .notebook.dragging {
+            background: #333;
+        }
+
+        body.dark-mode .notebook-card.drag-over,
+        body.dark-mode .notebook.drag-over {
+            border-color: #0a84ff;
+            background: rgba(10, 132, 255, 0.1);
+        }
+
+        .pinned-card.dragging {
+            opacity: 0.5;
+        }
+
+        .pinned-card.drag-over {
+            border: 2px dashed #007aff;
+            background: rgba(0, 122, 255, 0.05);
+        }
+
+        .pinned-card {
+            cursor: grab;
+        }
+
+        .pinned-card:active {
+            cursor: grabbing;
+        }
+
+        .notebook-card.drop-target,
+        .notebook.drop-target {
+            border: 2px solid #34c759;
+            background: rgba(52, 199, 89, 0.1);
+        }
+
+        body.dark-mode .notebook-card.drop-target,
+        body.dark-mode .notebook.drop-target {
+            border-color: #30d158;
+            background: rgba(48, 209, 88, 0.1);
+        }
+
+        /* Drop position indicators for wedging between items */
+        .drop-before {
+            border-top: 3px solid #007aff !important;
+        }
+
+        .drop-after {
+            border-bottom: 3px solid #007aff !important;
+        }
+
+        .note-item-container.drop-before,
+        .note-item-container.drop-after {
+            background: rgba(0, 122, 255, 0.05);
+        }
+
+        body.dark-mode .drop-before {
+            border-top-color: #0a84ff !important;
+        }
+
+        body.dark-mode .drop-after {
+            border-bottom-color: #0a84ff !important;
+        }
+
+        .drag-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            z-index: 10000;
+            pointer-events: none;
+        }
+
+        body.dark-mode .drag-hint {
+            background: rgba(255,255,255,0.9);
+            color: #333;
         }
 
         .pinned-grid {
@@ -2547,12 +2727,14 @@
             border-radius: 8px;
             margin-bottom: 12px;
             overflow: hidden;
+            pointer-events: none;
         }
 
         .pinned-card-preview img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            pointer-events: none;
         }
 
         .pinned-card-title {
@@ -2560,11 +2742,13 @@
             font-weight: 500;
             color: #333;
             margin-bottom: 4px;
+            pointer-events: none;
         }
 
         .pinned-card-notebook {
             font-size: 0.75rem;
             color: #999;
+            pointer-events: none;
         }
 
         .unpin-btn {
@@ -2583,6 +2767,7 @@
             opacity: 0;
             transition: all 0.15s ease;
             font-size: 0.8rem;
+            /* Keep pointer-events for unpin button */
         }
 
         .pinned-card:hover .unpin-btn {
@@ -2619,6 +2804,7 @@
             font-size: 1.5rem;
             margin-bottom: 12px;
             opacity: 0.6;
+            pointer-events: none;
         }
 
         .notebook-card-name {
@@ -2626,11 +2812,26 @@
             font-weight: 500;
             color: #333;
             margin-bottom: 4px;
+            pointer-events: none;
         }
 
         .notebook-card-count {
             font-size: 0.75rem;
             color: #999;
+            pointer-events: none;
+        }
+
+        .notebook-card-pin {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            color: #f5a623;
+            font-size: 0.8rem;
+            pointer-events: none;
+        }
+
+        .notebook-card {
+            position: relative;
         }
 
         .empty-pinned {
@@ -2699,6 +2900,12 @@
         <div class="notebooks-section">
             <div class="section-title">
                 <span>Notebooks</span>
+                <select id="notebook-sort" class="notebook-sort-select" onchange="setNotebookSort(this.value)" title="Sort notebooks">
+                    <option value="pinned">★ Pinned</option>
+                    <option value="alphabetical">A-Z</option>
+                    <option value="recent">Recent</option>
+                    <option value="custom">Custom</option>
+                </select>
                 <button class="add-btn" onclick="triggerEvernoteImport()" title="Import from Evernote">↓</button>
                 <button class="add-btn" onclick="showModal('notebook')" title="New Notebook">+</button>
             </div>
@@ -2801,7 +3008,15 @@
             </div>
             
             <div class="home-section">
-                <div class="home-section-title">All Notebooks</div>
+                <div class="home-section-title">
+                    <span>All Notebooks</span>
+                    <select id="notebook-sort-home" class="notebook-sort-select" onchange="setNotebookSort(this.value)" title="Sort notebooks">
+                        <option value="pinned">★ Pinned</option>
+                        <option value="alphabetical">A-Z</option>
+                        <option value="recent">Recent</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </div>
                 <div id="notebooks-home-container" class="notebooks-grid"></div>
             </div>
         </div>
@@ -2817,12 +3032,26 @@
             </div>
             
             <div class="home-section" id="subnotebooks-section">
-                <div class="home-section-title">Sub-Notebooks</div>
+                <div class="home-section-title">
+                    <span>Sub-Notebooks</span>
+                    <select id="subnotebook-sort" class="notebook-sort-select" onchange="setSubNotebookSort(this.value)" title="Sort sub-notebooks">
+                        <option value="alphabetical">A-Z</option>
+                        <option value="recent">Recent</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </div>
                 <div id="subnotebooks-container" class="notebooks-grid"></div>
             </div>
             
             <div class="home-section">
-                <div class="home-section-title">Notes</div>
+                <div class="home-section-title">
+                    <span>Notes</span>
+                    <select id="notes-sort" class="notebook-sort-select" onchange="setNotesSort(this.value)" title="Sort notes">
+                        <option value="alphabetical">A-Z</option>
+                        <option value="recent">Recent</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </div>
                 <div id="notebook-notes-container" class="pinned-grid"></div>
             </div>
         </div>
@@ -3191,6 +3420,11 @@
         let state = {
             notebooks: [],
             pinnedNotes: [], // Array of {notebookId, noteId}
+            pinnedNotebooks: [], // Array of notebook IDs
+            notebookSort: 'pinned', // 'pinned', 'alphabetical', 'recent', 'custom'
+            notebookCustomOrder: [], // Array of notebook IDs for custom ordering
+            subNotebookSort: 'alphabetical', // 'alphabetical', 'recent', 'custom'
+            notesSort: 'recent', // 'alphabetical', 'recent', 'custom'
             currentNotebook: null,
             currentNote: null,
             currentView: 'home', // 'home' or 'editor'
@@ -7164,7 +7398,10 @@
             const statusBadge = note.status && note.status !== 'none' ? `<div class="note-item-status-row"><span class="status-badge ${note.status}">${getStatusLabel(note.status)}</span></div>` : '';
             
             let html = `
-                <div class="note-item-container">
+                <div class="note-item-container" 
+                    data-note-id="${note.id}" 
+                    data-notebook-id="${notebook.id}"
+                    draggable="true">
                     <div class="note-item ${isActive ? 'active' : ''}" onclick="selectNoteById('${notebook.id}', '${note.id}')">
                         <div class="note-item-header">
                             <span>
@@ -7193,15 +7430,914 @@
             return html;
         }
 
+        // Notebook sorting functions
+        function setNotebookSort(sortMode) {
+            state.notebookSort = sortMode;
+            renderNotebooks();
+            renderHomePage();
+            saveToStorage();
+        }
+
+        function setSubNotebookSort(sortMode) {
+            state.subNotebookSort = sortMode;
+            if (state.viewingNotebook) {
+                showNotebookDetailPage(state.viewingNotebook);
+            }
+            saveToStorage();
+        }
+
+        function setNotesSort(sortMode) {
+            state.notesSort = sortMode;
+            if (state.viewingNotebook) {
+                showNotebookDetailPage(state.viewingNotebook);
+            }
+            saveToStorage();
+        }
+
+        function toggleNotebookPin(notebookId) {
+            if (!state.pinnedNotebooks) state.pinnedNotebooks = [];
+            const index = state.pinnedNotebooks.indexOf(notebookId);
+            if (index > -1) {
+                state.pinnedNotebooks.splice(index, 1);
+            } else {
+                state.pinnedNotebooks.push(notebookId);
+            }
+            renderNotebooks();
+            saveToStorage();
+        }
+
+        function getSortedNotebooks(notebooks) {
+            if (!notebooks || notebooks.length === 0) return [];
+            
+            // Create a copy to avoid mutating original
+            const sorted = [...notebooks];
+            
+            switch (state.notebookSort) {
+                case 'pinned':
+                    // Pinned first, then by creation date (most recent first)
+                    sorted.sort((a, b) => {
+                        const aPinned = state.pinnedNotebooks && state.pinnedNotebooks.includes(a.id);
+                        const bPinned = state.pinnedNotebooks && state.pinnedNotebooks.includes(b.id);
+                        if (aPinned && !bPinned) return -1;
+                        if (!aPinned && bPinned) return 1;
+                        // Both pinned or both unpinned - sort by ID (timestamp) descending
+                        return parseInt(b.id) - parseInt(a.id);
+                    });
+                    break;
+                case 'alphabetical':
+                    sorted.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'recent':
+                    // Sort by ID (which is timestamp) descending
+                    sorted.sort((a, b) => parseInt(b.id) - parseInt(a.id));
+                    break;
+                case 'custom':
+                    // Use custom order if available, otherwise keep original order
+                    if (state.notebookCustomOrder && state.notebookCustomOrder.length > 0) {
+                        sorted.sort((a, b) => {
+                            const aIndex = state.notebookCustomOrder.indexOf(a.id);
+                            const bIndex = state.notebookCustomOrder.indexOf(b.id);
+                            // Items not in custom order go to the end
+                            if (aIndex === -1 && bIndex === -1) return 0;
+                            if (aIndex === -1) return 1;
+                            if (bIndex === -1) return -1;
+                            return aIndex - bIndex;
+                        });
+                    }
+                    break;
+            }
+            
+            return sorted;
+        }
+
+        // Sort sub-notebooks within a parent notebook
+        function getSortedSubNotebooks(subNotebooks, parentNotebookId) {
+            if (!subNotebooks || subNotebooks.length === 0) return [];
+            
+            const sorted = [...subNotebooks];
+            const customOrderKey = `subnotebook_order_${parentNotebookId}`;
+            const customOrder = state[customOrderKey] || [];
+            
+            switch (state.subNotebookSort) {
+                case 'alphabetical':
+                    sorted.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'recent':
+                    sorted.sort((a, b) => parseInt(b.id) - parseInt(a.id));
+                    break;
+                case 'custom':
+                    if (customOrder.length > 0) {
+                        sorted.sort((a, b) => {
+                            const aIndex = customOrder.indexOf(a.id);
+                            const bIndex = customOrder.indexOf(b.id);
+                            if (aIndex === -1 && bIndex === -1) return 0;
+                            if (aIndex === -1) return 1;
+                            if (bIndex === -1) return -1;
+                            return aIndex - bIndex;
+                        });
+                    }
+                    break;
+            }
+            
+            return sorted;
+        }
+
+        // Sort notes within a notebook
+        function getSortedNotes(notes, notebookId) {
+            if (!notes || notes.length === 0) return [];
+            
+            const sorted = [...notes];
+            const customOrderKey = `notes_order_${notebookId}`;
+            const customOrder = state[customOrderKey] || [];
+            
+            switch (state.notesSort) {
+                case 'alphabetical':
+                    sorted.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'recent':
+                    sorted.sort((a, b) => parseInt(b.id) - parseInt(a.id));
+                    break;
+                case 'custom':
+                    if (customOrder.length > 0) {
+                        sorted.sort((a, b) => {
+                            const aIndex = customOrder.indexOf(a.id);
+                            const bIndex = customOrder.indexOf(b.id);
+                            if (aIndex === -1 && bIndex === -1) return 0;
+                            if (aIndex === -1) return 1;
+                            if (bIndex === -1) return -1;
+                            return aIndex - bIndex;
+                        });
+                    }
+                    break;
+            }
+            
+            return sorted;
+        }
+
+        // Custom drag and drop for notebook reordering
+        let draggedNotebookId = null;
+
+        function handleNotebookDragStart(e, notebookId) {
+            draggedNotebookId = notebookId;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', notebookId);
+            if (state.notebookSort === 'custom') {
+                showDragHint('Drag to reorder or drop items here');
+            } else {
+                showDragHint('Drop items on notebooks to move them');
+            }
+        }
+
+        function handleNotebookDragEnd(e) {
+            e.target.classList.remove('dragging');
+            draggedNotebookId = null;
+            // Remove drag-over class from all elements
+            document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+        }
+
+        function handleNotebookDragOver(e) {
+            if (state.notebookSort !== 'custom' || !draggedNotebookId) return;
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            const target = e.target.closest('.notebook-card, .notebook');
+            if (target && !target.classList.contains('dragging')) {
+                document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+                target.classList.add('drag-over');
+            }
+        }
+
+        function handleNotebookDragLeave(e) {
+            const target = e.target.closest('.notebook-card, .notebook');
+            if (target) {
+                target.classList.remove('drag-over');
+            }
+        }
+
+        function handleNotebookDrop(e, targetNotebookId) {
+            e.preventDefault();
+            console.log('handleNotebookDrop called on:', targetNotebookId);
+            console.log('draggedSubNotebookId:', draggedSubNotebookId);
+            console.log('draggedNoteData:', draggedNoteData);
+            
+            // Check if we're dropping a sub-notebook or note INTO this notebook
+            if (draggedSubNotebookId && targetNotebookId !== draggedSubNotebookId) {
+                console.log('Moving sub-notebook to notebook');
+                moveSubNotebookToNotebook(draggedSubNotebookId, targetNotebookId);
+                clearAllDragStates();
+                return;
+            }
+            
+            if (draggedNoteData && targetNotebookId) {
+                console.log('Moving note to notebook');
+                moveNoteToNotebook(draggedNoteData.noteId, draggedNoteData.sourceNotebookId, targetNotebookId);
+                clearAllDragStates();
+                return;
+            }
+            
+            // Original reordering logic for custom sort
+            if (state.notebookSort !== 'custom' || !draggedNotebookId || draggedNotebookId === targetNotebookId) {
+                document.querySelectorAll('.drag-over, .drop-target').forEach(el => {
+                    el.classList.remove('drag-over');
+                    el.classList.remove('drop-target');
+                });
+                return;
+            }
+
+            // Initialize custom order if needed
+            if (!state.notebookCustomOrder || state.notebookCustomOrder.length === 0) {
+                state.notebookCustomOrder = state.notebooks.map(nb => nb.id);
+            }
+
+            // Remove dragged item from current position
+            const draggedIndex = state.notebookCustomOrder.indexOf(draggedNotebookId);
+            if (draggedIndex > -1) {
+                state.notebookCustomOrder.splice(draggedIndex, 1);
+            }
+
+            // Insert at new position (before target)
+            const targetIndex = state.notebookCustomOrder.indexOf(targetNotebookId);
+            if (targetIndex > -1) {
+                state.notebookCustomOrder.splice(targetIndex, 0, draggedNotebookId);
+            } else {
+                state.notebookCustomOrder.push(draggedNotebookId);
+            }
+
+            clearAllDragStates();
+            draggedNotebookId = null;
+
+            renderNotebooks();
+            renderHomePage();
+            saveToStorage();
+        }
+
+        // ===== Undo System for Drag Operations =====
+        // undoStack already declared earlier, reusing it
+        const MAX_UNDO_DRAG = 20;
+
+        function saveUndoState(action) {
+            undoStack.push({
+                action: action,
+                notebooks: JSON.parse(JSON.stringify(state.notebooks)),
+                pinnedNotes: JSON.parse(JSON.stringify(state.pinnedNotes || [])),
+                timestamp: Date.now()
+            });
+            if (undoStack.length > MAX_UNDO_DRAG) {
+                undoStack.shift();
+            }
+        }
+
+        function undoDragAction() {
+            if (undoStack.length === 0) {
+                showLayerToast('Nothing to undo');
+                return;
+            }
+            const lastState = undoStack.pop();
+            state.notebooks = lastState.notebooks;
+            state.pinnedNotes = lastState.pinnedNotes;
+            renderNotebooks();
+            renderHomePage();
+            if (state.viewingNotebook) {
+                state.viewingNotebook = window.findNotebookById(state.viewingNotebook.id);
+                if (state.viewingNotebook) {
+                    showNotebookDetailPage(state.viewingNotebook);
+                }
+            }
+            saveToStorage();
+            showLayerToast('Undid: ' + lastState.action);
+        }
+
+        // Ctrl+Z handler for undo drag operations
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'z' && !e.shiftKey) {
+                // Only undo drag operations when not in a text input
+                const activeEl = document.activeElement;
+                const isTextInput = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable);
+                if (!isTextInput) {
+                    e.preventDefault();
+                    undoDragAction();
+                }
+            }
+        });
+
+        // ===== Drag and Drop for Sub-Notebooks and Notes =====
+        let draggedSubNotebookId = null;
+        let draggedSubNotebookParentId = null;
+        let draggedNoteData = null; // {noteId, sourceNotebookId}
+        let dragHintEl = null;
+        let dropIndicator = null; // Visual indicator for insert position
+        let dropPosition = null; // 'before', 'after', or 'into'
+
+        // Create drop indicator element
+        function getDropIndicator() {
+            if (!dropIndicator) {
+                dropIndicator = document.createElement('div');
+                dropIndicator.className = 'drop-indicator';
+                dropIndicator.style.cssText = 'position:absolute;left:0;right:0;height:3px;background:#007aff;border-radius:2px;pointer-events:none;z-index:1000;display:none;';
+            }
+            return dropIndicator;
+        }
+
+        // Global drag event delegation
+        document.addEventListener('dragstart', function(e) {
+            // Prevent dragging if clicking on a button
+            if (e.target.closest('button')) {
+                e.preventDefault();
+                return;
+            }
+            
+            e.stopPropagation();
+            
+            // Find the draggable item
+            const noteContainer = e.target.closest('.note-item-container[data-note-id]');
+            const subnotebookEl = e.target.closest('[data-subnotebook-id]');
+            const notebookCard = e.target.closest('.notebook-card[data-notebook-id]');
+            const pinnedCard = e.target.closest('.pinned-card[data-note-id]');
+            
+            if (noteContainer) {
+                // Dragging a note from sidebar
+                const noteId = noteContainer.dataset.noteId;
+                const notebookId = noteContainer.dataset.notebookId;
+                console.log('Dragging NOTE from sidebar:', noteId);
+                saveUndoState('Move note');
+                draggedNoteData = { noteId, sourceNotebookId: notebookId };
+                noteContainer.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', 'note:' + noteId);
+                showDragHint('Drop on notebook or between items');
+            } else if (pinnedCard) {
+                // Dragging a pinned note
+                const noteId = pinnedCard.dataset.noteId;
+                const notebookId = pinnedCard.dataset.notebookId;
+                console.log('Dragging PINNED NOTE:', noteId);
+                saveUndoState('Move note');
+                draggedNoteData = { noteId, sourceNotebookId: notebookId };
+                pinnedCard.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', 'note:' + noteId);
+                showDragHint('Drop on notebook or between items');
+            } else if (subnotebookEl && !notebookCard) {
+                // Dragging a sub-notebook from sidebar
+                const subId = subnotebookEl.dataset.subnotebookId;
+                const parentId = subnotebookEl.dataset.parentId;
+                console.log('Dragging SUB-NOTEBOOK:', subId);
+                saveUndoState('Move sub-notebook');
+                draggedSubNotebookId = subId;
+                draggedSubNotebookParentId = parentId;
+                subnotebookEl.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', 'subnotebook:' + subId);
+                showDragHint('Drop on notebook or between items');
+            } else if (notebookCard && notebookCard.dataset.subnotebookId) {
+                // Dragging a sub-notebook card from detail page
+                const subId = notebookCard.dataset.subnotebookId;
+                const parentId = notebookCard.dataset.parentId;
+                console.log('Dragging SUB-NOTEBOOK CARD:', subId);
+                saveUndoState('Move sub-notebook');
+                draggedSubNotebookId = subId;
+                draggedSubNotebookParentId = parentId;
+                notebookCard.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', 'subnotebook:' + subId);
+                showDragHint('Drop on notebook or between items');
+            }
+        }, true);
+
+        document.addEventListener('dragend', function(e) {
+            clearAllDragStates();
+            draggedSubNotebookId = null;
+            draggedSubNotebookParentId = null;
+            draggedNoteData = null;
+            dropPosition = null;
+            hideDropIndicator();
+        });
+
+        // Show drop indicator between items
+        function showDropIndicator(element, position) {
+            const indicator = getDropIndicator();
+            const rect = element.getBoundingClientRect();
+            indicator.style.display = 'block';
+            
+            if (position === 'before') {
+                indicator.style.top = (rect.top + window.scrollY - 2) + 'px';
+            } else {
+                indicator.style.top = (rect.bottom + window.scrollY - 1) + 'px';
+            }
+            indicator.style.left = rect.left + 'px';
+            indicator.style.width = rect.width + 'px';
+            document.body.appendChild(indicator);
+        }
+
+        function hideDropIndicator() {
+            if (dropIndicator) {
+                dropIndicator.style.display = 'none';
+            }
+        }
+
+        // Handle dragover to show insertion point
+        document.addEventListener('dragover', function(e) {
+            if (!draggedNoteData && !draggedSubNotebookId) return;
+            
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            
+            // Find what we're hovering over
+            const noteContainer = e.target.closest('.note-item-container[data-note-id]');
+            const notebookEl = e.target.closest('.notebook[data-notebook-id]');
+            const notebookCard = e.target.closest('.notebook-card[data-notebook-id]');
+            
+            // Clear previous highlights
+            document.querySelectorAll('.drop-target, .drop-before, .drop-after').forEach(el => {
+                el.classList.remove('drop-target', 'drop-before', 'drop-after');
+            });
+            
+            if (noteContainer && draggedNoteData) {
+                // Hovering over a note - show insert position
+                const rect = noteContainer.getBoundingClientRect();
+                const midY = rect.top + rect.height / 2;
+                
+                if (e.clientY < midY) {
+                    dropPosition = 'before';
+                    noteContainer.classList.add('drop-before');
+                    showDropIndicator(noteContainer, 'before');
+                } else {
+                    dropPosition = 'after';
+                    noteContainer.classList.add('drop-after');
+                    showDropIndicator(noteContainer, 'after');
+                }
+            } else if (notebookEl) {
+                // Hovering over a notebook - drop into
+                dropPosition = 'into';
+                notebookEl.classList.add('drop-target');
+                hideDropIndicator();
+            } else if (notebookCard) {
+                // Hovering over a notebook card - drop into
+                dropPosition = 'into';
+                notebookCard.classList.add('drop-target');
+                hideDropIndicator();
+            } else {
+                hideDropIndicator();
+            }
+        });
+
+        document.addEventListener('dragleave', function(e) {
+            const relatedTarget = e.relatedTarget;
+            if (!relatedTarget || !e.currentTarget.contains(relatedTarget)) {
+                // Left the document
+            }
+        });
+
+        // Handle drop
+        document.addEventListener('drop', function(e) {
+            e.preventDefault();
+            
+            if (!draggedNoteData && !draggedSubNotebookId) return;
+            
+            const noteContainer = e.target.closest('.note-item-container[data-note-id]');
+            const notebookEl = e.target.closest('.notebook[data-notebook-id]');
+            const notebookCard = e.target.closest('.notebook-card[data-notebook-id]');
+            
+            if (noteContainer && draggedNoteData && dropPosition) {
+                // Dropping note relative to another note
+                const targetNoteId = noteContainer.dataset.noteId;
+                const targetNotebookId = noteContainer.dataset.notebookId;
+                insertNoteRelativeTo(draggedNoteData.noteId, draggedNoteData.sourceNotebookId, targetNoteId, targetNotebookId, dropPosition);
+            } else if (notebookEl && notebookEl.dataset.notebookId) {
+                // Dropping into a notebook
+                const targetNotebookId = notebookEl.dataset.notebookId;
+                if (draggedNoteData) {
+                    moveNoteToNotebook(draggedNoteData.noteId, draggedNoteData.sourceNotebookId, targetNotebookId);
+                } else if (draggedSubNotebookId) {
+                    moveSubNotebookToNotebook(draggedSubNotebookId, targetNotebookId);
+                }
+            } else if (notebookCard && notebookCard.dataset.notebookId) {
+                // Dropping into a notebook card
+                const targetNotebookId = notebookCard.dataset.notebookId;
+                if (draggedNoteData) {
+                    moveNoteToNotebook(draggedNoteData.noteId, draggedNoteData.sourceNotebookId, targetNotebookId);
+                } else if (draggedSubNotebookId) {
+                    moveSubNotebookToNotebook(draggedSubNotebookId, targetNotebookId);
+                }
+            }
+            
+            clearAllDragStates();
+            draggedNoteData = null;
+            draggedSubNotebookId = null;
+            draggedSubNotebookParentId = null;
+            dropPosition = null;
+            hideDropIndicator();
+        });
+
+        // Insert note relative to another note (before or after)
+        function insertNoteRelativeTo(noteId, sourceNotebookId, targetNoteId, targetNotebookId, position) {
+            if (noteId === targetNoteId) return;
+            
+            const sourceNotebook = window.findNotebookById(sourceNotebookId);
+            const targetNotebook = window.findNotebookById(targetNotebookId);
+            if (!sourceNotebook || !targetNotebook) return;
+            
+            // Remove note from source
+            const note = removeNoteFromNotebook(noteId, sourceNotebook);
+            if (!note) return;
+            
+            // Find target note index and insert
+            if (!targetNotebook.notes) targetNotebook.notes = [];
+            const targetIndex = targetNotebook.notes.findIndex(n => String(n.id) === String(targetNoteId));
+            
+            if (targetIndex > -1) {
+                const insertIndex = position === 'before' ? targetIndex : targetIndex + 1;
+                targetNotebook.notes.splice(insertIndex, 0, note);
+            } else {
+                targetNotebook.notes.push(note);
+            }
+            
+            showLayerToast(`Moved "${note.name}" ${position} target`);
+            renderNotebooks();
+            renderHomePage();
+            if (state.viewingNotebook) {
+                showNotebookDetailPage(state.viewingNotebook);
+            }
+            saveToStorage();
+        }
+
+        function clearAllDragStates() {
+            document.querySelectorAll('.drag-over, .drop-target, .dragging, .drop-before, .drop-after').forEach(el => {
+                el.classList.remove('drag-over', 'drop-target', 'dragging', 'drop-before', 'drop-after');
+            });
+            if (dragHintEl) {
+                dragHintEl.remove();
+                dragHintEl = null;
+            }
+        }
+
+        function showDragHint(text) {
+            if (!dragHintEl) {
+                dragHintEl = document.createElement('div');
+                dragHintEl.className = 'drag-hint';
+                document.body.appendChild(dragHintEl);
+            }
+            dragHintEl.textContent = text;
+        }
+
+        // Sub-notebook drag handlers (kept for backwards compatibility)
+        function handleSubNotebookDragStart(e, subNotebookId, parentNotebookId) {
+            e.stopPropagation();
+            console.log('Sub-notebook drag started:', subNotebookId, 'from parent:', parentNotebookId);
+            saveUndoState('Move sub-notebook');
+            draggedSubNotebookId = subNotebookId;
+            draggedSubNotebookParentId = parentNotebookId;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', 'subnotebook:' + subNotebookId);
+            showDragHint('Drop on a notebook to move');
+        }
+
+        function handleSubNotebookDragEnd(e) {
+            console.log('Sub-notebook drag ended');
+            clearAllDragStates();
+            draggedSubNotebookId = null;
+            draggedSubNotebookParentId = null;
+        }
+
+        function handleSubNotebookDragOver(e) {
+            if (!draggedSubNotebookId) return;
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            const target = e.target.closest('.notebook-card');
+            if (target && !target.classList.contains('dragging')) {
+                document.querySelectorAll('.notebook-card.drag-over').forEach(el => el.classList.remove('drag-over'));
+                target.classList.add('drag-over');
+            }
+        }
+
+        function handleSubNotebookDrop(e, targetSubNotebookId, parentNotebookId) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // If reordering within same parent and custom sort
+            if (state.subNotebookSort === 'custom' && draggedSubNotebookId && draggedSubNotebookParentId === parentNotebookId) {
+                reorderSubNotebook(draggedSubNotebookId, targetSubNotebookId, parentNotebookId);
+                clearAllDragStates();
+                return;
+            }
+            
+            // Otherwise, move to target notebook
+            if (draggedSubNotebookId && targetSubNotebookId !== draggedSubNotebookId) {
+                moveSubNotebookToNotebook(draggedSubNotebookId, targetSubNotebookId);
+            }
+            clearAllDragStates();
+        }
+
+        function reorderSubNotebook(draggedId, targetId, parentNotebookId) {
+            if (draggedId === targetId) return;
+            
+            const customOrderKey = `subnotebook_order_${parentNotebookId}`;
+            const parentNotebook = window.findNotebookById(parentNotebookId);
+            if (!parentNotebook || !parentNotebook.children) return;
+            
+            // Initialize custom order if needed
+            if (!state[customOrderKey] || state[customOrderKey].length === 0) {
+                state[customOrderKey] = parentNotebook.children.map(nb => nb.id);
+            }
+            
+            // Remove dragged item and insert before target
+            const order = state[customOrderKey];
+            const draggedIndex = order.indexOf(draggedId);
+            if (draggedIndex > -1) order.splice(draggedIndex, 1);
+            
+            const targetIndex = order.indexOf(targetId);
+            if (targetIndex > -1) {
+                order.splice(targetIndex, 0, draggedId);
+            } else {
+                order.push(draggedId);
+            }
+            
+            showNotebookDetailPage(state.viewingNotebook);
+            saveToStorage();
+        }
+
+        // Note drag handlers
+        function handleNoteDragStart(e, noteId, sourceNotebookId) {
+            e.stopPropagation();
+            console.log('Note drag started:', noteId, 'from notebook:', sourceNotebookId);
+            saveUndoState('Move note');
+            draggedNoteData = { noteId, sourceNotebookId };
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', 'note:' + noteId);
+            showDragHint('Drop on notebook or between items');
+        }
+
+        function handleNoteDragEnd(e) {
+            console.log('Note drag ended');
+            clearAllDragStates();
+            draggedNoteData = null;
+            dropPosition = null;
+            hideDropIndicator();
+        }
+
+        function handleNoteDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            const target = e.target.closest('.pinned-card');
+            if (target && !target.classList.contains('dragging')) {
+                document.querySelectorAll('.pinned-card.drag-over').forEach(el => el.classList.remove('drag-over'));
+                target.classList.add('drag-over');
+            }
+        }
+
+        function handleNoteDrop(e, targetNoteId, notebookId) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // If reordering within same notebook and custom sort
+            if (state.notesSort === 'custom' && draggedNoteData && draggedNoteData.sourceNotebookId === notebookId) {
+                reorderNote(draggedNoteData.noteId, targetNoteId, notebookId);
+                clearAllDragStates();
+                return;
+            }
+            
+            clearAllDragStates();
+        }
+
+        function reorderNote(draggedId, targetId, notebookId) {
+            if (draggedId === targetId) return;
+            
+            const customOrderKey = `notes_order_${notebookId}`;
+            const notebook = window.findNotebookById(notebookId);
+            if (!notebook || !notebook.notes) return;
+            
+            // Initialize custom order if needed
+            if (!state[customOrderKey] || state[customOrderKey].length === 0) {
+                state[customOrderKey] = notebook.notes.map(n => n.id);
+            }
+            
+            // Remove dragged item and insert before target
+            const order = state[customOrderKey];
+            const draggedIndex = order.indexOf(draggedId);
+            if (draggedIndex > -1) order.splice(draggedIndex, 1);
+            
+            const targetIndex = order.indexOf(targetId);
+            if (targetIndex > -1) {
+                order.splice(targetIndex, 0, draggedId);
+            } else {
+                order.push(draggedId);
+            }
+            
+            showNotebookDetailPage(state.viewingNotebook);
+            saveToStorage();
+        }
+
+        // Generic drag over handler for drop targets (notebooks that can receive items)
+        function handleDropTargetDragOver(e) {
+            if (!draggedSubNotebookId && !draggedNoteData) return;
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            const target = e.target.closest('.notebook-card, .notebook');
+            if (target) {
+                document.querySelectorAll('.drop-target').forEach(el => el.classList.remove('drop-target'));
+                target.classList.add('drop-target');
+            }
+        }
+
+        function handleDropTargetDragLeave(e) {
+            const target = e.target.closest('.notebook-card, .notebook');
+            if (target) {
+                target.classList.remove('drop-target');
+            }
+        }
+
+        // Move a sub-notebook to a different parent notebook
+        function moveSubNotebookToNotebook(subNotebookId, targetNotebookId) {
+            const subNotebook = window.findNotebookById(subNotebookId);
+            const targetNotebook = window.findNotebookById(targetNotebookId);
+            
+            if (!subNotebook || !targetNotebook) return;
+            
+            // Prevent moving a notebook into itself or its descendants
+            if (isDescendantNotebook(targetNotebookId, subNotebookId)) {
+                showLayerToast('Cannot move a notebook into itself or its sub-notebook');
+                return;
+            }
+            
+            // Remove from current parent
+            removeNotebookFromParent(subNotebookId);
+            
+            // Add to new parent
+            if (!targetNotebook.children) targetNotebook.children = [];
+            subNotebook.parentId = targetNotebookId;
+            targetNotebook.children.push(subNotebook);
+            
+            showLayerToast(`Moved "${subNotebook.name}" to "${targetNotebook.name}"`);
+            
+            renderNotebooks();
+            if (state.viewingNotebook) {
+                showNotebookDetailPage(state.viewingNotebook);
+            } else {
+                renderHomePage();
+            }
+            saveToStorage();
+        }
+
+        // Check if potentialDescendant is a descendant of notebookId
+        function isDescendantNotebook(potentialDescendantId, notebookId) {
+            const notebook = window.findNotebookById(notebookId);
+            if (!notebook || !notebook.children) return false;
+            
+            for (const child of notebook.children) {
+                if (child.id === potentialDescendantId) return true;
+                if (isDescendantNotebook(potentialDescendantId, child.id)) return true;
+            }
+            return false;
+        }
+
+        // Remove a notebook from its current parent
+        function removeNotebookFromParent(notebookId) {
+            const notebook = window.findNotebookById(notebookId);
+            if (!notebook) return;
+            
+            // Check if it's a top-level notebook
+            const topLevelIndex = state.notebooks.findIndex(nb => nb.id === notebookId);
+            if (topLevelIndex > -1) {
+                state.notebooks.splice(topLevelIndex, 1);
+                return;
+            }
+            
+            // Find and remove from parent's children
+            function removeFromChildren(notebooks) {
+                for (const nb of notebooks) {
+                    if (nb.children) {
+                        const childIndex = nb.children.findIndex(c => c.id === notebookId);
+                        if (childIndex > -1) {
+                            nb.children.splice(childIndex, 1);
+                            return true;
+                        }
+                        if (removeFromChildren(nb.children)) return true;
+                    }
+                }
+                return false;
+            }
+            removeFromChildren(state.notebooks);
+        }
+
+        // Move a note to a different notebook
+        function moveNoteToNotebook(noteId, sourceNotebookId, targetNotebookId) {
+            if (sourceNotebookId === targetNotebookId) return;
+            
+            const sourceNotebook = window.findNotebookById(sourceNotebookId);
+            const targetNotebook = window.findNotebookById(targetNotebookId);
+            
+            if (!sourceNotebook || !targetNotebook) return;
+            
+            // Find and remove the note from source
+            const note = findAndRemoveNote(sourceNotebook, noteId);
+            if (!note) return;
+            
+            // Add to target notebook
+            if (!targetNotebook.notes) targetNotebook.notes = [];
+            targetNotebook.notes.push(note);
+            
+            showLayerToast(`Moved "${note.name}" to "${targetNotebook.name}"`);
+            
+            renderNotebooks();
+            if (state.viewingNotebook) {
+                showNotebookDetailPage(state.viewingNotebook);
+            } else {
+                renderHomePage();
+            }
+            saveToStorage();
+        }
+
+        // Find and remove a note from a notebook (including from sub-notes)
+        function findAndRemoveNote(notebook, noteId) {
+            function removeFromNotes(notes) {
+                for (let i = 0; i < notes.length; i++) {
+                    if (String(notes[i].id) === String(noteId)) {
+                        return notes.splice(i, 1)[0];
+                    }
+                    if (notes[i].children && notes[i].children.length > 0) {
+                        const found = removeFromNotes(notes[i].children);
+                        if (found) return found;
+                    }
+                }
+                return null;
+            }
+            return removeFromNotes(notebook.notes || []);
+        }
+
+        // Move sub-notebook to top level (make it a root notebook)
+        function moveSubNotebookToTopLevel(subNotebookId) {
+            const subNotebook = window.findNotebookById(subNotebookId);
+            if (!subNotebook) return;
+            
+            // Remove from current parent
+            removeNotebookFromParent(subNotebookId);
+            
+            // Add to top level
+            subNotebook.parentId = null;
+            state.notebooks.push(subNotebook);
+            
+            showLayerToast(`"${subNotebook.name}" moved to top level`);
+            
+            renderNotebooks();
+            renderHomePage();
+            saveToStorage();
+        }
+
+        // Expose drag handlers to window for inline event handlers
+        window.handleSubNotebookDragStart = handleSubNotebookDragStart;
+        window.handleSubNotebookDragEnd = handleSubNotebookDragEnd;
+        window.handleSubNotebookDragOver = handleSubNotebookDragOver;
+        window.handleSubNotebookDrop = handleSubNotebookDrop;
+        window.handleNoteDragStart = handleNoteDragStart;
+        window.handleNoteDragEnd = handleNoteDragEnd;
+        window.handleNoteDragOver = handleNoteDragOver;
+        window.handleNoteDrop = handleNoteDrop;
+        window.handleDropTargetDragOver = handleDropTargetDragOver;
+        window.handleDropTargetDragLeave = handleDropTargetDragLeave;
+
         // Recursive render for unlimited-depth subnotebooks
         function renderNotebooks() {
             const container = document.getElementById('notebooks-container');
             container.innerHTML = '';
 
+            // Update sort dropdown to reflect current state
+            const sortSelect = document.getElementById('notebook-sort');
+            if (sortSelect) sortSelect.value = state.notebookSort;
+
+            // Sort notebooks based on current sort mode
+            const sortedNotebooks = getSortedNotebooks(state.notebooks);
+
             function renderNotebookTree(notebook, notebookIndex, depth = 0, parentContainer = null) {
                 const notebookEl = document.createElement('div');
                 notebookEl.className = 'notebook';
                 notebookEl.style.marginLeft = (depth * 18) + 'px';
+                notebookEl.dataset.notebookId = notebook.id;
+                
+                // For sub-notebooks (depth > 0), add subnotebook data attributes
+                if (depth > 0) {
+                    notebookEl.dataset.subnotebookId = notebook.id;
+                    notebookEl.dataset.parentId = notebook.parentId || '';
+                    notebookEl.draggable = true;
+                }
+                
+                // Add drag-and-drop for custom sorting (only top-level notebooks)
+                if (state.notebookSort === 'custom' && depth === 0) {
+                    notebookEl.draggable = true;
+                    notebookEl.ondragstart = (e) => handleNotebookDragStart(e, notebook.id);
+                    notebookEl.ondragend = handleNotebookDragEnd;
+                }
+                
+                // Always allow dropping items into notebooks
+                notebookEl.ondragover = (e) => {
+                    handleNotebookDragOver(e);
+                    handleDropTargetDragOver(e);
+                };
+                notebookEl.ondragleave = (e) => {
+                    handleNotebookDragLeave(e);
+                    handleDropTargetDragLeave(e);
+                };
+                notebookEl.ondrop = (e) => handleNotebookDrop(e, notebook.id);
 
                 let notesHtml = '';
                 notebook.notes.forEach(note => {
@@ -7210,11 +8346,16 @@
 
                 // Add subnotebook button (no folder icon, with tooltip)
                 const addSubNotebookBtn = `<button class=\"add-btn\" title=\"New Notebook\" onclick=\"event.stopPropagation(); state.parentNotebookForSubnotebook = window.findNotebookById('${notebook.id}'); showModal('subnotebook');\" style=\"margin-right: 4px; width: 18px; height: 18px; font-size: 0.75rem;\">+</button>`;
+                
+                // Pin button for notebook
+                const isPinned = state.pinnedNotebooks && state.pinnedNotebooks.includes(notebook.id);
+                const pinBtn = `<button class=\"notebook-pin-btn ${isPinned ? 'pinned' : ''}\" onclick=\"event.stopPropagation(); toggleNotebookPin('${notebook.id}')\" title=\"${isPinned ? 'Unpin' : 'Pin'}\">${isPinned ? '★' : '☆'}</button>`;
 
                 notebookEl.innerHTML = `
                     <div class=\"notebook-header ${state.currentNotebook && state.currentNotebook.id === notebook.id ? 'active' : ''}\" onclick=\"toggleNotebook(window.findNotebookById('${notebook.id}'))\">
                         <span class=\"notebook-icon\">◎</span>
                         <span class=\"notebook-name\">${notebook.name}</span>
+                        ${pinBtn}
                         ${addSubNotebookBtn}
                         <button class=\"add-btn\" title=\"New Note\" onclick=\"event.stopPropagation(); state.currentNotebook = window.findNotebookById('${notebook.id}'); showModal('note');\" style=\"margin-right: 8px; width: 18px; height: 18px; font-size: 0.75rem;\">+</button>
                         <button class=\"delete-btn\" onclick=\"deleteNotebook(window.findNotebookById('${notebook.id}'), event)\">×</button>
@@ -7232,7 +8373,9 @@
                 // Recursively render children inside the notes-list when parent is open
                 if (notebook.children && notebook.children.length > 0 && notebook.isOpen) {
                     const notesList = notebookEl.querySelector('.notes-list');
-                    notebook.children.forEach((child, idx) => renderNotebookTree(child, idx, depth + 1, notesList));
+                    // Sort children too
+                    const sortedChildren = getSortedNotebooks(notebook.children);
+                    sortedChildren.forEach((child, idx) => renderNotebookTree(child, idx, depth + 1, notesList));
                 }
             }
 
@@ -7248,7 +8391,7 @@
                 return null;
             };
 
-            state.notebooks.forEach((notebook, notebookIndex) => {
+            sortedNotebooks.forEach((notebook, notebookIndex) => {
                 renderNotebookTree(notebook, notebookIndex, 0);
             });
         }
@@ -7424,7 +8567,10 @@
                     const statusBadge = note.status && note.status !== 'none' ? `<span class="status-badge ${note.status}">${getStatusLabel(note.status)}</span>` : '';
                     
                     return `
-                        <div class="pinned-card" onclick="openPinnedNote('${pin.notebookId}', '${pin.noteId}')">
+                        <div class="pinned-card" 
+                            data-note-id="${pin.noteId}"
+                            data-notebook-id="${pin.notebookId}"
+                            draggable="true">
                             <button class="unpin-btn" onclick="event.stopPropagation(); unpinNote('${pin.notebookId}', '${pin.noteId}')" title="Unpin">×</button>
                             <div class="pinned-card-preview">
                                 ${note.canvasData ? `<img src="${note.canvasData}" alt="Preview">` : ''}
@@ -7434,10 +8580,34 @@
                         </div>
                     `;
                 }).join('');
+                
+                // Add drag event listeners to pinned notes using addEventListener
+                const pinnedCards = pinnedContainer.querySelectorAll('.pinned-card[data-note-id]');
+                console.log('HOME PAGE: Attaching drag listeners to', pinnedCards.length, 'pinned notes');
+                pinnedCards.forEach(card => {
+                    const noteId = card.dataset.noteId;
+                    const notebookId = card.dataset.notebookId;
+                    console.log('HOME PAGE: Setting up drag for pinned note:', noteId);
+                    
+                    card.addEventListener('click', (e) => {
+                        if (e.defaultPrevented) return;
+                        openPinnedNote(notebookId, noteId);
+                    });
+                    card.addEventListener('dragstart', (e) => {
+                        e.stopPropagation();
+                        console.log('PINNED NOTE DRAGSTART FIRED:', noteId);
+                        handleNoteDragStart(e, noteId, notebookId);
+                    });
+                    card.addEventListener('dragend', (e) => handleNoteDragEnd(e));
+                });
             }
             
             // Render notebooks (including sub-notebooks)
             const notebooksContainer = document.getElementById('notebooks-home-container');
+            
+            // Update home page sort dropdown to reflect current state
+            const homeSortSelect = document.getElementById('notebook-sort-home');
+            if (homeSortSelect) homeSortSelect.value = state.notebookSort;
             
             // Helper to count all notes recursively (including sub-notes)
             function countAllNotes(notebook) {
@@ -7468,18 +8638,52 @@
                     </div>
                 `;
             } else {
-                notebooksContainer.innerHTML = state.notebooks.map(notebook => {
+                // Apply sorting
+                const sortedNotebooks = getSortedNotebooks(state.notebooks);
+                
+                notebooksContainer.innerHTML = sortedNotebooks.map(notebook => {
                     const noteCount = countAllNotes(notebook);
                     const subNotebookCount = notebook.children ? notebook.children.length : 0;
                     const subIndicator = subNotebookCount > 0 ? ` · ${subNotebookCount} sub-notebook${subNotebookCount !== 1 ? 's' : ''}` : '';
+                    const isPinned = state.pinnedNotebooks && state.pinnedNotebooks.includes(notebook.id);
+                    const pinIndicator = isPinned ? '<span class="notebook-card-pin">★</span>' : '';
+                    
                     return `
-                        <div class="notebook-card" onclick="openNotebook('${notebook.id}')">
+                        <div class="notebook-card" 
+                            data-notebook-id="${notebook.id}"
+                            draggable="true">
+                            ${pinIndicator}
                             <div class="notebook-card-icon">◎</div>
                             <div class="notebook-card-name">${notebook.name}</div>
                             <div class="notebook-card-count">${noteCount} note${noteCount !== 1 ? 's' : ''}${subIndicator}</div>
                         </div>
                     `;
                 }).join('');
+                
+                // Add event listeners to notebook cards
+                const notebookCards = notebooksContainer.querySelectorAll('.notebook-card[data-notebook-id]');
+                console.log('HOME PAGE: Attaching listeners to', notebookCards.length, 'notebook cards');
+                notebookCards.forEach(card => {
+                    const notebookId = card.dataset.notebookId;
+                    card.onclick = (e) => {
+                        if (e.defaultPrevented) return;
+                        openNotebook(notebookId);
+                    };
+                    card.ondragstart = (e) => {
+                        console.log('Notebook drag started:', notebookId);
+                        handleNotebookDragStart(e, notebookId);
+                    };
+                    card.ondragend = (e) => handleNotebookDragEnd(e);
+                    card.ondragover = (e) => {
+                        handleNotebookDragOver(e);
+                        handleDropTargetDragOver(e);
+                    };
+                    card.ondragleave = (e) => {
+                        handleNotebookDragLeave(e);
+                        handleDropTargetDragLeave(e);
+                    };
+                    card.ondrop = (e) => handleNotebookDrop(e, notebookId);
+                });
             }
         }
 
@@ -7524,22 +8728,57 @@
             const path = getNotebookPath(notebook.id);
             document.getElementById('notebook-detail-path').textContent = path.join(' → ');
             
+            // Update sort dropdowns
+            const subNotebookSortSelect = document.getElementById('subnotebook-sort');
+            if (subNotebookSortSelect) subNotebookSortSelect.value = state.subNotebookSort;
+            const notesSortSelect = document.getElementById('notes-sort');
+            if (notesSortSelect) notesSortSelect.value = state.notesSort;
+            
             // Render sub-notebooks
             const subnotebooksContainer = document.getElementById('subnotebooks-container');
             const subnotebooksSection = document.getElementById('subnotebooks-section');
             
             if (notebook.children && notebook.children.length > 0) {
                 subnotebooksSection.style.display = 'block';
-                subnotebooksContainer.innerHTML = notebook.children.map(child => {
+                const sortedSubNotebooks = getSortedSubNotebooks(notebook.children, notebook.id);
+                const isSubNotebookDraggable = state.subNotebookSort === 'custom';
+                
+                subnotebooksContainer.innerHTML = sortedSubNotebooks.map(child => {
                     const noteCount = countAllNotesInNotebook(child);
                     return `
-                        <div class="notebook-card" onclick="navigateToSubNotebook('${child.id}')">
+                        <div class="notebook-card" 
+                            data-subnotebook-id="${child.id}"
+                            data-parent-id="${notebook.id}"
+                            draggable="true">
                             <div class="notebook-card-icon">◉</div>
                             <div class="notebook-card-name">${child.name}</div>
                             <div class="notebook-card-count">${noteCount} note${noteCount !== 1 ? 's' : ''}</div>
                         </div>
                     `;
                 }).join('');
+                
+                // Add event listeners programmatically for sub-notebooks using addEventListener
+                const subCards = subnotebooksContainer.querySelectorAll('.notebook-card[data-subnotebook-id]');
+                console.log('DETAIL PAGE: Attaching drag listeners to', subCards.length, 'sub-notebooks');
+                subCards.forEach(card => {
+                    const subId = card.dataset.subnotebookId;
+                    const parentId = card.dataset.parentId;
+                    console.log('DETAIL PAGE: Setting up drag for sub-notebook:', subId);
+                    
+                    card.addEventListener('click', () => navigateToSubNotebook(subId));
+                    card.addEventListener('dragstart', (e) => {
+                        e.stopPropagation();
+                        console.log('SUB-NOTEBOOK DRAGSTART FIRED:', subId);
+                        handleSubNotebookDragStart(e, subId, parentId);
+                    });
+                    card.addEventListener('dragend', (e) => handleSubNotebookDragEnd(e));
+                    card.addEventListener('dragover', (e) => {
+                        handleDropTargetDragOver(e);
+                        if (isSubNotebookDraggable) handleSubNotebookDragOver(e);
+                    });
+                    card.addEventListener('dragleave', (e) => handleDropTargetDragLeave(e));
+                    card.addEventListener('drop', (e) => handleSubNotebookDrop(e, subId, parentId));
+                });
             } else {
                 subnotebooksSection.style.display = 'none';
             }
@@ -7548,13 +8787,19 @@
             const notesContainer = document.getElementById('notebook-notes-container');
             
             if (notebook.notes && notebook.notes.length > 0) {
-                notesContainer.innerHTML = notebook.notes.map(note => {
+                const sortedNotes = getSortedNotes(notebook.notes, notebook.id);
+                const isNoteDraggable = state.notesSort === 'custom';
+                
+                notesContainer.innerHTML = sortedNotes.map(note => {
                     const statusBadge = note.status && note.status !== 'none' ? `<span class="status-badge ${note.status}">${getStatusLabel(note.status)}</span>` : '';
                     const childCount = note.children ? note.children.length : 0;
                     const childIndicator = childCount > 0 ? `<span style="font-size:0.75rem;color:#888;margin-left:4px;">(+${childCount})</span>` : '';
                     
                     return `
-                        <div class="pinned-card" onclick="openNoteFromDetail('${notebook.id}', '${note.id}')">
+                        <div class="pinned-card" 
+                            data-note-id="${note.id}"
+                            data-notebook-id="${notebook.id}"
+                            draggable="true">
                             <div class="pinned-card-preview">
                                 ${note.canvasData ? `<img src="${note.canvasData}" alt="Preview">` : '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:2rem;color:#ccc;">📝</div>'}
                             </div>
@@ -7563,6 +8808,28 @@
                         </div>
                     `;
                 }).join('');
+                
+                // Add event listeners programmatically for notes using addEventListener
+                const noteCards = notesContainer.querySelectorAll('.pinned-card[data-note-id]');
+                console.log('DETAIL PAGE: Attaching drag listeners to', noteCards.length, 'notes');
+                noteCards.forEach(card => {
+                    const noteId = card.dataset.noteId;
+                    const notebookId = card.dataset.notebookId;
+                    console.log('DETAIL PAGE: Setting up drag for note:', noteId);
+                    
+                    card.addEventListener('click', () => openNoteFromDetail(notebookId, noteId));
+                    card.addEventListener('dragstart', (e) => {
+                        e.stopPropagation();
+                        console.log('NOTE DRAGSTART FIRED:', noteId);
+                        handleNoteDragStart(e, noteId, notebookId);
+                    });
+                    card.addEventListener('dragend', (e) => handleNoteDragEnd(e));
+                    card.addEventListener('dragover', (e) => {
+                        if (isNoteDraggable) handleNoteDragOver(e);
+                    });
+                    card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+                    card.addEventListener('drop', (e) => handleNoteDrop(e, noteId, notebookId));
+                });
             } else {
                 notesContainer.innerHTML = `
                     <div class="empty-pinned">
@@ -8139,6 +9406,8 @@
                     await processNotebookMediaForSave(notebook);
                 }
                 localStorage.setItem('ultimateNotesApp', JSON.stringify(state.notebooks));
+                // Also save pinned items and sort preferences
+                savePinnedToStorage();
             } catch (e) {
                 if (e.name === 'QuotaExceededError') {
                     console.error('Storage quota exceeded! Trying to free space...');
@@ -8185,6 +9454,20 @@
 
         function savePinnedToStorage() {
             localStorage.setItem('ultimateNotesAppPinned', JSON.stringify(state.pinnedNotes));
+            localStorage.setItem('ultimateNotesAppPinnedNotebooks', JSON.stringify(state.pinnedNotebooks || []));
+            localStorage.setItem('ultimateNotesAppNotebookSort', state.notebookSort || 'pinned');
+            localStorage.setItem('ultimateNotesAppNotebookCustomOrder', JSON.stringify(state.notebookCustomOrder || []));
+            localStorage.setItem('ultimateNotesAppSubNotebookSort', state.subNotebookSort || 'alphabetical');
+            localStorage.setItem('ultimateNotesAppNotesSort', state.notesSort || 'recent');
+            
+            // Save all custom order keys (subnotebook and note orders per notebook)
+            const customOrders = {};
+            for (const key in state) {
+                if (key.startsWith('subnotebook_order_') || key.startsWith('notes_order_')) {
+                    customOrders[key] = state[key];
+                }
+            }
+            localStorage.setItem('ultimateNotesAppCustomOrders', JSON.stringify(customOrders));
         }
 
         async function loadFromStorage() {
@@ -8202,6 +9485,34 @@
             const savedPinned = localStorage.getItem('ultimateNotesAppPinned');
             if (savedPinned) {
                 state.pinnedNotes = JSON.parse(savedPinned);
+            }
+            const savedPinnedNotebooks = localStorage.getItem('ultimateNotesAppPinnedNotebooks');
+            if (savedPinnedNotebooks) {
+                state.pinnedNotebooks = JSON.parse(savedPinnedNotebooks);
+            }
+            const savedNotebookSort = localStorage.getItem('ultimateNotesAppNotebookSort');
+            if (savedNotebookSort) {
+                state.notebookSort = savedNotebookSort;
+            }
+            const savedNotebookCustomOrder = localStorage.getItem('ultimateNotesAppNotebookCustomOrder');
+            if (savedNotebookCustomOrder) {
+                state.notebookCustomOrder = JSON.parse(savedNotebookCustomOrder);
+            }
+            const savedSubNotebookSort = localStorage.getItem('ultimateNotesAppSubNotebookSort');
+            if (savedSubNotebookSort) {
+                state.subNotebookSort = savedSubNotebookSort;
+            }
+            const savedNotesSort = localStorage.getItem('ultimateNotesAppNotesSort');
+            if (savedNotesSort) {
+                state.notesSort = savedNotesSort;
+            }
+            // Load custom orders for subnotebooks and notes
+            const savedCustomOrders = localStorage.getItem('ultimateNotesAppCustomOrders');
+            if (savedCustomOrders) {
+                const customOrders = JSON.parse(savedCustomOrders);
+                for (const key in customOrders) {
+                    state[key] = customOrders[key];
+                }
             }
             // Load dark mode preference
             const darkMode = localStorage.getItem('ultimateNotesAppDarkMode');
