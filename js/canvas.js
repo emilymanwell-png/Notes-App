@@ -76,7 +76,7 @@ class LayerManager {
         
         this._updateLayerZIndices();
         this._insertCanvasIntoWrapper(layer.canvas, this.activeLayerIndex);
-        this._insertContentContainer(layer.contentContainer);
+        this._insertContentContainer(layer.contentContainer, layer.canvas);
         this._notifyChange();
         
         return layer;
@@ -98,18 +98,17 @@ class LayerManager {
         }
     }
 
-    // Insert content container for text/media
-    _insertContentContainer(container) {
-        // First try by ID for more reliable lookup
-        let textLayer = document.getElementById('text-layer');
-        
-        // Fallback to querySelector
-        if (!textLayer && this.canvasWrapper) {
-            textLayer = this.canvasWrapper.querySelector('.text-layer');
-        }
-        
-        if (textLayer) {
-            textLayer.appendChild(container);
+    // Insert content container for text/media - place it as sibling after its layer canvas
+    _insertContentContainer(container, layerCanvas) {
+        // Content container should be a sibling of the layer canvas, inserted right after it
+        // This allows proper z-index stacking with other layers
+        if (this.canvasWrapper && layerCanvas && layerCanvas.parentNode === this.canvasWrapper) {
+            // Insert right after the layer canvas
+            if (layerCanvas.nextSibling) {
+                this.canvasWrapper.insertBefore(container, layerCanvas.nextSibling);
+            } else {
+                this.canvasWrapper.appendChild(container);
+            }
         } else if (this.canvasWrapper) {
             this.canvasWrapper.appendChild(container);
         } else {
@@ -120,9 +119,12 @@ class LayerManager {
     // Update z-indices of all layers
     _updateLayerZIndices() {
         this.layers.forEach((layer, index) => {
-            layer.canvas.style.zIndex = index + 10; // Start from 10 to leave room for base elements
+            // Each layer pair (canvas + content) gets consecutive z-indices
+            // Canvas at base z, content container slightly higher to be above its canvas
+            const baseZ = (index + 1) * 10; // 10, 20, 30, etc.
+            layer.canvas.style.zIndex = baseZ;
             if (layer.contentContainer) {
-                layer.contentContainer.style.zIndex = index + 10;
+                layer.contentContainer.style.zIndex = baseZ + 5; // 15, 25, 35, etc.
             }
         });
     }

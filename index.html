@@ -1798,6 +1798,8 @@
             position: relative;
             overflow: hidden;
             background: #fff;
+            /* Prevent browser default touch gestures so we can handle pinch-zoom ourselves */
+            touch-action: none;
         }
 
         .canvas-wrapper {
@@ -1805,6 +1807,7 @@
             top: 50%;
             left: 50%;
             transform-origin: center center;
+            touch-action: none;
         }
 
         .grid-overlay {
@@ -1834,6 +1837,7 @@
             left: 0;
             background: transparent;
             z-index: 2;
+            touch-action: none;
         }
 
         /* Layer canvases */
@@ -1842,6 +1846,7 @@
             top: 0;
             left: 0;
             background: transparent;
+            touch-action: none;
         }
 
         .eraser-cursor {
@@ -2151,7 +2156,7 @@
             width: 100%;
             height: 100%;
             pointer-events: auto;
-            z-index: 3;
+            z-index: 499;
         }
 
         .text-layer {
@@ -2161,7 +2166,7 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 5;
+            z-index: 500;
         }
 
         /* Layer content containers */
@@ -2169,12 +2174,20 @@
             position: absolute;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
         }
 
         .layer-content .text-box,
         .layer-content .media-embed {
             pointer-events: auto;
+            cursor: pointer;
+        }
+
+        /* Ensure media embed is clickable */
+        .media-embed {
+            cursor: pointer;
         }
 
         .text-box {
@@ -2255,6 +2268,16 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-2px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes toastFadeIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        @keyframes toastFadeOut {
+            from { opacity: 1; transform: translateX(-50%) translateY(0); }
+            to { opacity: 0; transform: translateX(-50%) translateY(10px); }
         }
 
         .save-indicator.just-saved {
@@ -3266,14 +3289,16 @@
         let lastMousePos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
         let isPanning = false;
         let panStart = { x: 0, y: 0 };
+        
+        // Vector stroke storage - resolution independent
+        let vectorStrokes = [];  // All completed strokes
+        let currentStroke = null;  // Stroke being drawn
 
-        // Get canvas coordinates (scaled for high-DPI backing store)
+        // Get canvas coordinates in CSS pixels (for vector storage - resolution independent)
         function getCanvasCoords(e) {
             const rect = drawingCanvas.getBoundingClientRect();
-            // Get pixel ratio from canvas module if available, else default to 1
-            const pixelRatio = (typeof canvasModule !== 'undefined' && canvasModule.manager?.pixelRatio) || 1;
-            const x = ((e.clientX - rect.left) / state.zoom) * pixelRatio;
-            const y = ((e.clientY - rect.top) / state.zoom) * pixelRatio;
+            const x = (e.clientX - rect.left) / state.zoom;
+            const y = (e.clientY - rect.top) / state.zoom;
             return { x, y };
         }
 
@@ -3326,6 +3351,24 @@
             const coords = getCanvasCoords(e);
             lastX = coords.x;
             lastY = coords.y;
+            
+            // Get the active layer ID
+            let activeLayerId = null;
+            if (typeof canvasModule !== 'undefined' && canvasModule.manager?.layerManager) {
+                const activeLayer = canvasModule.manager.layerManager.getActiveLayer();
+                if (activeLayer) {
+                    activeLayerId = activeLayer.id;
+                }
+            }
+            
+            // Start a new vector stroke
+            currentStroke = {
+                points: [{ x: coords.x, y: coords.y }],
+                color: state.tool === 'erase' ? null : state.color,
+                thickness: state.thickness,
+                tool: state.tool,  // 'draw' or 'erase'
+                layerId: activeLayerId  // Associate stroke with current layer
+            };
         }
 
         function draw(e) {
@@ -3337,39 +3380,15 @@
                 return;
             }
 
-            if (!isDrawing) return;
+            if (!isDrawing || !currentStroke) return;
 
             const coords = getCanvasCoords(e);
             
-            // Get the active layer's context from layer manager, fallback to drawCtx
-            let ctx = drawCtx;
-            if (typeof canvasModule !== 'undefined' && canvasModule.manager?.layerManager) {
-                const activeCtx = canvasModule.manager.layerManager.getActiveContext();
-                if (activeCtx) {
-                    ctx = activeCtx;
-                }
-            }
+            // Add point to current stroke
+            currentStroke.points.push({ x: coords.x, y: coords.y });
             
-            // Get pixel ratio for scaling line width to match high-DPI backing
-            const pixelRatio = (typeof canvasModule !== 'undefined' && canvasModule.manager?.pixelRatio) || 1;
-            
-            ctx.beginPath();
-            ctx.moveTo(lastX, lastY);
-            ctx.lineTo(coords.x, coords.y);
-            // Use compositing for eraser so it truly clears pixels regardless of background
-            if (state.tool === 'erase') {
-                ctx.globalCompositeOperation = 'destination-out';
-                ctx.strokeStyle = 'rgba(0,0,0,1)';
-                // Scale erase width by zoom and pixel ratio
-                ctx.lineWidth = state.thickness * 6 * (state.zoom || 1) * pixelRatio;
-            } else {
-                ctx.globalCompositeOperation = 'source-over';
-                ctx.strokeStyle = state.color;
-                ctx.lineWidth = state.thickness * pixelRatio;
-            }
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.stroke();
+            // Render the new segment immediately for responsiveness
+            renderStrokeSegment(lastX, lastY, coords.x, coords.y, currentStroke);
 
             lastX = coords.x;
             lastY = coords.y;
@@ -3378,6 +3397,16 @@
         function stopDrawing() {
             if (isDrawing) {
                 isDrawing = false;
+                
+                // Finalize and store the vector stroke
+                if (currentStroke && currentStroke.points.length > 0) {
+                    vectorStrokes.push(currentStroke);
+                    currentStroke = null;
+                    
+                    // Re-render all strokes for clean anti-aliased result
+                    renderAllStrokes();
+                }
+                
                 markUnsaved();
             }
             if (isPanning) {
@@ -3387,6 +3416,148 @@
                     drawingCanvas.style.cursor = 'grab';
                 }
             }
+        }
+        
+        // Vector stroke rendering functions
+        function getActiveDrawContext() {
+            let ctx = drawCtx;
+            if (typeof canvasModule !== 'undefined' && canvasModule.manager?.layerManager) {
+                const activeCtx = canvasModule.manager.layerManager.getActiveContext();
+                if (activeCtx) {
+                    ctx = activeCtx;
+                }
+            }
+            return ctx;
+        }
+        
+        // Render a single stroke segment (for real-time drawing feedback)
+        function renderStrokeSegment(x1, y1, x2, y2, stroke) {
+            const ctx = getActiveDrawContext();
+            const pixelRatio = (typeof canvasModule !== 'undefined' && canvasModule.manager?.pixelRatio) || 1;
+            
+            ctx.beginPath();
+            ctx.moveTo(x1 * pixelRatio, y1 * pixelRatio);
+            ctx.lineTo(x2 * pixelRatio, y2 * pixelRatio);
+            
+            if (stroke.tool === 'erase') {
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.strokeStyle = 'rgba(0,0,0,1)';
+                ctx.lineWidth = stroke.thickness * 6 * pixelRatio;
+            } else {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = stroke.color;
+                ctx.lineWidth = stroke.thickness * pixelRatio;
+            }
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+            ctx.globalCompositeOperation = 'source-over';
+        }
+        
+        // Render a complete stroke with smooth bezier curves
+        function renderStroke(ctx, stroke, pixelRatio) {
+            const points = stroke.points;
+            if (points.length < 2) return;
+            
+            ctx.beginPath();
+            
+            if (points.length === 2) {
+                // Simple line for 2 points
+                ctx.moveTo(points[0].x * pixelRatio, points[0].y * pixelRatio);
+                ctx.lineTo(points[1].x * pixelRatio, points[1].y * pixelRatio);
+            } else {
+                // Smooth bezier curve through all points
+                ctx.moveTo(points[0].x * pixelRatio, points[0].y * pixelRatio);
+                
+                for (let i = 1; i < points.length - 1; i++) {
+                    const p0 = points[i - 1];
+                    const p1 = points[i];
+                    const p2 = points[i + 1];
+                    
+                    // Calculate control point (midpoint between current and next)
+                    const midX = (p1.x + p2.x) / 2;
+                    const midY = (p1.y + p2.y) / 2;
+                    
+                    // Quadratic curve to midpoint using current point as control
+                    ctx.quadraticCurveTo(
+                        p1.x * pixelRatio, p1.y * pixelRatio,
+                        midX * pixelRatio, midY * pixelRatio
+                    );
+                }
+                
+                // Final segment to last point
+                const lastPoint = points[points.length - 1];
+                const secondLast = points[points.length - 2];
+                ctx.quadraticCurveTo(
+                    secondLast.x * pixelRatio, secondLast.y * pixelRatio,
+                    lastPoint.x * pixelRatio, lastPoint.y * pixelRatio
+                );
+            }
+            
+            if (stroke.tool === 'erase') {
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.strokeStyle = 'rgba(0,0,0,1)';
+                ctx.lineWidth = stroke.thickness * 6 * pixelRatio;
+            } else {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = stroke.color;
+                ctx.lineWidth = stroke.thickness * pixelRatio;
+            }
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+            ctx.globalCompositeOperation = 'source-over';
+        }
+        
+        // Render all strokes (called on zoom change or load)
+        function renderAllStrokes() {
+            const pixelRatio = (typeof canvasModule !== 'undefined' && canvasModule.manager?.pixelRatio) || 1;
+            const canvasWidth = (typeof canvasModule !== 'undefined' && canvasModule.manager?.CANVAS_WIDTH) || CANVAS_WIDTH;
+            const canvasHeight = (typeof canvasModule !== 'undefined' && canvasModule.manager?.CANVAS_HEIGHT) || CANVAS_HEIGHT;
+            
+            // Get active layer info
+            let activeLayerId = null;
+            let layerManager = null;
+            if (typeof canvasModule !== 'undefined' && canvasModule.manager?.layerManager) {
+                layerManager = canvasModule.manager.layerManager;
+                const activeLayer = layerManager.getActiveLayer();
+                if (activeLayer) {
+                    activeLayerId = activeLayer.id;
+                }
+            }
+            
+            // Clear all layer canvases and render strokes to their respective layers
+            if (layerManager) {
+                // Clear all layers first
+                for (const layer of layerManager.layers) {
+                    layer.ctx.clearRect(0, 0, canvasWidth * pixelRatio, canvasHeight * pixelRatio);
+                }
+                
+                // Render each stroke to its layer
+                for (const stroke of vectorStrokes) {
+                    const targetLayer = stroke.layerId 
+                        ? layerManager.layers.find(l => l.id === stroke.layerId)
+                        : layerManager.getActiveLayer();
+                    
+                    if (targetLayer) {
+                        renderStroke(targetLayer.ctx, stroke, pixelRatio);
+                    }
+                }
+            } else {
+                // Fallback: render to main drawing canvas
+                const ctx = drawCtx;
+                ctx.clearRect(0, 0, canvasWidth * pixelRatio, canvasHeight * pixelRatio);
+                for (const stroke of vectorStrokes) {
+                    renderStroke(ctx, stroke, pixelRatio);
+                }
+            }
+        }
+        
+        // Clear all vector strokes
+        function clearVectorStrokes() {
+            vectorStrokes = [];
+            currentStroke = null;
+            renderAllStrokes();
         }
 
         // Text box creation
@@ -3419,9 +3590,14 @@
                 if (activeLayer && activeLayer.contentContainer) {
                     // Safety check: ensure content container is in DOM (re-insert if needed)
                     if (!document.body.contains(activeLayer.contentContainer)) {
-                        const textLayerEl = document.getElementById('text-layer');
-                        if (textLayerEl) {
-                            textLayerEl.appendChild(activeLayer.contentContainer);
+                        const wrapper = document.getElementById('canvas-wrapper');
+                        if (wrapper && activeLayer.canvas) {
+                            // Insert after the layer's canvas
+                            if (activeLayer.canvas.nextSibling) {
+                                wrapper.insertBefore(activeLayer.contentContainer, activeLayer.canvas.nextSibling);
+                            } else {
+                                wrapper.appendChild(activeLayer.contentContainer);
+                            }
                         }
                     }
                     
@@ -3638,10 +3814,63 @@
             });
         }
 
+        // Multi-touch / pinch-to-zoom and two-finger pan handling
+        let activeTouches = new Map();  // Track all active touch points
+        let isPinching = false;         // True when 2+ fingers are on screen
+        let lastPinchDistance = 0;      // Distance between fingers in last frame
+        let lastPinchCenter = { x: 0, y: 0 }; // Center point in last frame
+        
+        function getTouchDistance(touch1, touch2) {
+            const dx = touch1.clientX - touch2.clientX;
+            const dy = touch1.clientY - touch2.clientY;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+        
+        function getTouchCenter(touch1, touch2) {
+            return {
+                x: (touch1.clientX + touch2.clientX) / 2,
+                y: (touch1.clientY + touch2.clientY) / 2
+            };
+        }
+        
+        function getFirstTwoTouches() {
+            const touchArray = Array.from(activeTouches.values());
+            if (touchArray.length >= 2) {
+                return [touchArray[0], touchArray[1]];
+            }
+            return null;
+        }
+
         // Use pointer events for consistent mouse/pen/touch behavior
         let activePointerId = null;
         drawingCanvas.addEventListener('pointerdown', (e) => {
-            console.log('pointerdown on drawingCanvas, tool:', state.tool, 'button:', e.button, 'pointerType:', e.pointerType);
+            console.log('pointerdown on drawingCanvas, tool:', state.tool, 'button:', e.button, 'pointerType:', e.pointerType, 'pointerId:', e.pointerId);
+            
+            // Track all touch points
+            if (e.pointerType === 'touch') {
+                activeTouches.set(e.pointerId, { clientX: e.clientX, clientY: e.clientY });
+                console.log('Touch added, total touches:', activeTouches.size);
+                
+                // If 2+ touches, start pinch/pan mode and cancel any drawing
+                if (activeTouches.size >= 2) {
+                    console.log('Starting pinch mode');
+                    isPinching = true;
+                    isDrawing = false;
+                    currentStroke = null;  // Cancel any in-progress stroke
+                    
+                    // Initialize with current state for incremental updates
+                    const touches = getFirstTwoTouches();
+                    if (touches) {
+                        lastPinchDistance = getTouchDistance(touches[0], touches[1]);
+                        lastPinchCenter = getTouchCenter(touches[0], touches[1]);
+                    }
+                    return;
+                }
+            }
+            
+            // Don't start drawing if we're pinching
+            if (isPinching) return;
+            
             // Middle mouse button always pans
             if (e.button === 1) {
                 e.preventDefault();
@@ -3654,13 +3883,55 @@
             }
             // Only start if left button (or pen contact)
             if (e.button && e.button !== 0) return;
-            // Set active pointer id so we can release capture later
-            activePointerId = e.pointerId;
-            try { drawingCanvas.setPointerCapture(activePointerId); } catch (err) {}
+            
+            // For touch, don't capture - we need to track multiple touches
+            // For mouse/pen, capture to track outside canvas
+            if (e.pointerType !== 'touch') {
+                activePointerId = e.pointerId;
+                try { drawingCanvas.setPointerCapture(activePointerId); } catch (err) {}
+            }
             startDrawing(e);
         });
 
         drawingCanvas.addEventListener('pointermove', (e) => {
+            // Always track touch positions
+            if (e.pointerType === 'touch') {
+                activeTouches.set(e.pointerId, { clientX: e.clientX, clientY: e.clientY });
+                
+                // Handle pinch zoom + two-finger pan (incremental approach)
+                if (isPinching && activeTouches.size >= 2) {
+                    const touches = getFirstTwoTouches();
+                    if (!touches) return;
+                    
+                    const currentDistance = getTouchDistance(touches[0], touches[1]);
+                    const currentCenter = getTouchCenter(touches[0], touches[1]);
+                    
+                    // Calculate incremental zoom change
+                    if (lastPinchDistance > 0) {
+                        const zoomDelta = currentDistance / lastPinchDistance;
+                        const newZoom = Math.max(0.25, Math.min(4, state.zoom * zoomDelta));
+                        state.zoom = newZoom;
+                    }
+                    
+                    // Calculate incremental pan (how much the center moved)
+                    const panDeltaX = currentCenter.x - lastPinchCenter.x;
+                    const panDeltaY = currentCenter.y - lastPinchCenter.y;
+                    state.panOffset.x += panDeltaX;
+                    state.panOffset.y += panDeltaY;
+                    
+                    // Update last values for next frame
+                    lastPinchDistance = currentDistance;
+                    lastPinchCenter = currentCenter;
+                    
+                    updateCanvasTransform();
+                    updateZoomDisplay();
+                    return;
+                }
+            }
+            
+            // Don't draw while pinching
+            if (isPinching) return;
+            
             // When pointer is active, draw; otherwise still update eraser cursor
             if (isDrawing || isPanning) {
                 draw(e);
@@ -3677,6 +3948,16 @@
         });
 
         drawingCanvas.addEventListener('pointerup', (e) => {
+            // Remove touch from tracking
+            if (e.pointerType === 'touch') {
+                activeTouches.delete(e.pointerId);
+                
+                // End pinch mode when less than 2 fingers
+                if (activeTouches.size < 2) {
+                    isPinching = false;
+                }
+            }
+            
             stopDrawing();
             if (activePointerId !== null) {
                 try { drawingCanvas.releasePointerCapture(activePointerId); } catch (err) {}
@@ -3685,6 +3966,14 @@
         });
 
         drawingCanvas.addEventListener('pointercancel', (e) => {
+            // Remove touch from tracking
+            if (e.pointerType === 'touch') {
+                activeTouches.delete(e.pointerId);
+                if (activeTouches.size < 2) {
+                    isPinching = false;
+                }
+            }
+            
             stopDrawing();
             if (activePointerId !== null) {
                 try { drawingCanvas.releasePointerCapture(activePointerId); } catch (err) {}
@@ -3693,10 +3982,121 @@
         });
 
         drawingCanvas.addEventListener('pointerleave', (e) => {
+            // Clean up touch tracking
+            if (e.pointerType === 'touch') {
+                activeTouches.delete(e.pointerId);
+                if (activeTouches.size < 2) {
+                    isPinching = false;
+                }
+            }
             // when pointer leaves drawing canvas, stop drawing but don't necessarily hide cursor
             stopDrawing();
             // hide cursor only if pointer not over UI (handled by global handler)
         });
+        
+        // Native touch events for multi-touch gesture handling
+        // Apply to both canvas and container for better capture
+        function handleTouchStart(e) {
+            console.log('handleTouchStart: touches =', e.touches.length, 'tool =', state.tool);
+            if (e.touches.length >= 2) {
+                // Two-finger gesture - pan/zoom (works for ALL tools)
+                e.preventDefault();
+                e.stopPropagation();
+                isPinching = true;
+                isDrawing = false;
+                currentStroke = null;
+                
+                const t1 = e.touches[0];
+                const t2 = e.touches[1];
+                lastPinchDistance = getTouchDistance(
+                    { clientX: t1.clientX, clientY: t1.clientY },
+                    { clientX: t2.clientX, clientY: t2.clientY }
+                );
+                lastPinchCenter = getTouchCenter(
+                    { clientX: t1.clientX, clientY: t1.clientY },
+                    { clientX: t2.clientX, clientY: t2.clientY }
+                );
+                console.log('Pinch started: distance =', lastPinchDistance, 'center =', lastPinchCenter);
+            }
+        }
+        
+        function handleTouchMove(e) {
+            if (e.touches.length >= 2) {
+                // Two-finger gesture - pan/zoom (works for ALL tools including select and eraser)
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (!isPinching) {
+                    // Started with one finger, added second - initialize pinch
+                    isPinching = true;
+                    isDrawing = false;
+                    currentStroke = null;
+                    const t1 = e.touches[0];
+                    const t2 = e.touches[1];
+                    lastPinchDistance = getTouchDistance(
+                        { clientX: t1.clientX, clientY: t1.clientY },
+                        { clientX: t2.clientX, clientY: t2.clientY }
+                    );
+                    lastPinchCenter = getTouchCenter(
+                        { clientX: t1.clientX, clientY: t1.clientY },
+                        { clientX: t2.clientX, clientY: t2.clientY }
+                    );
+                    return;
+                }
+                
+                const t1 = e.touches[0];
+                const t2 = e.touches[1];
+                const currentDistance = getTouchDistance(
+                    { clientX: t1.clientX, clientY: t1.clientY },
+                    { clientX: t2.clientX, clientY: t2.clientY }
+                );
+                const currentCenter = getTouchCenter(
+                    { clientX: t1.clientX, clientY: t1.clientY },
+                    { clientX: t2.clientX, clientY: t2.clientY }
+                );
+                
+                // Calculate incremental zoom
+                if (lastPinchDistance > 0) {
+                    const zoomDelta = currentDistance / lastPinchDistance;
+                    const newZoom = Math.max(0.25, Math.min(4, state.zoom * zoomDelta));
+                    console.log('Pinch move: distance =', currentDistance, 'zoomDelta =', zoomDelta, 'newZoom =', newZoom);
+                    state.zoom = newZoom;
+                }
+                
+                // Calculate incremental pan
+                const panDeltaX = currentCenter.x - lastPinchCenter.x;
+                const panDeltaY = currentCenter.y - lastPinchCenter.y;
+                state.panOffset.x += panDeltaX;
+                state.panOffset.y += panDeltaY;
+                console.log('Pan delta:', panDeltaX, panDeltaY, 'new offset:', state.panOffset);
+                
+                // Update last values
+                lastPinchDistance = currentDistance;
+                lastPinchCenter = currentCenter;
+                
+                updateCanvasTransform();
+                updateZoomDisplay();
+            }
+        }
+        
+        function handleTouchEnd(e) {
+            if (e.touches.length < 2) {
+                isPinching = false;
+                lastPinchDistance = 0;
+                activeTouches.clear();
+            }
+        }
+        
+        // Add touch handlers to canvas, wrapper, and container for comprehensive coverage
+        drawingCanvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+        drawingCanvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+        drawingCanvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+        canvasWrapper.addEventListener('touchstart', handleTouchStart, { passive: false });
+        canvasWrapper.addEventListener('touchmove', handleTouchMove, { passive: false });
+        canvasWrapper.addEventListener('touchend', handleTouchEnd, { passive: false });
+        canvasContainer.addEventListener('touchstart', handleTouchStart, { passive: false });
+        canvasContainer.addEventListener('touchmove', handleTouchMove, { passive: false });
+        canvasContainer.addEventListener('touchend', handleTouchEnd, { passive: false });
 
         // Prevent default middle mouse button scrolling
         drawingCanvas.addEventListener('auxclick', (e) => {
@@ -3720,87 +4120,6 @@
         drawingCanvas.addEventListener('click', () => {
             if (state.tool === 'select') {
                 clearTextBoxSelection();
-            }
-        });
-
-        // Touch support
-        let lastTouchDistance = 0;
-        let isTouchZooming = false;
-        let touchStartPoints = [];
-
-        function getTouchDistance(touches) {
-            const dx = touches[0].clientX - touches[1].clientX;
-            const dy = touches[0].clientY - touches[1].clientY;
-            return Math.sqrt(dx * dx + dy * dy);
-        }
-
-        function getTouchCenter(touches) {
-            return {
-                x: (touches[0].clientX + touches[1].clientX) / 2,
-                y: (touches[0].clientY + touches[1].clientY) / 2
-            };
-        }
-
-        canvasContainer.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 2) {
-                // Two finger touch - start pinch zoom
-                e.preventDefault();
-                isTouchZooming = true;
-                lastTouchDistance = getTouchDistance(e.touches);
-                touchStartPoints = [
-                    { x: e.touches[0].clientX, y: e.touches[0].clientY },
-                    { x: e.touches[1].clientX, y: e.touches[1].clientY }
-                ];
-            } else if (e.touches.length === 1 && !isTouchZooming) {
-                // Single touch - drawing or panning
-                e.preventDefault();
-                const touch = e.touches[0];
-                startDrawing({ clientX: touch.clientX, clientY: touch.clientY });
-            }
-        }, { passive: false });
-
-        canvasContainer.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 2 && isTouchZooming) {
-                // Pinch zoom
-                e.preventDefault();
-                const currentDistance = getTouchDistance(e.touches);
-                const scale = currentDistance / lastTouchDistance;
-                
-                // Calculate new zoom
-                const newZoom = Math.max(0.25, Math.min(4, state.zoom * scale));
-                
-                // Get pinch center for zoom origin
-                const center = getTouchCenter(e.touches);
-                const rect = canvasContainer.getBoundingClientRect();
-                const centerX = center.x - rect.left;
-                const centerY = center.y - rect.top;
-                
-                // Adjust pan offset to zoom toward pinch center
-                if (newZoom !== state.zoom) {
-                    const zoomDelta = newZoom / state.zoom;
-                    state.panOffset.x = centerX - (centerX - state.panOffset.x) * zoomDelta;
-                    state.panOffset.y = centerY - (centerY - state.panOffset.y) * zoomDelta;
-                    state.zoom = newZoom;
-                    updateCanvasTransform();
-                    updateZoomDisplay();
-                }
-                
-                lastTouchDistance = currentDistance;
-            } else if (e.touches.length === 1 && !isTouchZooming) {
-                // Single touch drawing
-                e.preventDefault();
-                const touch = e.touches[0];
-                draw({ clientX: touch.clientX, clientY: touch.clientY });
-            }
-        }, { passive: false });
-
-        canvasContainer.addEventListener('touchend', (e) => {
-            if (e.touches.length < 2) {
-                isTouchZooming = false;
-                lastTouchDistance = 0;
-            }
-            if (e.touches.length === 0) {
-                stopDrawing();
             }
         });
 
@@ -3874,8 +4193,9 @@
         }, { passive: true });
 
         canvasContainer.addEventListener('touchcancel', () => {
-            isTouchZooming = false;
-            lastTouchDistance = 0;
+            isPinching = false;
+            lastPinchDistance = 0;
+            activeTouches.clear();
             stopDrawing();
         });
 
@@ -3920,6 +4240,10 @@
             // so embeds and text boxes underneath can be interacted with in Select mode.
             const mediaLayer = document.getElementById('media-layer');
             const textLayerEl = document.getElementById('text-layer');
+            
+            // Get all layer content containers
+            const layerContents = document.querySelectorAll('.layer-content');
+            
             if (tool === 'draw' || tool === 'erase' || tool === 'pan' || tool === 'text') {
                 // Ensure the drawing canvas is on top so mouse events reach it
                 drawingCanvas.style.pointerEvents = 'auto';
@@ -3928,6 +4252,7 @@
                 if (tool === 'pan') {
                     if (mediaLayer) mediaLayer.style.pointerEvents = 'auto';
                     if (textLayerEl) textLayerEl.style.pointerEvents = 'auto';
+                    layerContents.forEach(lc => lc.style.pointerEvents = 'auto');
                 } else if (tool === 'text') {
                     // Text tool: drawing canvas captures clicks to create text boxes
                     // Text layer stays below drawing canvas so clicks pass through
@@ -3936,12 +4261,15 @@
                         textLayerEl.style.pointerEvents = 'none';
                         textLayerEl.style.zIndex = 4; // Keep below drawing canvas
                     }
+                    layerContents.forEach(lc => lc.style.pointerEvents = 'none');
                 } else {
                     // Temporarily ignore pointer events on media/text layers while drawing
                     if (mediaLayer) mediaLayer.style.pointerEvents = 'none';
                     if (textLayerEl) textLayerEl.style.pointerEvents = 'none';
+                    layerContents.forEach(lc => lc.style.pointerEvents = 'none');
                 }
             } else {
+                // Select mode - enable pointer events on all content containers
                 drawingCanvas.style.pointerEvents = 'none';
                 drawingCanvas.style.zIndex = 2;
                 if (mediaLayer) mediaLayer.style.pointerEvents = 'auto';
@@ -3949,6 +4277,8 @@
                     textLayerEl.style.pointerEvents = 'auto';
                     textLayerEl.style.zIndex = 5; // Restore normal z-index
                 }
+                // Enable pointer events on layer content containers so media can be selected
+                layerContents.forEach(lc => lc.style.pointerEvents = 'auto');
             }
         }
 
@@ -4022,19 +4352,8 @@
                 return;
             }
 
-            // Use async merge of layers to avoid blocking the UI
-            let canvasState;
-            try {
-                if (window.canvasModule?.manager?.layerManager?.getFlattenedDataURLAsync) {
-                    canvasState = await window.canvasModule.manager.layerManager.getFlattenedDataURLAsync();
-                } else {
-                    // Fallback to base canvas if layers unavailable
-                    canvasState = drawingCanvas.toDataURL();
-                }
-            } catch (e) {
-                console.warn('Async undo snapshot failed, using fallback:', e);
-                canvasState = drawingCanvas.toDataURL();
-            }
+            // Save vector strokes (deep copy to prevent reference issues)
+            const strokesCopy = JSON.parse(JSON.stringify(vectorStrokes));
 
             const textBoxes = Array.from(textLayer.querySelectorAll('.text-box')).map(box => ({
                 content: box.innerHTML,
@@ -4047,7 +4366,7 @@
                 color: box.style.color
             }));
 
-            undoStack.push({ canvasState, textBoxes });
+            undoStack.push({ vectorStrokes: strokesCopy, textBoxes });
             lastUndoAt = Date.now();
 
             // Limit stack size
@@ -4066,7 +4385,7 @@
             
             // Save current state to redo stack
             const currentState = {
-                canvasState: drawingCanvas.toDataURL(),
+                vectorStrokes: JSON.parse(JSON.stringify(vectorStrokes)),
                 textBoxes: Array.from(textLayer.querySelectorAll('.text-box')).map(box => ({
                     content: box.innerHTML,
                     left: box.style.left,
@@ -4093,7 +4412,7 @@
             
             // Save current state to undo stack
             const currentState = {
-                canvasState: drawingCanvas.toDataURL(),
+                vectorStrokes: JSON.parse(JSON.stringify(vectorStrokes)),
                 textBoxes: Array.from(textLayer.querySelectorAll('.text-box')).map(box => ({
                     content: box.innerHTML,
                     left: box.style.left,
@@ -4116,13 +4435,12 @@
         }
 
         function restoreState(stateData) {
-            // Restore canvas
-            const img = new Image();
-            img.onload = () => {
-                drawCtx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                drawCtx.drawImage(img, 0, 0);
-            };
-            img.src = stateData.canvasState;
+            // Restore vector strokes
+            if (stateData.vectorStrokes) {
+                vectorStrokes = JSON.parse(JSON.stringify(stateData.vectorStrokes));
+                currentStroke = null;
+                renderAllStrokes();
+            }
             
             // Restore text boxes
             textLayer.innerHTML = '';
@@ -4394,9 +4712,8 @@
                 }
                 textLayer.innerHTML = '';
                 
-                // Clear media layer
-                const mediaLayer = document.getElementById('media-layer');
-                if (mediaLayer) mediaLayer.innerHTML = '';
+                // Clear all media embeds (they may be in media-layer or layer content containers)
+                document.querySelectorAll('.media-embed').forEach(embed => embed.remove());
                 
                 // Re-render subnote blocks
                 if (state.currentNote) {
@@ -5534,13 +5851,13 @@
             const content = document.createElement('div');
             content.className = 'media-embed-content';
 
-            // Create controls (Delete, Forward, Backward, Draw Above toggle)
+            // Create controls (Delete, Layer transitions, Draw Above toggle)
             const controls = document.createElement('div');
             controls.className = 'media-embed-controls';
             controls.innerHTML = `
                 <button class="media-embed-btn" onclick="deleteMediaEmbed(this.closest('.media-embed'))" title="Delete">×</button>
-                <button class="media-embed-btn" onclick="sendEmbedBackward(this.closest('.media-embed'))" title="Send Back">◀</button>
-                <button class="media-embed-btn" onclick="bringEmbedForward(this.closest('.media-embed'))" title="Bring Forward">▶</button>
+                <button class="media-embed-btn" onclick="moveEmbedToLayerBelow(this.closest('.media-embed'))" title="Move to Layer Below">⬇</button>
+                <button class="media-embed-btn" onclick="moveEmbedToLayerAbove(this.closest('.media-embed'))" title="Move to Layer Above">⬆</button>
                 <button class="media-embed-btn" onclick="toggleDrawAbove(this.closest('.media-embed'))" title="Draw Over">🖌</button>
             `;
 
@@ -5555,16 +5872,56 @@
             embed.appendChild(controls);
             embed.appendChild(resizeHandle);
 
-            // Add to active layer's content container if available, otherwise use mediaLayer
+            // Add to specified layer or active layer's content container, otherwise use mediaLayer
             let targetContainer = mediaLayer;
+            let targetLayerId = null;
+            
             if (typeof canvasModule !== 'undefined' && canvasModule.manager?.layerManager) {
-                const activeLayer = canvasModule.manager.layerManager.getActiveLayer();
-                if (activeLayer && activeLayer.contentContainer) {
-                    targetContainer = activeLayer.contentContainer;
-                    embed.setAttribute('data-layer-id', activeLayer.id);
+                const layerManager = canvasModule.manager.layerManager;
+                
+                // If layerId is provided (loading from save), find that layer
+                if (options.layerId) {
+                    const targetLayer = layerManager.layers.find(l => l.id === options.layerId);
+                    if (targetLayer && targetLayer.contentContainer) {
+                        // Re-insert content container if not in DOM
+                        if (!document.body.contains(targetLayer.contentContainer)) {
+                            const wrapper = document.getElementById('canvas-wrapper');
+                            if (wrapper && targetLayer.canvas) {
+                                if (targetLayer.canvas.nextSibling) {
+                                    wrapper.insertBefore(targetLayer.contentContainer, targetLayer.canvas.nextSibling);
+                                } else {
+                                    wrapper.appendChild(targetLayer.contentContainer);
+                                }
+                            }
+                        }
+                        targetContainer = targetLayer.contentContainer;
+                        targetLayerId = targetLayer.id;
+                    }
+                } else {
+                    // New embed - add to active (selected) layer
+                    const activeLayer = layerManager.getActiveLayer();
+                    if (activeLayer && activeLayer.contentContainer) {
+                        // Re-insert content container if not in DOM
+                        if (!document.body.contains(activeLayer.contentContainer)) {
+                            const wrapper = document.getElementById('canvas-wrapper');
+                            if (wrapper && activeLayer.canvas) {
+                                if (activeLayer.canvas.nextSibling) {
+                                    wrapper.insertBefore(activeLayer.contentContainer, activeLayer.canvas.nextSibling);
+                                } else {
+                                    wrapper.appendChild(activeLayer.contentContainer);
+                                }
+                            }
+                        }
+                        targetContainer = activeLayer.contentContainer;
+                        targetLayerId = activeLayer.id;
+                    }
                 }
             }
+            
             targetContainer.appendChild(embed);
+            if (targetLayerId) {
+                embed.setAttribute('data-layer-id', targetLayerId);
+            }
 
             // Add resize functionality
             makeMediaEmbedResizable(embed, resizeHandle);
@@ -5796,6 +6153,113 @@
             const minZ = getAllEmbeds().reduce((m,e)=>Math.min(m || 9999, parseInt(e.dataset.z||e.style.zIndex||9999)), 9999);
             setEmbedZ(embed, Math.max(1, minZ - 1));
             normalizeEmbedZs();
+            markUnsaved();
+        }
+
+        // Show a toast notification
+        function showLayerToast(message) {
+            // Remove existing toast if any
+            const existingToast = document.getElementById('layer-toast');
+            if (existingToast) existingToast.remove();
+            
+            const toast = document.createElement('div');
+            toast.id = 'layer-toast';
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 80px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(0, 0, 0, 0.85);
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 500;
+                z-index: 999999;
+                animation: toastFadeIn 0.2s ease;
+                pointer-events: none;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            // Auto-remove after 2 seconds
+            setTimeout(() => {
+                toast.style.animation = 'toastFadeOut 0.3s ease forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+
+        // Move embed to the layer above
+        function moveEmbedToLayerAbove(embed) {
+            if (typeof canvasModule === 'undefined' || !canvasModule.manager?.layerManager) {
+                showLayerToast('Layers not available');
+                return;
+            }
+            
+            const layerManager = canvasModule.manager.layerManager;
+            const currentLayerId = embed.getAttribute('data-layer-id');
+            
+            // Find current layer index
+            let currentIndex = layerManager.layers.findIndex(l => l.id === currentLayerId);
+            if (currentIndex === -1) {
+                // Not on a layer, put it on the active layer
+                currentIndex = layerManager.activeLayerIndex;
+            }
+            
+            // Check if there's a layer above
+            if (currentIndex >= layerManager.layers.length - 1) {
+                showLayerToast('Already on top layer');
+                return;
+            }
+            
+            const targetLayer = layerManager.layers[currentIndex + 1];
+            if (!targetLayer || !targetLayer.contentContainer) {
+                showLayerToast('No layer above');
+                return;
+            }
+            
+            // Move embed to target layer
+            targetLayer.contentContainer.appendChild(embed);
+            embed.setAttribute('data-layer-id', targetLayer.id);
+            
+            showLayerToast(`Moved to: ${targetLayer.name}`);
+            markUnsaved();
+        }
+
+        // Move embed to the layer below
+        function moveEmbedToLayerBelow(embed) {
+            if (typeof canvasModule === 'undefined' || !canvasModule.manager?.layerManager) {
+                showLayerToast('Layers not available');
+                return;
+            }
+            
+            const layerManager = canvasModule.manager.layerManager;
+            const currentLayerId = embed.getAttribute('data-layer-id');
+            
+            // Find current layer index
+            let currentIndex = layerManager.layers.findIndex(l => l.id === currentLayerId);
+            if (currentIndex === -1) {
+                // Not on a layer, put it on the active layer
+                currentIndex = layerManager.activeLayerIndex;
+            }
+            
+            // Check if there's a layer below
+            if (currentIndex <= 0) {
+                showLayerToast('Already on bottom layer');
+                return;
+            }
+            
+            const targetLayer = layerManager.layers[currentIndex - 1];
+            if (!targetLayer || !targetLayer.contentContainer) {
+                showLayerToast('No layer below');
+                return;
+            }
+            
+            // Move embed to target layer
+            targetLayer.contentContainer.appendChild(embed);
+            embed.setAttribute('data-layer-id', targetLayer.id);
+            
+            showLayerToast(`Moved to: ${targetLayer.name}`);
             markUnsaved();
         }
 
@@ -6129,7 +6593,7 @@
             let startX, startY, initialX, initialY;
 
             embed.addEventListener('mousedown', (e) => {
-                // Only allow dragging when select tool is active
+                // Only allow dragging/selecting when select tool is active
                 if (state.tool !== 'select') return;
                 // Don't drag if clicking on controls, resize handle, or iframe
                 if (e.target.closest('.media-embed-controls') ||
@@ -6137,7 +6601,12 @@
                     e.target.closest('.media-embed-content iframe')) return;
 
                 e.preventDefault();
-                e.stopPropagation();
+                
+                // Select this embed immediately on mousedown
+                document.querySelectorAll('.media-embed.selected, .text-box.selected').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                embed.classList.add('selected');
 
                 isDragging = false;
                 startX = e.clientX;
@@ -6303,16 +6772,9 @@
         }
 
         function addMediaEmbedSelectHandler(embed) {
-            embed.addEventListener('click', (e) => {
-                if (state.tool === 'select') {
-                    // Deselect all other embeds and text boxes
-                    document.querySelectorAll('.media-embed.selected, .text-box.selected').forEach(el => {
-                        el.classList.remove('selected');
-                    });
-                    embed.classList.add('selected');
-                    e.stopPropagation();
-                }
-            });
+            // Selection is now handled in makeMediaEmbedDraggable's mousedown handler
+            // This function is kept for backwards compatibility but does nothing
+            // The draggable handler selects on mousedown to ensure it works even with preventDefault
         }
 
         // Handle paste event for media URLs
@@ -7208,17 +7670,20 @@
                 headerLevel: box.getAttribute('data-header-level') || null
             }));
             
-            // Save media embeds (they live in #media-layer)
-            const mediaLayer = document.getElementById('media-layer');
-            state.currentNote.mediaEmbeds = Array.from((mediaLayer || document).querySelectorAll('.media-embed')).map(embed => ({
+            // Save media embeds (they may be in #media-layer or in layer content containers)
+            state.currentNote.mediaEmbeds = Array.from(document.querySelectorAll('.media-embed')).map(embed => ({
                 id: embed.getAttribute('data-embed-id'),
                 type: embed.getAttribute('data-embed-type'),
                 url: embed.getAttribute('data-embed-url'),
                 left: embed.style.left,
                 top: embed.style.top,
                 width: embed.style.width,
-                height: embed.style.height
+                height: embed.style.height,
+                layerId: embed.getAttribute('data-layer-id') || null
             }));
+            
+            // Save vector strokes (resolution-independent drawing data)
+            state.currentNote.vectorStrokes = vectorStrokes;
         }
         
         // Sync version for critical saves (beforeunload, etc.)
@@ -7248,17 +7713,20 @@
                 headerLevel: box.getAttribute('data-header-level') || null
             }));
             
-            // Save media embeds (they live in #media-layer)
-            const mediaLayer = document.getElementById('media-layer');
-            state.currentNote.mediaEmbeds = Array.from((mediaLayer || document).querySelectorAll('.media-embed')).map(embed => ({
+            // Save media embeds (they may be in #media-layer or in layer content containers)
+            state.currentNote.mediaEmbeds = Array.from(document.querySelectorAll('.media-embed')).map(embed => ({
                 id: embed.getAttribute('data-embed-id'),
                 type: embed.getAttribute('data-embed-type'),
                 url: embed.getAttribute('data-embed-url'),
                 left: embed.style.left,
                 top: embed.style.top,
                 width: embed.style.width,
-                height: embed.style.height
+                height: embed.style.height,
+                layerId: embed.getAttribute('data-layer-id') || null
             }));
+            
+            // Save vector strokes (resolution-independent drawing data)
+            state.currentNote.vectorStrokes = vectorStrokes;
         }
 
         async function loadNoteData(note) {
@@ -7267,14 +7735,23 @@
             // Clear undo/redo history for new note
             clearUndoHistory();
             
+            // Clear previous vector strokes
+            vectorStrokes = [];
+            currentStroke = null;
+            
             // Load version history
             versionHistory = note.versionHistory || [];
             
             // Start version history timer
             startVersionHistoryTimer();
             
-            // Load canvas data - prefer layers if available
-            if (typeof canvasModule !== 'undefined' && canvasModule.manager?.layerManager) {
+            // Load vector strokes if available (preferred - resolution independent)
+            if (note.vectorStrokes && note.vectorStrokes.length > 0) {
+                vectorStrokes = note.vectorStrokes;
+                currentStroke = null;
+                renderAllStrokes();
+                saveInitialState();
+            } else if (typeof canvasModule !== 'undefined' && canvasModule.manager?.layerManager) {
                 const layerManager = canvasModule.manager.layerManager;
                 
                 if (note.layersData && note.layersData.length > 0) {
@@ -7381,6 +7858,9 @@
                 });
             }
             
+            // Clear existing media embeds before loading new ones
+            document.querySelectorAll('.media-embed').forEach(embed => embed.remove());
+            
             // Load media embeds
             if (note.mediaEmbeds) {
                 const seenEvernoteLinks = new Set();
@@ -7400,7 +7880,8 @@
                         left: embedData.left,
                         top: embedData.top,
                         width: embedData.width,
-                        height: embedData.height
+                        height: embedData.height,
+                        layerId: embedData.layerId
                     });
                 });
             }
