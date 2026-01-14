@@ -2597,6 +2597,54 @@
             letter-spacing: normal;
         }
 
+        /* Dark mode button on home page */
+        .home-dark-mode-btn {
+            background: none;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 6px 8px;
+            cursor: pointer;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .home-dark-mode-btn:hover {
+            background: #f0f0f0;
+            border-color: #ccc;
+            color: #333;
+        }
+
+        body.dark-mode .home-dark-mode-btn {
+            border-color: #444;
+            color: #aaa;
+        }
+
+        body.dark-mode .home-dark-mode-btn:hover {
+            background: #333;
+            border-color: #555;
+            color: #fff;
+        }
+
+        body.dark-mode .home-dark-mode-btn .sun-icon {
+            display: none !important;
+        }
+
+        body.dark-mode .home-dark-mode-btn .moon-icon {
+            display: block !important;
+        }
+
+        /* Toolbar dark mode button icon toggle */
+        body.dark-mode #dark-mode-btn .sun-icon {
+            display: none !important;
+        }
+
+        body.dark-mode #dark-mode-btn .moon-icon {
+            display: inline-block !important;
+        }
+
         /* Drag and drop styles for custom sorting */
         .notebook-card.dragging,
         .notebook.dragging {
@@ -2672,12 +2720,65 @@
             background: rgba(0, 122, 255, 0.05);
         }
 
+        /* Drop INTO a note (make it a sub-note) */
+        .drop-into,
+        .note-item-container.drop-into {
+            background: rgba(52, 199, 89, 0.15) !important;
+            border: 2px solid #34c759 !important;
+            border-radius: 6px;
+        }
+
+        body.dark-mode .drop-into,
+        body.dark-mode .note-item-container.drop-into {
+            background: rgba(48, 209, 88, 0.15) !important;
+            border-color: #30d158 !important;
+        }
+
         body.dark-mode .drop-before {
             border-top-color: #0a84ff !important;
         }
 
         body.dark-mode .drop-after {
             border-bottom-color: #0a84ff !important;
+        }
+        
+        /* Highlight animation for just-moved notes */
+        .just-moved {
+            animation: justMovedPulse 2s ease-out;
+        }
+        
+        @keyframes justMovedPulse {
+            0% {
+                background: rgba(52, 199, 89, 0.4);
+                box-shadow: 0 0 12px rgba(52, 199, 89, 0.6);
+            }
+            50% {
+                background: rgba(52, 199, 89, 0.2);
+                box-shadow: 0 0 6px rgba(52, 199, 89, 0.3);
+            }
+            100% {
+                background: transparent;
+                box-shadow: none;
+            }
+        }
+        
+        body.dark-mode .just-moved {
+            animation: justMovedPulseDark 2s ease-out;
+        }
+        
+        @keyframes justMovedPulseDark {
+            0% {
+                background: rgba(48, 209, 88, 0.4);
+                box-shadow: 0 0 12px rgba(48, 209, 88, 0.6);
+            }
+            50% {
+                background: rgba(48, 209, 88, 0.2);
+                box-shadow: 0 0 6px rgba(48, 209, 88, 0.3);
+            }
+            100% {
+                background: transparent;
+                box-shadow: none;
+            }
         }
 
         .drag-hint {
@@ -3016,6 +3117,22 @@
                         <option value="recent">Recent</option>
                         <option value="custom">Custom</option>
                     </select>
+                    <button class="home-dark-mode-btn" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+                        <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </button>
                 </div>
                 <div id="notebooks-home-container" class="notebooks-grid"></div>
             </div>
@@ -3315,7 +3432,18 @@
                 <button class="tool-btn" onclick="clearCanvas()">Clear</button>
                 <button class="tool-btn" onclick="exportNote()">Export</button>
                 <button class="tool-btn" id="dark-mode-btn" onclick="toggleDarkMode()" title="Toggle Dark Mode">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;display:none;">
                         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
                     </svg>
                 </button>
@@ -7847,23 +7975,31 @@
             const notebookCard = e.target.closest('.notebook-card[data-notebook-id]');
             
             // Clear previous highlights
-            document.querySelectorAll('.drop-target, .drop-before, .drop-after').forEach(el => {
-                el.classList.remove('drop-target', 'drop-before', 'drop-after');
+            document.querySelectorAll('.drop-target, .drop-before, .drop-after, .drop-into').forEach(el => {
+                el.classList.remove('drop-target', 'drop-before', 'drop-after', 'drop-into');
             });
             
             if (noteContainer && draggedNoteData) {
-                // Hovering over a note - show insert position
+                // Hovering over a note - show insert position based on vertical position
                 const rect = noteContainer.getBoundingClientRect();
-                const midY = rect.top + rect.height / 2;
+                const thirdHeight = rect.height / 3;
+                const relativeY = e.clientY - rect.top;
                 
-                if (e.clientY < midY) {
+                if (relativeY < thirdHeight) {
+                    // Top third - insert before
                     dropPosition = 'before';
                     noteContainer.classList.add('drop-before');
                     showDropIndicator(noteContainer, 'before');
-                } else {
+                } else if (relativeY > thirdHeight * 2) {
+                    // Bottom third - insert after
                     dropPosition = 'after';
                     noteContainer.classList.add('drop-after');
                     showDropIndicator(noteContainer, 'after');
+                } else {
+                    // Middle third - drop INTO as sub-note
+                    dropPosition = 'into';
+                    noteContainer.classList.add('drop-into');
+                    hideDropIndicator();
                 }
             } else if (notebookEl) {
                 // Hovering over a notebook - drop into
@@ -7890,18 +8026,31 @@
         // Handle drop
         document.addEventListener('drop', function(e) {
             e.preventDefault();
+            e.stopPropagation();
             
-            if (!draggedNoteData && !draggedSubNotebookId) return;
+            // Immediately hide the drop indicator
+            hideDropIndicator();
+            
+            if (!draggedNoteData && !draggedSubNotebookId) {
+                clearAllDragStates();
+                return;
+            }
             
             const noteContainer = e.target.closest('.note-item-container[data-note-id]');
             const notebookEl = e.target.closest('.notebook[data-notebook-id]');
             const notebookCard = e.target.closest('.notebook-card[data-notebook-id]');
             
             if (noteContainer && draggedNoteData && dropPosition) {
-                // Dropping note relative to another note
                 const targetNoteId = noteContainer.dataset.noteId;
                 const targetNotebookId = noteContainer.dataset.notebookId;
-                insertNoteRelativeTo(draggedNoteData.noteId, draggedNoteData.sourceNotebookId, targetNoteId, targetNotebookId, dropPosition);
+                
+                if (dropPosition === 'into') {
+                    // Drop INTO the note as a sub-note
+                    makeNoteSubnote(draggedNoteData.noteId, draggedNoteData.sourceNotebookId, targetNoteId, targetNotebookId);
+                } else {
+                    // Drop before or after the note
+                    insertNoteRelativeTo(draggedNoteData.noteId, draggedNoteData.sourceNotebookId, targetNoteId, targetNotebookId, dropPosition);
+                }
             } else if (notebookEl && notebookEl.dataset.notebookId) {
                 // Dropping into a notebook
                 const targetNotebookId = notebookEl.dataset.notebookId;
@@ -7920,34 +8069,177 @@
                 }
             }
             
+            // Clean up all drag states
             clearAllDragStates();
             draggedNoteData = null;
             draggedSubNotebookId = null;
             draggedSubNotebookParentId = null;
             dropPosition = null;
-            hideDropIndicator();
         });
+
+        // Make a note become a sub-note of another note
+        function makeNoteSubnote(noteId, sourceNotebookId, targetNoteId, targetNotebookId) {
+            if (noteId === targetNoteId) return;
+            
+            // Helper to find a note in ALL notebooks
+            function findNoteInAllNotebooks(searchNoteId) {
+                function searchInNotebook(notebook) {
+                    function searchNotes(notes) {
+                        for (const note of notes) {
+                            if (String(note.id) === String(searchNoteId)) return { note, notebook };
+                            if (note.children) {
+                                const found = searchNotes(note.children);
+                                if (found) return found;
+                            }
+                        }
+                        return null;
+                    }
+                    return searchNotes(notebook.notes || []);
+                }
+                
+                function searchAllNotebooks(notebooks) {
+                    for (const nb of notebooks) {
+                        const found = searchInNotebook(nb);
+                        if (found) return found;
+                        if (nb.children) {
+                            const childFound = searchAllNotebooks(nb.children);
+                            if (childFound) return childFound;
+                        }
+                    }
+                    return null;
+                }
+                
+                return searchAllNotebooks(state.notebooks);
+            }
+            
+            // Find target note
+            const targetResult = findNoteInAllNotebooks(targetNoteId);
+            if (!targetResult) {
+                console.error('Target note not found:', targetNoteId);
+                showLayerToast('Error: Target note not found');
+                return;
+            }
+            const targetNote = targetResult.note;
+            
+            // Find and remove source note from wherever it actually is
+            const sourceResult = findNoteInAllNotebooks(noteId);
+            if (!sourceResult) {
+                console.error('Source note not found:', noteId);
+                showLayerToast('Error: Source note not found');
+                return;
+            }
+            
+            // Remove from actual source notebook
+            const note = removeNoteFromNotebook(noteId, sourceResult.notebook);
+            if (!note) {
+                console.error('Could not remove note from source');
+                showLayerToast('Error: Could not move note');
+                return;
+            }
+            
+            // Add as child of target note
+            if (!targetNote.children) targetNote.children = [];
+            targetNote.children.push(note);
+            
+            // Make sure target note is expanded so user can see the new child
+            targetNote.isOpen = true;
+            
+            showLayerToast(`Made "${note.name}" a sub-note of "${targetNote.name}"`);
+            
+            renderNotebooks();
+            renderHomePage();
+            if (state.viewingNotebook) {
+                showNotebookDetailPage(state.viewingNotebook);
+            }
+            saveToStorage();
+            
+            // Highlight the moved note in the sidebar so user can see where it went
+            setTimeout(() => {
+                const movedNoteEl = document.querySelector(`.sidebar-note-item[data-note-id="${note.id}"]`);
+                if (movedNoteEl) {
+                    movedNoteEl.classList.add('just-moved');
+                    movedNoteEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    setTimeout(() => movedNoteEl.classList.remove('just-moved'), 2000);
+                }
+            }, 100);
+        }
 
         // Insert note relative to another note (before or after)
         function insertNoteRelativeTo(noteId, sourceNotebookId, targetNoteId, targetNotebookId, position) {
             if (noteId === targetNoteId) return;
             
-            const sourceNotebook = window.findNotebookById(sourceNotebookId);
-            const targetNotebook = window.findNotebookById(targetNotebookId);
-            if (!sourceNotebook || !targetNotebook) return;
+            // Helper to find a note in ALL notebooks
+            function findNoteInAllNotebooks(searchNoteId) {
+                function searchInNotebook(notebook) {
+                    function searchNotes(notes) {
+                        for (const note of notes) {
+                            if (String(note.id) === String(searchNoteId)) return { note, notebook };
+                            if (note.children) {
+                                const found = searchNotes(note.children);
+                                if (found) return found;
+                            }
+                        }
+                        return null;
+                    }
+                    return searchNotes(notebook.notes || []);
+                }
+                
+                function searchAllNotebooks(notebooks) {
+                    for (const nb of notebooks) {
+                        const found = searchInNotebook(nb);
+                        if (found) return found;
+                        if (nb.children) {
+                            const childFound = searchAllNotebooks(nb.children);
+                            if (childFound) return childFound;
+                        }
+                    }
+                    return null;
+                }
+                
+                return searchAllNotebooks(state.notebooks);
+            }
             
-            // Remove note from source
-            const note = removeNoteFromNotebook(noteId, sourceNotebook);
+            // Find source note in wherever it actually is
+            const sourceResult = findNoteInAllNotebooks(noteId);
+            if (!sourceResult) {
+                console.error('Source note not found:', noteId);
+                return;
+            }
+            
+            // Remove note from its actual location
+            const note = removeNoteFromNotebook(noteId, sourceResult.notebook);
             if (!note) return;
             
-            // Find target note index and insert
-            if (!targetNotebook.notes) targetNotebook.notes = [];
-            const targetIndex = targetNotebook.notes.findIndex(n => String(n.id) === String(targetNoteId));
+            // Find the target notebook - use the notebook that contains the target note
+            const targetResult = findNoteInAllNotebooks(targetNoteId);
+            const targetNotebook = targetResult ? targetResult.notebook : window.findNotebookById(targetNotebookId);
+            if (!targetNotebook) {
+                console.error('Target notebook not found');
+                return;
+            }
             
-            if (targetIndex > -1) {
-                const insertIndex = position === 'before' ? targetIndex : targetIndex + 1;
-                targetNotebook.notes.splice(insertIndex, 0, note);
-            } else {
+            // Find target note and insert relative to it
+            if (!targetNotebook.notes) targetNotebook.notes = [];
+            
+            // Search for target note (could be nested in children)
+            function findAndInsertRelativeTo(notes, parentArray) {
+                for (let i = 0; i < notes.length; i++) {
+                    if (String(notes[i].id) === String(targetNoteId)) {
+                        const insertIndex = position === 'before' ? i : i + 1;
+                        notes.splice(insertIndex, 0, note);
+                        return true;
+                    }
+                    if (notes[i].children && notes[i].children.length > 0) {
+                        if (findAndInsertRelativeTo(notes[i].children, notes[i].children)) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            
+            if (!findAndInsertRelativeTo(targetNotebook.notes, targetNotebook.notes)) {
+                // If target not found, just add to end
                 targetNotebook.notes.push(note);
             }
             
@@ -7958,16 +8250,27 @@
                 showNotebookDetailPage(state.viewingNotebook);
             }
             saveToStorage();
+            
+            // Highlight the moved note
+            setTimeout(() => {
+                const movedNoteEl = document.querySelector(`.sidebar-note-item[data-note-id="${note.id}"]`);
+                if (movedNoteEl) {
+                    movedNoteEl.classList.add('just-moved');
+                    movedNoteEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    setTimeout(() => movedNoteEl.classList.remove('just-moved'), 2000);
+                }
+            }, 100);
         }
 
         function clearAllDragStates() {
-            document.querySelectorAll('.drag-over, .drop-target, .dragging, .drop-before, .drop-after').forEach(el => {
-                el.classList.remove('drag-over', 'drop-target', 'dragging', 'drop-before', 'drop-after');
+            document.querySelectorAll('.drag-over, .drop-target, .dragging, .drop-before, .drop-after, .drop-into').forEach(el => {
+                el.classList.remove('drag-over', 'drop-target', 'dragging', 'drop-before', 'drop-after', 'drop-into');
             });
             if (dragHintEl) {
                 dragHintEl.remove();
                 dragHintEl = null;
             }
+            hideDropIndicator();
         }
 
         function showDragHint(text) {
@@ -8448,7 +8751,7 @@
             return note.children.reduce((count, child) => count + 1 + countAllChildren(child), 0);
         }
 
-        // Remove note from tree
+        // Remove note from tree (returns boolean)
         function removeNoteFromTree(notebook, noteId, notes = null) {
             const searchNotes = notes || notebook.notes;
             for (let i = 0; i < searchNotes.length; i++) {
@@ -8461,6 +8764,26 @@
                 }
             }
             return false;
+        }
+
+        // Remove note from notebook and return the removed note
+        function removeNoteFromNotebook(noteId, notebook) {
+            if (!notebook || !notebook.notes) return null;
+            
+            function removeFromNotes(notes) {
+                for (let i = 0; i < notes.length; i++) {
+                    if (String(notes[i].id) === String(noteId)) {
+                        return notes.splice(i, 1)[0];
+                    }
+                    if (notes[i].children && notes[i].children.length > 0) {
+                        const found = removeFromNotes(notes[i].children);
+                        if (found) return found;
+                    }
+                }
+                return null;
+            }
+            
+            return removeFromNotes(notebook.notes);
         }
 
         // Pin/Unpin functions
@@ -9581,18 +9904,54 @@
         }
         
         function invertCanvasColors() {
-            const imageData = drawCtx.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-            const data = imageData.data;
+            // Define the ink colors for each mode
+            const darkModeInk = { r: 224, g: 224, b: 224 }; // #e0e0e0 (light/white ink)
+            const lightModeInk = { r: 51, g: 51, b: 51 };   // #333333 (dark/black ink)
             
-            for (let i = 0; i < data.length; i += 4) {
-                // Invert RGB values
-                data[i] = 255 - data[i];       // Red
-                data[i + 1] = 255 - data[i + 1]; // Green
-                data[i + 2] = 255 - data[i + 2]; // Blue
-                // Alpha stays the same
+            const switchingToDark = isDarkMode();
+            
+            // Helper to invert a single canvas
+            function invertCanvas(ctx, width, height) {
+                const imageData = ctx.getImageData(0, 0, width, height);
+                const data = imageData.data;
+                
+                for (let i = 0; i < data.length; i += 4) {
+                    const a = data[i + 3]; // Alpha channel
+                    
+                    // Skip transparent pixels (background/erased areas)
+                    if (a < 10) continue;
+                    
+                    // Any visible pixel is ink - convert to the appropriate mode's ink color
+                    if (switchingToDark) {
+                        data[i] = darkModeInk.r;
+                        data[i + 1] = darkModeInk.g;
+                        data[i + 2] = darkModeInk.b;
+                    } else {
+                        data[i] = lightModeInk.r;
+                        data[i + 1] = lightModeInk.g;
+                        data[i + 2] = lightModeInk.b;
+                    }
+                }
+                
+                ctx.putImageData(imageData, 0, 0);
             }
             
-            drawCtx.putImageData(imageData, 0, 0);
+            // Invert all layer canvases if layer system exists
+            if (typeof canvasModule !== 'undefined' && canvasModule.manager?.layerManager) {
+                const layerManager = canvasModule.manager.layerManager;
+                const pixelRatio = canvasModule.manager.pixelRatio || 1;
+                
+                for (const layer of layerManager.layers) {
+                    if (layer.ctx) {
+                        const width = layer.canvas.width;
+                        const height = layer.canvas.height;
+                        invertCanvas(layer.ctx, width, height);
+                    }
+                }
+            }
+            
+            // Also invert the main draw canvas (fallback for non-layer mode)
+            invertCanvas(drawCtx, CANVAS_WIDTH, CANVAS_HEIGHT);
             
             // Also invert text box colors
             document.querySelectorAll('.text-box').forEach(box => {
@@ -9601,6 +9960,19 @@
                     box.style.color = invertColor(currentColor);
                 }
             });
+            
+            // Also update stored stroke colors so re-renders work correctly
+            if (state.currentNote && state.currentNote.strokes) {
+                const newColor = switchingToDark ? 
+                    `rgb(${darkModeInk.r}, ${darkModeInk.g}, ${darkModeInk.b})` : 
+                    `rgb(${lightModeInk.r}, ${lightModeInk.g}, ${lightModeInk.b})`;
+                    
+                state.currentNote.strokes.forEach(stroke => {
+                    if (stroke.color) {
+                        stroke.color = newColor;
+                    }
+                });
+            }
             
             markUnsaved();
         }
