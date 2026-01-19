@@ -1811,6 +1811,34 @@
             height: 16px;
         }
 
+        /* Formatting buttons and highlight swatches */
+        .format-btn {
+            min-width: 36px;
+            padding: 6px 10px;
+            font-weight: 600;
+        }
+
+        .highlight-palette {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .highlight-swatch {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 1px solid rgba(0,0,0,0.08);
+            padding: 0;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+            cursor: pointer;
+        }
+
+        .highlight-swatch.active {
+            outline: 2px solid rgba(0,0,0,0.12);
+            transform: translateY(-1px);
+        }
+
         .color-picker {
             width: 32px;
             height: 32px;
@@ -2225,8 +2253,12 @@
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: auto;
+            pointer-events: none;
             z-index: 499;
+        }
+
+        .media-layer .media-embed {
+            pointer-events: auto;
         }
 
         .text-layer {
@@ -2237,6 +2269,11 @@
             height: 100%;
             pointer-events: none;
             z-index: 500;
+        }
+
+        /* In select mode, text layer needs pointer events */
+        .text-layer .text-box {
+            pointer-events: auto !important;
         }
 
         /* Layer content containers */
@@ -2250,8 +2287,9 @@
         }
 
         .layer-content .text-box,
-        .layer-content .media-embed {
-            pointer-events: auto;
+        .layer-content .media-embed,
+        .text-layer .text-box {
+            pointer-events: auto !important;
             cursor: pointer;
         }
 
@@ -2272,7 +2310,8 @@
             resize: both;
             overflow: auto;
             border-radius: 4px;
-            z-index: 6;
+            z-index: 501;
+            cursor: text;
         }
 
         .text-box:focus {
@@ -2280,12 +2319,25 @@
         }
 
         .text-box.placed {
-            border: none;
+            border: 1px solid transparent;
+        }
+
+        .text-box.placed:hover {
+            border: 1px dashed #ccc;
+            background: rgba(0, 0, 0, 0.02);
+            cursor: move;
         }
 
         .text-box.selected {
             border: 2px solid #007AFF !important;
             background: rgba(0, 122, 255, 0.05);
+            cursor: move;
+        }
+
+        .text-box.dragging {
+            opacity: 0.8;
+            cursor: grabbing !important;
+            user-select: none;
         }
 
         /* Status Bar */
@@ -3322,6 +3374,21 @@
             <div class="toolbar-divider"></div>
             
             <div class="toolbar-group">
+                <span class="toolbar-label">Format</span>
+                <button class="tool-btn format-btn" id="bold-btn" onclick="formatText('bold')" title="Bold (Ctrl+B)"><strong>B</strong></button>
+                <button class="tool-btn format-btn" id="italic-btn" onclick="formatText('italic')" title="Italic (Ctrl+I)"><em>I</em></button>
+                <button class="tool-btn format-btn" id="underline-btn" onclick="formatText('underline')" title="Underline (Ctrl+U)"><span style="text-decoration:underline">U</span></button>
+                <button class="tool-btn format-btn" id="strike-btn" onclick="formatText('strikeThrough')" title="Strikethrough"><span style="text-decoration:line-through">S</span></button>
+                <div class="highlight-palette" title="Highlight">
+                    <button class="tool-btn highlight-swatch" data-color="#fff7d6" style="background:#fff7d6" onclick="applyHighlight('#fff7d6')" aria-label="Pastel Yellow"></button>
+                    <button class="tool-btn highlight-swatch" data-color="#ffd6e0" style="background:#ffd6e0" onclick="applyHighlight('#ffd6e0')" aria-label="Pastel Pink"></button>
+                    <button class="tool-btn highlight-swatch" data-color="#e6f7ff" style="background:#e6f7ff" onclick="applyHighlight('#e6f7ff')" aria-label="Pastel Blue"></button>
+                    <button class="tool-btn highlight-swatch" data-color="#e8ffef" style="background:#e8ffef" onclick="applyHighlight('#e8ffef')" aria-label="Pastel Green"></button>
+                    <button class="tool-btn highlight-swatch" data-color="#f3e8ff" style="background:#f3e8ff" onclick="applyHighlight('#f3e8ff')" aria-label="Pastel Purple"></button>
+                </div>
+            </div>
+            
+            <div class="toolbar-group">
                 <button class="tool-btn" onclick="zoomOut()">−</button>
                 <span class="zoom-display" id="zoom-display">100%</span>
                 <button class="tool-btn" onclick="zoomIn()">+</button>
@@ -3990,6 +4057,8 @@
                     textBox.classList.add('placed');
                     saveToUndoStack();
                 }
+                // Exit editing mode when blurred
+                textBox.dataset.editing = 'false';
                 updateOutline();
                 markUnsaved();
             });
@@ -4130,58 +4199,64 @@
         }
 
         function addTextBoxSelectHandler(textBox) {
-            textBox.addEventListener('mousedown', (e) => {
-                if (state.tool === 'select') {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    selectTextBox(textBox);
-                    // Make draggable when in select mode
-                    makeTextBoxDraggable(textBox);
-                }
-            });
-        }
-
-        // Make a text box draggable when select tool is active
-        function makeTextBoxDraggable(textBox) {
-            if (!textBox || textBox.dataset.draggable === 'true') return;
-            textBox.dataset.draggable = 'true';
-
+            // Make sure pointer events work on this text box
+            textBox.style.pointerEvents = 'auto';
+            
             textBox.addEventListener('mousedown', (e) => {
                 if (state.tool !== 'select') return;
+                
                 e.preventDefault();
                 e.stopPropagation();
-
-                let isDragging = false;
+                
+                // Select this text box visually
+                selectTextBox(textBox);
+                
+                // Track for potential drag
+                let dragStarted = false;
                 const startX = e.clientX;
                 const startY = e.clientY;
                 const initialX = parseInt(textBox.style.left) || 0;
                 const initialY = parseInt(textBox.style.top) || 0;
-
+                
                 const onMouseMove = (ev) => {
                     const dx = (ev.clientX - startX) / state.zoom;
                     const dy = (ev.clientY - startY) / state.zoom;
-                    if (!isDragging && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
-                        isDragging = true;
+                    
+                    // Start dragging after moving 5+ pixels
+                    if (!dragStarted && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
+                        dragStarted = true;
                         textBox.classList.add('dragging');
+                        window.getSelection().removeAllRanges();
                     }
-                    if (isDragging) {
+                    
+                    if (dragStarted) {
                         textBox.style.left = (initialX + dx) + 'px';
                         textBox.style.top = (initialY + dy) + 'px';
                     }
                 };
-
+                
                 const onMouseUp = () => {
                     document.removeEventListener('mousemove', onMouseMove);
                     document.removeEventListener('mouseup', onMouseUp);
-                    if (isDragging) {
-                        setTimeout(() => textBox.classList.remove('dragging'), 100);
+                    
+                    if (dragStarted) {
+                        textBox.classList.remove('dragging');
                         markUnsaved();
+                    } else {
+                        // Didn't drag - enter edit mode
+                        textBox.contentEditable = 'true';
+                        textBox.focus();
                     }
                 };
-
+                
                 document.addEventListener('mousemove', onMouseMove);
                 document.addEventListener('mouseup', onMouseUp);
             });
+        }
+
+        // No longer needed - combined into addTextBoxSelectHandler
+        function makeTextBoxDraggable(textBox) {
+            // Kept for compatibility but logic is now in addTextBoxSelectHandler
         }
 
         // Multi-touch / pinch-to-zoom and two-finger pan handling
@@ -4468,6 +4543,176 @@
         canvasContainer.addEventListener('touchmove', handleTouchMove, { passive: false });
         canvasContainer.addEventListener('touchend', handleTouchEnd, { passive: false });
 
+        // Global handler for selecting text boxes in Select mode
+        // This catches clicks on text boxes that may not have individual handlers
+        canvasWrapper.addEventListener('mousedown', (e) => {
+            if (state.tool !== 'select') return;
+            
+            // Find if we clicked on a text box
+            const textBox = e.target.closest('.text-box');
+            if (!textBox) {
+                // Clicked on empty space - clear selection
+                clearTextBoxSelection();
+                return;
+            }
+            
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Select this text box
+            selectTextBox(textBox);
+            
+            // Track for drag
+            let dragStarted = false;
+            const startX = e.clientX;
+            const startY = e.clientY;
+            const initialX = parseInt(textBox.style.left) || 0;
+            const initialY = parseInt(textBox.style.top) || 0;
+            
+            const onMouseMove = (ev) => {
+                const dx = (ev.clientX - startX) / state.zoom;
+                const dy = (ev.clientY - startY) / state.zoom;
+                
+                if (!dragStarted && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
+                    dragStarted = true;
+                    textBox.classList.add('dragging');
+                    window.getSelection().removeAllRanges();
+                }
+                
+                if (dragStarted) {
+                    textBox.style.left = (initialX + dx) + 'px';
+                    textBox.style.top = (initialY + dy) + 'px';
+                }
+            };
+            
+            const onMouseUp = () => {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+                
+                if (dragStarted) {
+                    textBox.classList.remove('dragging');
+                    markUnsaved();
+                } else {
+                    // Didn't drag - enter edit mode
+                    textBox.contentEditable = 'true';
+                    textBox.focus();
+                }
+            };
+            
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+        
+        // Also add handler directly to text-layer for more reliable text box selection
+        textLayer.addEventListener('mousedown', (e) => {
+            if (state.tool !== 'select') return;
+            
+            const textBox = e.target.closest('.text-box');
+            if (!textBox) return;
+            
+            e.preventDefault();
+            e.stopPropagation();
+            
+            selectTextBox(textBox);
+            
+            let dragStarted = false;
+            const startX = e.clientX;
+            const startY = e.clientY;
+            const initialX = parseInt(textBox.style.left) || 0;
+            const initialY = parseInt(textBox.style.top) || 0;
+            
+            const onMouseMove = (ev) => {
+                const dx = (ev.clientX - startX) / state.zoom;
+                const dy = (ev.clientY - startY) / state.zoom;
+                
+                if (!dragStarted && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
+                    dragStarted = true;
+                    textBox.classList.add('dragging');
+                    window.getSelection().removeAllRanges();
+                }
+                
+                if (dragStarted) {
+                    textBox.style.left = (initialX + dx) + 'px';
+                    textBox.style.top = (initialY + dy) + 'px';
+                }
+            };
+            
+            const onMouseUp = () => {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+                
+                if (dragStarted) {
+                    textBox.classList.remove('dragging');
+                    markUnsaved();
+                } else {
+                    textBox.contentEditable = 'true';
+                    textBox.focus();
+                }
+            };
+            
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+        
+        // GLOBAL document-level handler as ultimate fallback for text box selection
+        document.addEventListener('mousedown', (e) => {
+            // DEBUG: Log every click
+            console.log('Document mousedown - tool:', state.tool, 'target:', e.target.className, 'view:', state.currentView);
+            
+            if (state.tool !== 'select') return;
+            if (state.currentView !== 'editor') return;
+            
+            const textBox = e.target.closest('.text-box');
+            console.log('Looking for text-box, found:', textBox);
+            if (!textBox) return;
+            
+            // Only handle if we're in the canvas area
+            if (!e.target.closest('#canvas-wrapper') && !e.target.closest('#text-layer')) return;
+            
+            e.preventDefault();
+            e.stopPropagation();
+            
+            selectTextBox(textBox);
+            
+            let dragStarted = false;
+            const startX = e.clientX;
+            const startY = e.clientY;
+            const initialX = parseInt(textBox.style.left) || 0;
+            const initialY = parseInt(textBox.style.top) || 0;
+            
+            const onMouseMove = (ev) => {
+                const dx = (ev.clientX - startX) / state.zoom;
+                const dy = (ev.clientY - startY) / state.zoom;
+                
+                if (!dragStarted && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
+                    dragStarted = true;
+                    textBox.classList.add('dragging');
+                    window.getSelection().removeAllRanges();
+                }
+                
+                if (dragStarted) {
+                    textBox.style.left = (initialX + dx) + 'px';
+                    textBox.style.top = (initialY + dy) + 'px';
+                }
+            };
+            
+            const onMouseUp = () => {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+                
+                if (dragStarted) {
+                    textBox.classList.remove('dragging');
+                    markUnsaved();
+                } else {
+                    textBox.contentEditable = 'true';
+                    textBox.focus();
+                }
+            };
+            
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        }, true); // Use capture phase to get event first
+
         // Prevent default middle mouse button scrolling
         drawingCanvas.addEventListener('auxclick', (e) => {
             if (e.button === 1) {
@@ -4578,6 +4823,99 @@
             updateZoomDisplay();
         });
 
+        // Text layer click handler for select mode
+        const textLayerForSelect = document.getElementById('text-layer');
+        textLayerForSelect.addEventListener('mousedown', function(e) {
+            if (state.tool !== 'select') return;
+            
+            // Find if we clicked on a text box
+            let textBox = e.target.closest('.text-box');
+            if (!textBox) {
+                // Check if we clicked directly on text-layer but near a text box
+                const textBoxes = document.querySelectorAll('.text-box');
+                for (const tb of textBoxes) {
+                    const rect = tb.getBoundingClientRect();
+                    if (e.clientX >= rect.left && e.clientX <= rect.right && 
+                        e.clientY >= rect.top && e.clientY <= rect.bottom) {
+                        textBox = tb;
+                        break;
+                    }
+                }
+            }
+            
+            if (!textBox) {
+                clearTextBoxSelection();
+                return;
+            }
+            
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Select this text box
+            selectTextBox(textBox);
+            
+            // Track for drag
+            let dragStarted = false;
+            const startX = e.clientX;
+            const startY = e.clientY;
+            const initialX = parseInt(textBox.style.left) || 0;
+            const initialY = parseInt(textBox.style.top) || 0;
+            
+            const onMouseMove = (ev) => {
+                const dx = (ev.clientX - startX) / state.zoom;
+                const dy = (ev.clientY - startY) / state.zoom;
+                
+                if (!dragStarted && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
+                    dragStarted = true;
+                    textBox.classList.add('dragging');
+                    window.getSelection().removeAllRanges();
+                }
+                
+                if (dragStarted) {
+                    textBox.style.left = (initialX + dx) + 'px';
+                    textBox.style.top = (initialY + dy) + 'px';
+                }
+            };
+            
+            const onMouseUp = () => {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+                
+                if (dragStarted) {
+                    textBox.classList.remove('dragging');
+                    markUnsaved();
+                }
+            };
+            
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+        
+        // Double-click on text-layer to edit text box
+        textLayerForSelect.addEventListener('dblclick', function(e) {
+            if (state.tool !== 'select') return;
+            
+            let textBox = e.target.closest('.text-box');
+            if (!textBox) {
+                const textBoxes = document.querySelectorAll('.text-box');
+                for (const tb of textBoxes) {
+                    const rect = tb.getBoundingClientRect();
+                    if (e.clientX >= rect.left && e.clientX <= rect.right && 
+                        e.clientY >= rect.top && e.clientY <= rect.bottom) {
+                        textBox = tb;
+                        break;
+                    }
+                }
+            }
+            
+            if (textBox) {
+                e.preventDefault();
+                e.stopPropagation();
+                textBox.contentEditable = 'true';
+                textBox.focus();
+            }
+        });
+        
         // Tool functions
         let selectedTextBox = null;
 
@@ -4589,6 +4927,19 @@
             // Clear selection when switching tools
             if (tool !== 'select') {
                 clearTextBoxSelection();
+            }
+            
+            // When switching to select mode, blur any focused text box first
+            // so it can be properly selected/moved
+            if (tool === 'select') {
+                const focused = document.activeElement;
+                if (focused && focused.classList && focused.classList.contains('text-box')) {
+                    focused.blur();
+                }
+                // Reset editing state on all text boxes
+                document.querySelectorAll('.text-box').forEach(tb => {
+                    tb.dataset.editing = 'false';
+                });
             }
             
             const eraserCursor = document.getElementById('eraser-cursor');
@@ -4642,13 +4993,24 @@
                 // Select mode - enable pointer events on all content containers
                 drawingCanvas.style.pointerEvents = 'none';
                 drawingCanvas.style.zIndex = 2;
+                // Enable canvas wrapper to receive clicks
+                canvasWrapper.style.pointerEvents = 'auto';
                 if (mediaLayer) mediaLayer.style.pointerEvents = 'auto';
                 if (textLayerEl) {
                     textLayerEl.style.pointerEvents = 'auto';
-                    textLayerEl.style.zIndex = 5; // Restore normal z-index
+                    textLayerEl.style.zIndex = 100000; // Put text layer on top in select mode
                 }
-                // Enable pointer events on layer content containers so media can be selected
-                layerContents.forEach(lc => lc.style.pointerEvents = 'auto');
+                // Enable pointer events on layer content containers so items can be selected
+                layerContents.forEach(lc => {
+                    lc.style.pointerEvents = 'auto';
+                    lc.style.zIndex = 100000; // Same level as text layer
+                });
+                // Also ensure all text boxes are clickable
+                document.querySelectorAll('.text-box').forEach(tb => {
+                    tb.style.pointerEvents = 'auto';
+                    tb.style.cursor = 'move';
+                    tb.style.zIndex = 100001; // Text boxes above their containers
+                });
             }
         }
 
@@ -4853,6 +5215,8 @@
                     if (textBox.textContent.trim() === '') {
                         textBox.remove();
                     }
+                    // Exit editing mode when blurred
+                    textBox.dataset.editing = 'false';
                     saveToUndoStack();
                     markUnsaved();
                 });
@@ -5058,6 +5422,42 @@
             // New text boxes created after this will use `state.font` (see createTextBox).
             if (state.currentNote) saveNoteData();
         });
+
+        // Text formatting (bold/italic/underline/strike)
+        function formatText(command) {
+            try {
+                document.execCommand(command);
+                if (state.currentNote) saveNoteData();
+            } catch (err) {
+                console.warn('formatText error', err);
+            }
+        }
+
+        // Apply highlight using browser command or a DOM fallback
+        function applyHighlight(color) {
+            if (!color) return;
+            try {
+                const supported = (document.queryCommandSupported && (document.queryCommandSupported('hiliteColor') || document.queryCommandSupported('backColor')));
+                if (supported) {
+                    // Prefer hiliteColor where available
+                    if (document.queryCommandSupported('hiliteColor')) document.execCommand('hiliteColor', false, color);
+                    else document.execCommand('backColor', false, color);
+                } else {
+                    const sel = window.getSelection();
+                    if (!sel.rangeCount) return;
+                    const range = sel.getRangeAt(0);
+                    if (range.collapsed) return;
+                    const span = document.createElement('span');
+                    span.style.backgroundColor = color;
+                    range.surroundContents(span);
+                }
+                // Mark the chosen swatch active visually
+                document.querySelectorAll('.highlight-swatch').forEach(s => s.classList.toggle('active', s.getAttribute('data-color') === color));
+            } catch (err) {
+                console.warn('applyHighlight error', err);
+            }
+            if (state.currentNote) saveNoteData();
+        }
 
         document.getElementById('font-size-select').addEventListener('change', (e) => {
             state.fontSize = parseInt(e.target.value);
@@ -9446,6 +9846,8 @@
                         if (textBox.textContent.trim() === '') {
                             textBox.remove();
                         }
+                        // Exit editing mode when blurred
+                        textBox.dataset.editing = 'false';
                         saveToUndoStack();
                         markUnsaved();
                     });
